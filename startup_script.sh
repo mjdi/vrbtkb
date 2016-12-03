@@ -8,4 +8,4 @@ xterm -hold -e 'sudo hciconfig hcio; sudo hciconfig hcio up; sudo hciconfig hcio
 
 sleep 5
 
-xterm -hold -e 'sudo python /home/pi/BlogCode/btkeyboard/server/btk_server.py' &
+xterm -hold -e 'sudo python /home/pi/vrbtkb/btkeyboard/server/btk_server.py' &
