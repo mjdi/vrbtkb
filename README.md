@@ -2,6 +2,8 @@
 # in a 4-button + clickable analog joystick Raspberry pi Zero-based bluetooth controller to be used for emulating regular 
 # qwerty keyboard functionality on a VR-enabled Android smartphone
 
+# Add line '@bash /home/pi/vrbtkb/vr_hid_bt_kb_setup.sh' to the end of /home/pi/.config/lxsession/LXDE/autostart
+
 # Button GPIO pins:
 
 #		GPIO.setmode(GPIO.BOARD)
