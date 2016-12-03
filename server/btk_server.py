@@ -175,7 +175,7 @@ class BTKbDevice():
         self.cinterrupt, cinfo = self.sinterrupt.accept()
         print ("Got a connection on the interrupt channel from " + cinfo[0])
 
-	os.system("xterm -hold -e 'sudo python ./BlogCode/btkeyboard/vrkeyboard/vr_kb_client.py' &")
+	os.system("xterm -hold -e 'sudo python ./vrbtkb/btkeyboard/vrkeyboard/vr_kb_client.py' &")
 
 
     #send a string to the bluetooth host machine
