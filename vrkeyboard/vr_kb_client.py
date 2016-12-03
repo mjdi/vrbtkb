@@ -778,12 +778,12 @@ if __name__ == "__main__":
 				elif kb.last_dir_idx == 3 :
 					kb.S2W = 1
 
-		# DEBUGGING
+		# DEBUGGING Whitespace, Ctrl, Alt modifiers
 
-		print "{D2N,D2E,D2S,D2W} = [" + str(kb.D2N) + str(kb.D2E) + str(kb.D2S) + str(kb.D2W) + "], " ,
-		#print "{N2D,E2D,S2D,W2D} = [" + str(kb.N2D) + str(kb.E2D) + str(kb.S2D) + str(kb.W2D) + "], " ,
-		print "{N2W,W2S,S2E,E2N} = [" + str(kb.N2W) + str(kb.W2S) + str(kb.S2E) + str(kb.E2N) + "], " ,
-		print "{N2E,E2S,S2W,W2N} = [" + str(kb.N2E) + str(kb.E2S) + str(kb.S2W) + str(kb.W2N) + "], " ,  
+		# print "{D2N,D2E,D2S,D2W} = [" + str(kb.D2N) + str(kb.D2E) + str(kb.D2S) + str(kb.D2W) + "], " ,
+		# print "{N2D,E2D,S2D,W2D} = [" + str(kb.N2D) + str(kb.E2D) + str(kb.S2D) + str(kb.W2D) + "], " ,
+		# print "{N2W,W2S,S2E,E2N} = [" + str(kb.N2W) + str(kb.W2S) + str(kb.S2E) + str(kb.E2N) + "], " ,
+		# print "{N2E,E2S,S2W,W2N} = [" + str(kb.N2E) + str(kb.E2S) + str(kb.S2W) + str(kb.W2N) + "], " ,  
 
 		# FUTURE WORK: Determine one-by-one if each finger is pressed (rather than all at once)
 
@@ -816,20 +816,20 @@ if __name__ == "__main__":
 			#print "depress" ,
 			kb.depressed_analog_shift_modifier = 1 # records that we've depressed the analog click, necessary for Analog Click Shift Modifier to function
 
-		# DEBUGGING
+		# DEBUGGING Button/Direction recognition
 		# print "btn5 = " + str(btn5) + "\tbtn4 = " + str(btn4) + "\tbtn3 = " + str(btn3) + "\tbtn2 = " + str(btn2) + "\tbtn1 = " + str(btn1) + "\tLHdirection =" + LH_direction , 
 
 		mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
 
-		print "\tmod_bit_str=" + mod_bit_str ,
+		# print "\tmod_bit_str=" + mod_bit_str ,
 
 		mod_lock_bit_str = str(kb.LM_lock) + str(kb.LA_lock) + str(kb.LS_lock) + str(kb.LC_lock) + str(kb.RM_lock) + str(kb.RA_lock) + str(kb.RS_lock) + str(kb.RC_lock)
 
-		print "\tmod_lock_bit_str=" + mod_lock_bit_str ,
+		# print "\tmod_lock_bit_str=" + mod_lock_bit_str ,
 
-#		print "\tdepressed_analog_shift_modifier = " + str(kb.depressed_analog_shift_modifier) , 
+ 		# print "\tdepressed_analog_shift_modifier = " + str(kb.depressed_analog_shift_modifier) , 
 
-#		print "\tkb.LS = " + str(kb.LS) + "\tkb.LS_lock = " + str(kb.LS_lock) ,
+ 		# print "\tkb.LS = " + str(kb.LS) + "\tkb.LS_lock = " + str(kb.LS_lock) ,
 
 		# ====================================================================
 		# get HID code and perform keyboard function with necessary modifiers
@@ -870,7 +870,8 @@ if __name__ == "__main__":
 
 			mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
 
-			print "\tmod_bit_str" + mod_bit_str ,
+			# DEBUGGING Shift toggle via Analog Click (not for numbers, where analog click becomes 5 or 6)
+			# print "\tmod_bit_str" + mod_bit_str ,
 			
 			if not hid == -1 :
 				arr_idx = kb.last_arr_idx # Get array index for determining which set of character we are currently typing
@@ -897,7 +898,7 @@ if __name__ == "__main__":
 
 				mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
 	
-				# DEBUGGING
+				# DEBUGGING final character set index (arr_idx), 2-character long key string, hid code, & modifier bit string 
 				# print "\tarr_idx =" + str(arr_idx) + "\tchar_str = " + char_str + "\tHID = " + str(hid) + "\tmod_bit_str" + mod_bit_str ,
 		
 				kb.iface.send_keys( int(mod_bit_str,2), [hid,0,0,0,0,0] )
@@ -907,7 +908,7 @@ if __name__ == "__main__":
 		else:
 			mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
 			
-			kb.iface.send_keys(int(mod_bit_str,2),[0,0,0,0,0,0]) # send an empty keyboard state
+			kb.iface.send_keys(int(mod_bit_str,2),[0,0,0,0,0,0]) # send only any locked modifiers (for alt-tab, etc.)
 
 		kb.last_btn_idx = btn_idx
 		kb.last_dir_idx = dir_idx
