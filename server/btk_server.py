@@ -74,13 +74,14 @@ class BTKbBluezProfile(dbus.service.Object):
 #
 class BTKbDevice():
     #change these constants 
-    #MY_ADDRESS = "5C:F3:70:7A:BF:38"
     MY_ADDRESS = subprocess.check_output("hciconfig | grep 'BD' | grep -oP '..:..:..:..:..:..'", shell=True)
 
     if subprocess.check_output("hostname -I", shell=True).rstrip() == "" :
-	MY_DEV_NAME = "RPi1_LH_wlan_not_connected"
+	#MY_DEV_NAME = "RPi1_LH_wlan_not_connected"
+	MY_DEV_NAME = "CHIP1_LH_wlan_not_connected"
     else :
-    	MY_DEV_NAME = "RPi_LH_" + subprocess.check_output("hostname -I", shell=True).rstrip()
+    	#MY_DEV_NAME = "RPi_LH_" + subprocess.check_output("hostname -I", shell=True).rstrip()
+	MY_DEV_NAME = "CHIP1_LH_" + subprocess.check_output("hostname -I", shell=True).rstrip()
 	
     #define some constants
     P_CTRL =17  #Service port - must match port configured in SDP record
@@ -175,7 +176,9 @@ class BTKbDevice():
         self.cinterrupt, cinfo = self.sinterrupt.accept()
         print ("Got a connection on the interrupt channel from " + cinfo[0])
 
-	os.system("xterm -hold -e 'sudo python ./vrbtkb/btkeyboard/vrkeyboard/vr_kb_client.py' &")
+	# ==== CHANGE THIS ==== #
+	#os.system("xterm -hold -e 'sudo python ./vrbtkb/btkeyboard/vrkeyboard/vr_kb_client.py' &")
+	os.system("sudo python ./vrbtkb/vrkeyboard/vr_kb_client.py &")
 
 
     #send a string to the bluetooth host machine
