@@ -8,5 +8,5 @@ sleep 5
 
 sleep 5
 
-#xterm -hold -e 'sudo python /home/pi/vrbtkb/btkeyboard/bt_kb_client.py' &
-xterm -hold -e 'sudo python /home/chip/vrbtkb/vrkeyboard/vr_kb_client.py' &
+#xterm -hold -e 'sudo python /home/pi/vrbtkb/server/btk_server.py' &
+xterm -hold -e 'sudo python /home/chip/vrbtkb/server/btk_server.py' &
