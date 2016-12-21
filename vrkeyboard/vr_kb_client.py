@@ -5,7 +5,10 @@
 # Adapted from www.linuxuser.co.uk/tutorials/emulate-a-bluetooth-keyboard-with-the-raspberry-pi
 #
 
-import RPi.GPIO as GPIO  #to use the GPIO pins
+#import RPi.GPIO as GPIO  #to use the GPIO pins
+import CHIP_IO.GPIO as GPIO
+import CHIP_IO.OverlayManager as OM
+OM.load("SPI2")
 import spidev   #to use joystick
 import dbus
 import dbus.service
@@ -521,17 +524,31 @@ class VR_Keyboard():
 		
 		print "setting up GPIO structure to interpret digital pins"
 
-		GPIO.setmode(GPIO.BOARD)
+#               ========================== GPIO setup for Raspberry Pi Zero =====================
 
-		self.btn2_pin = 33
-		self.btn3_pin = 31
-		self.btn4_pin = 35
-		self.btn5_pin = 37
+#               GPIO.setmode(GPIO.BOARD)
 
-		GPIO.setup(self.btn2_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # index finger
-		GPIO.setup(self.btn3_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # middle finger
-		GPIO.setup(self.btn4_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # ring finger
-		GPIO.setup(self.btn5_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # pinky finger
+#               self.btn2_pin = 33
+#               self.btn3_pin = 31
+#               self.btn4_pin = 35
+#               self.btn5_pin = 37
+
+#               GPIO.setup(self.btn2_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # index finger
+#               GPIO.setup(self.btn3_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # middle finger
+#               GPIO.setup(self.btn4_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # ring finger
+#               GPIO.setup(self.btn5_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # pinky finger
+
+#               ========================= GPIO setup for Next Thing Co. CHIP ====================
+
+                self.btn2_pin = "GPIO2"
+                self.btn3_pin = "GPIO3"
+                self.btn4_pin = "GPIO4"
+                self.btn5_pin = "GPIO5"
+
+                GPIO.setup(self.btn2_pin, GPIO.IN) # index finger
+                GPIO.setup(self.btn3_pin, GPIO.IN) # middle finger
+                GPIO.setup(self.btn4_pin, GPIO.IN) # ring finger
+                GPIO.setup(self.btn5_pin, GPIO.IN) # pinky finger
 	
 		# Define sensor channels
 		# (channels 3 to 7 unused)
