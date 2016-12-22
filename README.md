@@ -36,7 +36,8 @@ sudo modprobe spidev  http://www.chip-community.org/index.php/SPI_support
 #make sure to clone this repo as well as the CHIP_IO repo (following the install instructions there specifically for python2.7)
 
 run "sudo python"
-	in the Python REPI, run "import CHIO_IO.OverlayManager as OM; OM.load("SPI2"); quit"
+
+in the Python REPI that comes up, run "import CHIO_IO.OverlayManager as OM; OM.load("SPI2"); quit"
 	
 then in the terminal rin: "sudo modeprobe spidev"
 
