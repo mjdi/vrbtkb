@@ -49,7 +49,7 @@ https://bbs.nextthing.co/t/spi-serial-communication-on-chip/11937/5
 
 	git clone https://github.com/doceme/py-spidev.git
 	cd py-spidev
-	python setup.py install
+	sudo python setup.py install
 	cd ..
 
 ~the 4.4.13 ? kernel somehow already includes the DTC? or was that what I downloaded, via the dtc git clone, probably ya~ (so SPI and GPIO work off the bat!!)
