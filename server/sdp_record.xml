@@ -51,19 +51,13 @@
 		</sequence>
 	</attribute>
 	<attribute id="0x0100">
-		<!--
-		<text value="Raspberry Pi Virtual Keyboard" />
-		-->
-		<text value="C.H.I.P. Virtual Keyboard" />
+		<text value="CHIP Virtual Keyboard" />
 	</attribute>
 	<attribute id="0x0101">
-		<text value="USB > BT Keyboard" />
+		<text value="VR Controller > BT Keyboard" />
 	</attribute>
 	<attribute id="0x0102">
-		<!--
-		<text value="Raspberry Pi" />
-		-->
-		<text value="C.H.I.P." />
+		<text value="CHIP" />
 	</attribute>
 	<attribute id="0x0200">
 		<uint16 value="0x0100" />
