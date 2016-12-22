@@ -39,7 +39,7 @@ run "sudo python"
 
 in the Python REPI that comes up, run "import CHIO_IO.OverlayManager as OM; OM.load("SPI2"); quit"
 	
-then in the terminal rin: "sudo modeprobe spidev"
+then in the terminal run: "sudo modprobe spidev" to activate the spidev
 
 confirm that spidev exists with "ls /dev/spidev*"
 
