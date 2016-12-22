@@ -30,6 +30,13 @@ http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keybo
 Did you try do install the device tree overlay in /etc/rc.local? It is in /lib/firmware !
 https://bbs.nextthing.co/t/spi-serial-communication-on-chip/11937/5
 
+
+git clone https://github.com/doceme/py-spidev.git
+cd py-spidev
+python setup.py install
+cd ..
+
+
 sudo modprobe spidev  http://www.chip-community.org/index.php/SPI_support
 (short MOSI and MISO to test spidev with the instructions there)
 
