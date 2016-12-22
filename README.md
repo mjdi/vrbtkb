@@ -33,7 +33,7 @@ sudo modprobe spidev  http://www.chip-community.org/index.php/SPI_support
 
 #make sure to clone this repo as well as the CHIP_IO repo (following the install instructions there specifically for python2.7)
 
-#Use crontab to allow for headless operation (run <man 5 crontab> to learn more about it)
+Use crontab to allow for headless operation (run <man 5 crontab> to learn more about it)
 
 begin add to <crontab -e>:
 
