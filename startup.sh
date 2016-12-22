@@ -1,3 +1,5 @@
+# -*- coding: utf8 -*-
+
 #!bin/usr/env bash
 
 xterm -hold -e 'sudo /etc/init.d/bluetooth stop; sudo /usr/sbin/bluetoothd --nodetach --debug -p time' &
