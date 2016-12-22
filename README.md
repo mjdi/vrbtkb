@@ -35,12 +35,12 @@ sudo modprobe spidev  http://www.chip-community.org/index.php/SPI_support
 
 #make sure to clone this repo as well as the CHIP_IO repo (following the install instructions there specifically for python2.7)
 
-run <sudo python>
+run "sudo python"
 	in the Python REPI, run "import CHIO_IO.OverlayManager as OM; OM.load("SPI2"); quit"
 	
-then in the terminal rin: <sudo modeprobe spidev>
+then in the terminal rin: "sudo modeprobe spidev"
 
-confirm that spidev exists with <ls /dev/spidev*>
+confirm that spidev exists with "ls /dev/spidev*"
 
 Use crontab to allow for headless operation (run <man 5 crontab> to learn more about it)
 
