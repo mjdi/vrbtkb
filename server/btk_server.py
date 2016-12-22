@@ -23,7 +23,7 @@ from bluetooth import *
 
 import subprocess
 
-import gtk
+#import gtk
 from dbus.mainloop.glib import DBusGMainLoop
 
 
@@ -177,7 +177,7 @@ class BTKbDevice():
         print ("Got a connection on the interrupt channel from " + cinfo[0])
 
 	# ==== Iniiate vr_kb_client.py server as soon as connection is made, (not before) ==== #
-	os.system("xterm -hold -e 'sudo python ./vrbtkb/btkeyboard/vrkeyboard/vr_kb_client.py' &")
+	os.system("sudo python ./vrbtkb/btkeyboard/vrkeyboard/vr_kb_client.py &")
 
     #send a string to the bluetooth host machine
     def send_string(self,message):
@@ -233,5 +233,5 @@ if __name__ == "__main__":
 
     DBusGMainLoop(set_as_default=True)
     myservice = BTKbService();
-    gtk.main()
+    #gtk.main()
 
