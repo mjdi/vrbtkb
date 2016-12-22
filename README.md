@@ -10,6 +10,8 @@ Add line '@bash /home/pi/vrbtkb/startuo_script.sh' to the end of '/home/pi/.conf
 		self.btn3_pin = 31
 		self.btn4_pin = 35
 		self.btn5_pin = 37
+		
+#Note: import gtk and gtk.main() have been commmented out, not sure if it is necessary for operation or not
 
 #**INSTRUCTIONS FOR SETTING UP WITH Next Thing Co. CHIP (all scripts have been updated specifically for the CHIP) **
 
