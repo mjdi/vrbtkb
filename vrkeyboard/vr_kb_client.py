@@ -6,10 +6,11 @@
 #
 
 #import RPi.GPIO as GPIO  #to use the GPIO pins
-import CHIP_IO.GPIO as GPIO
-import CHIP_IO.OverlayManager as OM
+import CHIP_IO.GPIO as GPIO		# https://github.com/xtacocorex/CHIP_IO for documentation
+import CHIP_IO.OverlayManager as OM 	# https://github.com/xtacocorex/CHIP_IO
 OM.load("SPI2")
 import spidev   #to use joystick
+import subprocess # used to grep spi device Bus and Device integer values
 import dbus
 import dbus.service
 import dbus.mainloop.glib
@@ -480,7 +481,15 @@ print "opening up SPI Bus to read Analog Pins"
 	
 #open SPI bus
 spi = spidev.SpiDev()
-spi.open(0,0)
+
+# Raspberry Pi Zero open
+# spi.open(0,0)
+
+# Next Thing Co. Chip spidev open ( spi.open(X,Y) opens the spi device located at /dev/spiX.Y )
+
+SPI_BUS = int(subprocess.check_output("ls /dev/spidev* | grep -oP '(\d+)\.' | grep -oP '(\d+)'", shell=True).rstrip())
+SPI_DEVICE = int(subprocess.check_output("ls /dev/spidev* | grep -oP '\.(\d+)' | grep -oP '(\d+)'", shell=True).rstrip())
+spi.open(SPI_BUS,SPI_DEVICE)
 
 # Function to read SPI data from MCP3008 chip
 # Channel must be an integer 0-7
@@ -539,6 +548,7 @@ class VR_Keyboard():
 #               GPIO.setup(self.btn5_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # pinky finger
 
 #               ========================= GPIO setup for Next Thing Co. CHIP ====================
+#		# https://github.com/xtacocorex/CHIP_IO for documentation
 
                 self.btn2_pin = "GPIO2"
                 self.btn3_pin = "GPIO3"
