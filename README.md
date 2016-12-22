@@ -54,6 +54,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 : end add to <crontab -e>
 
+NOW REBOOT!
+
 CHIP_IO pin names: https://github.com/xtacocorex/CHIP_IO
 
 		self.btn2_pin = "GPIO2"
