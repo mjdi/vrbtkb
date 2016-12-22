@@ -15,6 +15,8 @@ GPIO.setmode(GPIO.BOARD)
 
 Flash 4.4 (non-headless, trying now) headless (FEL mode shorting FEL and GND) http://flash.getchip.com/
 
+(Via COM port, setup up WiFi and SSH) https://www.reddit.com/r/ChipCommunity/comments/5hndoj/setting_up_the_chip_under_win10_walkthrough/
+
 (git is for some reason not included)
 sudo apt-get install git
 
