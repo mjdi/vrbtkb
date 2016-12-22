@@ -20,7 +20,12 @@ Flash 4.4 (non-headless, trying now) headless (FEL mode shorting FEL and GND) ht
 (git is for some reason not included)
 sudo apt-get install git
 
-~sudo apt-get remove blueman (conflicts with 'sudo /etc/init.d/bluetooth stop' command?~ No, turns out I just forgot to use '&; at the end to run in a separate process, so remember to use '&'!
+sudo apt-get remove blueman (conflicts with 'sudo /etc/init.d/bluetooth stop' command?
+
+sudo apt-get install python-gobject bluez bluez-tools bluez-firmware python-bluez python-dev python-pip  http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html
+
+sudo cp /home/chip/vrbtkb/dbus/org.yaptb.btkkbservice.conf /etc/dbus-1/system.d 
+http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html
 
 Did you try do install the device tree overlay in /etc/rc.local? It is in /lib/firmware !
 https://bbs.nextthing.co/t/spi-serial-communication-on-chip/11937/5
