@@ -43,8 +43,12 @@ sudo apt-get install git
 
 	sudo apt-get install python-gobject bluez bluez-tools bluez-firmware python-bluez python-dev python-pip  http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html
 
+	git clone https://github.com/mjdi/vrbtkb
+
 	sudo cp /home/chip/vrbtkb/dbus/org.yaptb.btkkbservice.conf /etc/dbus-1/system.d 
 http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html
+
+# do the bluetoothctl setup as usual
 
 Did you try do install the device tree overlay in /etc/rc.local? It is in /lib/firmware !
 https://bbs.nextthing.co/t/spi-serial-communication-on-chip/11937/5
