@@ -45,7 +45,7 @@ sudo apt-get install git
 
 	git clone https://github.com/mjdi/vrbtkb
 
-	sudo cp /home/chip/vrbtkb/dbus/org.yaptb.btkkbservice.conf /etc/dbus-1/system.d 
+	sudo cp /home/chip/vrbtkb/dbus/org.yaptb.btkbservice.conf /etc/dbus-1/system.d 
 http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html
 
 # do the bluetoothctl setup as usual
