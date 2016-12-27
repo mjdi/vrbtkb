@@ -82,13 +82,13 @@ https://bbs.nextthing.co/t/spi-serial-communication-on-chip/11937/5
 
 in the Python REPI that comes up, run 
 
-	import CHIO_IO.OverlayManager as OM
+	import CHIP_IO.OverlayManager as OM
 	OM.load("SPI2") 
 	quit()
 	
 then in the terminal run http://www.chip-community.org/index.php/SPI_support (short MOSI and MISO to test spidev with the instructions there)
 	
-	sudo modprobe spidev" 
+	sudo modprobe spidev 
 	
 to activate the spidev
 
