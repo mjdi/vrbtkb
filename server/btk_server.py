@@ -177,7 +177,7 @@ class BTKbDevice():
         print ("Got a connection on the interrupt channel from " + cinfo[0])
 
 	# ==== Iniiate vr_kb_client.py server as soon as connection is made, (not before) ==== #
-	os.system("sudo python ./vrbtkb/btkeyboard/vrkeyboard/vr_kb_client.py &")
+	os.system("sudo python ./vrbtkb/vrkeyboard/vr_kb_client.py &")
 
     #send a string to the bluetooth host machine
     def send_string(self,message):
