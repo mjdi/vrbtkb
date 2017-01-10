@@ -61,8 +61,8 @@ https://bbs.nextthing.co/t/spi-serial-communication-on-chip/11937/5
 
 I just added these lines into "/etc/rc.local" as @danjperron suggested:
 
-mkdir -p /sys/kernel/config/device-tree/overlays/spi
-cat /lib/firmware/nextthingco/chip/sample-spi.dtbo > /sys/kernel/config/device-tree/overlays/spi/dtbo
+	mkdir -p /sys/kernel/config/device-tree/overlays/spi
+	cat /lib/firmware/nextthingco/chip/sample-spi.dtbo > /sys/kernel/config/device-tree/overlays/spi/dtbo
 
 ~the 4.4.13 ? kernel somehow already includes the DTC? or was that what I downloaded, via the dtc git clone, probably ya~ (so SPI and GPIO work off the bat!!)
 
