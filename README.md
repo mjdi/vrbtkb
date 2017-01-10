@@ -17,9 +17,11 @@ Add line '@bash /home/pi/vrbtkb/startuo_script.sh' to the end of '/home/pi/.conf
 
 Flash 4.4 (non-headless, trying now) headless (FEL mode shorting FEL and GND) http://flash.getchip.com/
 
-delete the driver > libusbK > Flashing Mode Chip thingee
+~~delete the driver > libusbK > Flashing Mode Chip thingee
 
-download and install linux-cdc-acm.inf from this link here: https://bbs.nextthing.co/t/version-4-4-always-in-flashing-mode/4960/20
+~~download and install linux-cdc-acm.inf from this link here: https://bbs.nextthing.co/t/version-4-4-always-in-flashing-mode/4960/20
+
+https://bbs.nextthing.co/t/updated-cdc-composite-gadget-4-4-driver-issue-on-windows/7458
 
 (Via COM port, setup up WiFi and SSH) https://www.reddit.com/r/ChipCommunity/comments/5hndoj/setting_up_the_chip_under_win10_walkthrough/
 
