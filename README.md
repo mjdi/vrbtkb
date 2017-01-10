@@ -59,10 +59,10 @@ http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keybo
 Did you try do install the device tree overlay in /etc/rc.local? It is in /lib/firmware !
 https://bbs.nextthing.co/t/spi-serial-communication-on-chip/11937/5
 
-	git clone https://github.com/doceme/py-spidev.git
-	cd py-spidev
-	sudo python setup.py install
-	cd ..
+I just added these lines into "/etc/rc.local" as @danjperron suggested:
+
+mkdir -p /sys/kernel/config/device-tree/overlays/spi
+cat /lib/firmware/nextthingco/chip/sample-spi.dtbo > /sys/kernel/config/device-tree/overlays/spi/dtbo
 
 ~the 4.4.13 ? kernel somehow already includes the DTC? or was that what I downloaded, via the dtc git clone, probably ya~ (so SPI and GPIO work off the bat!!)
 
@@ -76,7 +76,7 @@ https://bbs.nextthing.co/t/spi-serial-communication-on-chip/11937/5
 	make
 	sudo  make install PREFIX=/usr
 	cd ..
-	git clone git://github.com/xtacocorex/CHIP_IO.git
+	git clone https://github.com/xtacocorex/CHIP_IO.git
 	cd CHIP_IO
 	sudo python setup.py install
 	cd ..
