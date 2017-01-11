@@ -56,6 +56,11 @@ http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keybo
 
 # do the bluetoothctl setup as usual
 
+	git clone https://github.com/doceme/py-spidev
+	cd ./py-spidev
+	sudo python setup.py install
+	cd ..
+
 Did you try do install the device tree overlay in /etc/rc.local? It is in /lib/firmware !
 https://bbs.nextthing.co/t/spi-serial-communication-on-chip/11937/5
 
