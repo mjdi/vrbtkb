@@ -5,10 +5,10 @@
 # Adapted from www.linuxuser.co.uk/tutorials/emulate-a-bluetooth-keyboard-with-the-raspberry-pi
 #
 
-#import RPi.GPIO as GPIO  #to use the GPIO pins
+# import RPi.GPIO as GPIO  #to use the GPIO pins # used for RPi
 import CHIP_IO.GPIO as GPIO		# https://github.com/xtacocorex/CHIP_IO for documentation
-import CHIP_IO.OverlayManager as OM 	# https://github.com/xtacocorex/CHIP_IO
-OM.load("SPI2")
+# import CHIP_IO.OverlayManager as OM 	# https://github.com/xtacocorex/CHIP_IO, not necessary with /etc/rc.local nano edit
+# OM.load("SPI2")
 import spidev   #to use joystick
 import subprocess # used to grep spi device Bus and Device integer values
 import dbus
