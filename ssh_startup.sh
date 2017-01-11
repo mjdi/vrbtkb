@@ -4,7 +4,7 @@ sudo /etc/init.d/bluetooth stop; sudo /usr/sbin/bluetoothd --nodetach --debug -p
 
 sleep 5
 
-sudo hciconfig hcio; sudo hciconfig hcio up; sudo hciconfig hcio lm master' &
+sudo hciconfig hcio; sudo hciconfig hcio up; sudo hciconfig hcio lm master &
 
 sleep 5
 
