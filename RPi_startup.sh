@@ -8,6 +8,6 @@ xterm -hold -e 'sudo hciconfig hcio; sudo hciconfig hcio up; sudo hciconfig hcio
 
 sleep 5
 
-xterm -hold -e 'sudo python /home/pi/vrbtkb/server/btk_server.py' &
+xterm -hold -e 'sudo python /home/pi/vrbtkb/server/RPi_btk_server.py' &
 
-# btk_server.py will automatically run /home/chip/vrbtkb/vrkeyboard/vr_kb_client.py if it accepts a connection
+# RPi_btk_server.py will automatically run /home/pi/vrbtkb/vrkeyboard/RPI_kb_client.py if it accepts a connection
