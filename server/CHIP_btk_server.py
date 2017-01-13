@@ -5,6 +5,7 @@
 # Adapted from 
 # www.linuxuser.co.uk/tutorials/emulate-bluetooth-keyboard-with-the-raspberry-pi
 #
+# Following http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html
 #
 
 #from __future__ import absolute_import, print_function, unicode_literals
@@ -177,7 +178,7 @@ class BTKbDevice():
         print ("Got a connection on the interrupt channel from " + cinfo[0])
 
 	# ==== Iniiate vr_kb_client.py server as soon as connection is made, (not before), but only when headless is working! ==== #
-	os.system("sudo python ./vrbtkb/vrkeyboard/vr_kb_client.py &")
+	os.system("sudo python ./vrbtkb/vrkeyboard/CHIP_kb_client.py &")
 
     #send a string to the bluetooth host machine
     def send_string(self,message):
