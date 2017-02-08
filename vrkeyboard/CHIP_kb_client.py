@@ -580,13 +580,16 @@ class VR_Keyboard():
 		self.hand = "left"
 
 		# Initialize last variables
+		
+                self.btns_pressed = [0 0 0 0 0] # zero-based but pertains to buttons 1 through 5
+		self.reset_btns_pressed()
+                self.last_btn_pressed = 0
+
 
 		# Think about using a coniditional to check for in-valid index at start-up
 		self.last_btn_idx = -1
 		self.last_dir_idx = -1
 		self.last_arr_idx = 4 # default to lowercase letters
-
-		self.btn_queue = [-1 -1 -1 -1] # USE THIS TO ACT JUST LIKE PRESSED KEYS in java code...
 
 		self.reset_joystick_path()
 
@@ -599,6 +602,15 @@ class VR_Keyboard():
 
 		# end of __init__
 
+	# assume all buttons are not initially pressed	
+		
+	def reset_btns_pressed(self):
+		self.btns_pressed[0] = 0
+		self.btns_pressed[1] = 0
+		self.btns_pressed[3] = 0
+		self.btns_pressed[4] = 0
+		self.btns_pressed[5] = 0
+		
 	# set all path booleans to zero
 	def reset_joystick_path(self):
 		self.D2N = 0 # deadzone to north
@@ -821,24 +833,29 @@ if __name__ == "__main__":
                 btn5 = GPIO.input(kb.btn5_pin)
 		if btn5 == 1:
 			btn_idx = 0
+			kb.btns_pressed[4] = 1
 
 		btn4 = GPIO.input(kb.btn4_pin)
 		if btn4 == 1:
 			btn_idx = 1
+			kb.btns_pressed[3] = 1
 
 		btn3 = GPIO.input(kb.btn3_pin)
 		if btn3 == 1:
 			btn_idx = 2
+			kb.btns_pressed[2] = 1
 
 		btn2 = GPIO.input(kb.btn2_pin)
 		if btn2 == 1:
 			btn_idx = 3
+			kb.btns_pressed[1] = 1
 
 		# read z-click on the analog stick
 		# off = ~1024 , on = 0
 		btn1 = ReadChannel(0)
 		if btn1 == 0:
 			btn_idx = 4
+			kb.btns_pressed[0] = 1
 		else :
 			#print "depress" ,
 			kb.depressed_analog_shift_modifier = 1 # records that we've depressed the analog click, necessary for Analog Click Shift Modifier to function
@@ -857,87 +874,105 @@ if __name__ == "__main__":
  		# print "\tdepressed_analog_shift_modifier = " + str(kb.depressed_analog_shift_modifier) , 
 
  		# print "\tkb.LS = " + str(kb.LS) + "\tkb.LS_lock = " + str(kb.LS_lock) ,
+		
+		if (kb.btns_pressed[0] + kb.btns_pressed[1] + kb.btns_pressed[2] + kb.btns_pressed[3] + kb.btns_pressed[4]) > 0 : # if button is pressed, show prospective cursor
 
-		# ====================================================================
-		# get HID code and perform keyboard function with necessary modifiers
-		# ====================================================================
+			# ====================================================================
+			# get HID code and perform keyboard function with necessary modifiers
+			# ====================================================================
 
-		if (dir_idx > -1 and btn_idx > -1) or not char_str == "" : # if direction and button properly identified, or whitespace char_str has been assigned
+			if (dir_idx > -1 and btn_idx > -1) or not char_str == "" : # if direction and button properly identified, or whitespace char_str has been assigned
 
-			# Mechanism for changing character sets, using analog click (joyclick) + cardinal direction to change to new set (N=numsp,E=arrow,S=alpha,W=shift)
+				# Mechanism for changing character sets, using analog click (joyclick) + cardinal direction to change to new set (N=numsp,E=arrow,S=alpha,W=shift)
 
-			if (btn_idx == 4 or btn_idx == 5) : # Left or Right Analog clicks respectively
-				if not dir_idx == 0 : # if non-deadzone analog-click (i.e. with a direction)
-					kb.last_arr_idx = dir_idx
+				if (btn_idx == 4 or btn_idx == 5) : # Left or Right Analog clicks respectively
+					if not dir_idx == 0 : # if non-deadzone analog-click (i.e. with a direction)
+						kb.last_arr_idx = dir_idx
 
-					kb.reset_joystick_path()  # reset joystick path so we prevent white-space flicks when joystick resets to neutral
-					kb.reset_modifiers() 	  # reset modifiers when you type a character (this will prevent ctrl and shift from being held though)
-					kb.reset_modifier_locks() # always reset modifier_locks when switching directions
+						kb.reset_joystick_path()  # reset joystick path so we prevent white-space flicks when joystick resets to neutral
+						kb.reset_modifiers() 	  # reset modifiers when you type a character (this will prevent ctrl and shift from being held though)
+						kb.reset_modifier_locks() # always reset modifier_locks when switching directions
 
-					hid = -1 # prevent typing
-
-				else :	# if deadzone, so therefore directionless analog-click
-					if not kb.last_arr_idx == 1 : # allows arrow and alpha sets to use Shift on the fly via Stick Keys, ignore 5 & 6
-						if kb.depressed_analog_shift_modifier == 1:
-
-							# 3-state toggle conditional logic
-
-							if   kb.LS == 0 :
-								kb.LS = 1 # turn left shift modifier on (for one character/function)
-							elif kb.LS == 1 and kb.LS_lock == 1 :
-								kb.LS = 0 # turn both left shift off 
-								kb.LS_lock = 0  # and left shift modifier lock off 
-							elif kb.LS == 1 :
-								kb.LS_lock = 1 # turn left shift modifier lock on (for endless characters/functions)
-							print "in loop"
-
-							kb.depressed_analog_shift_modifier = -1 # don't allow more toggling until analog-click is depressed, then re-pressed
-						
 						hid = -1 # prevent typing
 
-			mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
+					else :	# if deadzone, so therefore directionless analog-click
+						if not kb.last_arr_idx == 1 : # allows arrow and alpha sets to use Shift on the fly via Stick Keys, ignore 5 & 6
+							if kb.depressed_analog_shift_modifier == 1:
 
-			# DEBUGGING Shift toggle via Analog Click (not for numbers, where analog click becomes 5 or 6)
-			# print "\tmod_bit_str" + mod_bit_str ,
-			
-			if not hid == -1 :
-				arr_idx = kb.last_arr_idx # Get array index for determining which set of character we are currently typing
-	
-				if char_str == "" : # if no white-space flick char_str assigned
-					if   arr_idx == 1 :
-						char_str = get_numspecial_char_str(kb.hand, btn_idx, dir_idx) 
-					elif arr_idx == 2 :
-						kb.hand = "right"
-						char_str = get_alpha_char_str(kb.hand, btn_idx, dir_idx) 
-						#char_str = get_arrow_char_str(btn_idx, dir_idx) 
-					elif arr_idx == 3 :
-						char_str = get_arrow_char_str(btn_idx, dir_idx)
-						#char_str = get_alpha_char_str(btn_idx, dir_idx) 
-					elif arr_idx == 4 :
-						kb.hand = "left"
-						char_str = get_alpha_char_str(kb.hand,btn_idx, dir_idx) 
-						#char_str = get_caps_char_str(btn_idx, dir_idx)
+								# 3-state toggle conditional logic
 
-				if get_Shift_Required(char_str) == 1 :
-					kb.LS = 1 # turn left shift modifier on
-	
-				hid = get_HID(char_str)
+								if   kb.LS == 0 :
+									kb.LS = 1 # turn left shift modifier on (for one character/function)
+								elif kb.LS == 1 and kb.LS_lock == 1 :
+									kb.LS = 0 # turn both left shift off 
+									kb.LS_lock = 0  # and left shift modifier lock off 
+								elif kb.LS == 1 :
+									kb.LS_lock = 1 # turn left shift modifier lock on (for endless characters/functions)
+								print "in loop"
+
+								kb.depressed_analog_shift_modifier = -1 # don't allow more toggling until analog-click is depressed, then re-pressed
+
+							hid = -1 # prevent typing
 
 				mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
-	
-				# DEBUGGING final character set index (arr_idx), 2-character long key string, hid code, & modifier bit string 
-				# print "\tarr_idx =" + str(arr_idx) + "\tchar_str = " + char_str + "\tHID = " + str(hid) + "\tmod_bit_str" + mod_bit_str ,
-		
-				kb.iface.send_keys( int(mod_bit_str,2), [hid,0,0,0,0,0] )
 
-				kb.reset_joystick_path() # reset joystick path so we prevent white-space flicks when joystick resets to neutral
-				kb.reset_modifiers() # reset modifiers when you type a character (this will prevent ctrl and shift from being held though)
-		else:
-			mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
+				# DEBUGGING Shift toggle via Analog Click (not for numbers, where analog click becomes 5 or 6)
+				# print "\tmod_bit_str" + mod_bit_str ,
+
+				if not hid == -1 :
+					arr_idx = kb.last_arr_idx # Get array index for determining which set of character we are currently typing
+
+					if char_str == "" : # if no white-space flick char_str assigned
+						if   arr_idx == 1 :
+							char_str = get_numspecial_char_str(kb.hand, btn_idx, dir_idx) 
+						elif arr_idx == 2 :
+							kb.hand = "right"
+							char_str = get_alpha_char_str(kb.hand, btn_idx, dir_idx) 
+							#char_str = get_arrow_char_str(btn_idx, dir_idx) 
+						elif arr_idx == 3 :
+							char_str = get_arrow_char_str(btn_idx, dir_idx)
+							#char_str = get_alpha_char_str(btn_idx, dir_idx) 
+						elif arr_idx == 4 :
+							kb.hand = "left"
+							char_str = get_alpha_char_str(kb.hand,btn_idx, dir_idx) 
+							#char_str = get_caps_char_str(btn_idx, dir_idx)
+
+					if get_Shift_Required(char_str) == 1 :
+						kb.LS = 1 # turn left shift modifier on
+
+					kb.last_hid = get_HID(char_str)
+
+					kb.last_mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
+
+					# DEBUGGING final character set index (arr_idx), 2-character long key string, hid code, & modifier bit string 
+					# print "\tarr_idx =" + str(arr_idx) + "\tchar_str = " + char_str + "\tHID = " + str(hid) + "\tmod_bit_str" + mod_bit_str ,
+
+# ======================= CURSOR CHARACTER FUNCTIONALITY ====================================#					
+					
+					kb.iface.send_keys( int(kb.last_mod_bit_str,2), [kb.last_hid,0,0,0,0,0] ) # display char_cursor
+					print "display char_cursor" ,
+					kb.iface.send_keys( int("00000000",2), [42,0,0,0,0,0] ) # backspace char_cursor
+					print "backspace char_cursor",
+		
+					kb.reset_joystick_path() # reset joystick path so we prevent white-space flicks when joystick resets to neutral
+					#kb.reset_modifiers() # reset modifiers when you type a character (this will prevent ctrl and shift from being held though)
+			else:
+				kb.last_mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
+
+				kb.iface.send_keys( int(kb.last_mod_bit_str,2), [0,0,0,0,0,0] ) # send only any locked modifiers (for alt-tab, etc.)
+		
+		elif kb.last_hid != -1 :	
+                        kb.iface.send_keys( int(kb.last_mod_bit_str,2), [kb.last_hid,0,0,0,0,0] )
+                        print "typed char_cursor" ,
+			kb.reset_btns_pressed()
 			
-			kb.iface.send_keys(int(mod_bit_str,2),[0,0,0,0,0,0]) # send only any locked modifiers (for alt-tab, etc.)
+			kb.last_mod_bit_str = "00000000"
+			kb.last_hid = -1 # must display another char_cursor before we can type again
+
+                        kb.reset_joystick_path() # reset joystick path so we prevent white-space flicks when joystick resets to neutral
+                        kb.reset_modifiers() # reset modifiers when you type a character (this will prevent ctrl and shift from being held though)
 
 		kb.last_btn_idx = btn_idx
 		kb.last_dir_idx = dir_idx
 
-		#print "\n" ,
+		print "\n" ,
