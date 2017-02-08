@@ -581,9 +581,13 @@ class VR_Keyboard():
 
 		# Initialize last variables
 		
-                self.btns_pressed = [0, 0, 0, 0, 0] # zero-based but pertains to buttons 1 through 5
+                self.btns_pressed = [0,0,0,0,0] # zero-based but pertains to buttons 1 through 5
 		self.reset_btns_pressed()
-                self.last_btn_pressed = 0
+		
+                self.last_btn_pressed = 0 # TO BE USED WITH CASCADING TYPING
+		
+		self.last_mod_bit_str = "00000000"
+		self.last_hid = -1
 
 
 		# Think about using a coniditional to check for in-valid index at start-up
@@ -607,9 +611,9 @@ class VR_Keyboard():
 	def reset_btns_pressed(self):
 		self.btns_pressed[0] = 0
 		self.btns_pressed[1] = 0
+		self.btns_pressed[2] = 0
 		self.btns_pressed[3] = 0
 		self.btns_pressed[4] = 0
-		self.btns_pressed[5] = 0
 		
 	# set all path booleans to zero
 	def reset_joystick_path(self):
@@ -950,7 +954,8 @@ if __name__ == "__main__":
 # ======================= CURSOR CHARACTER FUNCTIONALITY ====================================#					
 					
 					kb.iface.send_keys( int(kb.last_mod_bit_str,2), [kb.last_hid,0,0,0,0,0] ) # display char_cursor
-					print "display char_cursor" ,
+					print "display char_cursor and sleep 1/2 a second" ,
+					time.sleep(0.5)
 					kb.iface.send_keys( int("00000000",2), [42,0,0,0,0,0] ) # backspace char_cursor
 					print "backspace char_cursor",
 		
