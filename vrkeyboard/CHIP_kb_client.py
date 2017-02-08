@@ -986,6 +986,9 @@ if __name__ == "__main__":
                         kb.reset_joystick_path() # reset joystick path so we prevent white-space flicks when joystick resets to neutral
                         kb.reset_modifiers() # reset modifiers when you type a character (this will prevent ctrl and shift from being held though)
 
+		else :
+			kb.iface.send_keys( int(kb.last_mod_bit_str,2), [0,0,0,0,0,0] ) # send only any locked modifiers (for alt-tab, etc.)
+		
 		kb.last_btn_idx = btn_idx
 		kb.last_dir_idx = dir_idx
 
