@@ -22,7 +22,9 @@ import time
 import bluetooth
 from bluetooth import *
 
+# imports added for vrbtkb
 import subprocess
+hand = str(sys.argv[1]) # accept the handedness as an C.L. argument, sys.argv[0] is the name of the python script itself
 
 import gtk
 from dbus.mainloop.glib import DBusGMainLoop
@@ -73,16 +75,15 @@ class BTKbBluezProfile(dbus.service.Object):
 #create a bluetooth device to emulate a HID keyboard, 
 # advertize a SDP record using our bluez profile class
 #
-class BTKbDevice():
-    #change these constants 
+class BTKbDevice(): 
     MY_ADDRESS = subprocess.check_output("hciconfig | grep 'BD' | grep -oP '..:..:..:..:..:..'", shell=True)
 
+    device = subprocess.check_output("ls /home/",shell=True).rstrip()
+	
     if subprocess.check_output("hostname -I", shell=True).rstrip() == "" :
-	#MY_DEV_NAME = "RPi1_LH_wlan_not_connected"
-	MY_DEV_NAME = "CHIP1_LH_wlan_not_connected"
+	MY_DEV_NAME = device + "_" + hand + "_hand_wlan_not_connected"
     else :
-    	#MY_DEV_NAME = "RPi_LH_" + subprocess.check_output("hostname -I", shell=True).rstrip()
-	MY_DEV_NAME = "CHIP1_LH_" + subprocess.check_output("hostname -I", shell=True).rstrip()
+    	MY_DEV_NAME = device + "_" + hand + "_hand_" + subprocess.check_output("hostname -I", shell=True).rstrip()
 	
     #define some constants
     P_CTRL =17  #Service port - must match port configured in SDP record
@@ -177,8 +178,8 @@ class BTKbDevice():
         self.cinterrupt, cinfo = self.sinterrupt.accept()
         print ("Got a connection on the interrupt channel from " + cinfo[0])
 
-	# ==== Iniiate vr_kb_client.py server as soon as connection is made, (not before), but only when headless is working! ==== #
-	os.system("sudo python ./vrbtkb/vrkeyboard/CHIP_kb_client.py &")
+	# ==== Initiate kb_client.py as soon as connection is made! ==== #
+	os.system("sudo python ~/vrbtkb/vrkeyboard/kb_client.py " + hand + " &")
 
     #send a string to the bluetooth host machine
     def send_string(self,message):
@@ -235,4 +236,5 @@ if __name__ == "__main__":
     DBusGMainLoop(set_as_default=True)
     myservice = BTKbService();
     gtk.main()
-
+	
+	
