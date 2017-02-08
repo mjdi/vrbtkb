@@ -581,7 +581,7 @@ class VR_Keyboard():
 
 		# Initialize last variables
 		
-                self.btns_pressed = [0 0 0 0 0] # zero-based but pertains to buttons 1 through 5
+                self.btns_pressed = [0, 0, 0, 0, 0] # zero-based but pertains to buttons 1 through 5
 		self.reset_btns_pressed()
                 self.last_btn_pressed = 0
 
