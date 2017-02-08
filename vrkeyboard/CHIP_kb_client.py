@@ -838,29 +838,38 @@ if __name__ == "__main__":
 		if btn5 == 1:
 			btn_idx = 0
 			kb.btns_pressed[4] = 1
+		else:
+			kb.btns_pressed[4] = 0
 
 		btn4 = GPIO.input(kb.btn4_pin)
 		if btn4 == 1:
 			btn_idx = 1
 			kb.btns_pressed[3] = 1
+		else:
+			kb.btns_pressed[3] = 0
 
 		btn3 = GPIO.input(kb.btn3_pin)
 		if btn3 == 1:
 			btn_idx = 2
 			kb.btns_pressed[2] = 1
-
+		else:
+			kb.btns_pressed[2] = 0
+			
 		btn2 = GPIO.input(kb.btn2_pin)
 		if btn2 == 1:
 			btn_idx = 3
 			kb.btns_pressed[1] = 1
-
+		else:
+			kb.btns_pressed[1] = 0
+			
 		# read z-click on the analog stick
 		# off = ~1024 , on = 0
 		btn1 = ReadChannel(0)
 		if btn1 == 0:
 			btn_idx = 4
 			kb.btns_pressed[0] = 1
-		else :
+		else:
+			kb.btns_pressed[0] = 0
 			#print "depress" ,
 			kb.depressed_analog_shift_modifier = 1 # records that we've depressed the analog click, necessary for Analog Click Shift Modifier to function
 
