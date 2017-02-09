@@ -4,6 +4,7 @@
 #
 # Adapted from www.linuxuser.co.uk/tutorials/emulate-a-bluetooth-keyboard-with-the-raspberry-pi
 #
+# also adapted from
 
 # import RPi.GPIO as GPIO  #to use the GPIO pins, was used for RPi not CHIP
 import CHIP_IO.GPIO as GPIO		# https://github.com/xtacocorex/CHIP_IO for documentation
@@ -876,11 +877,11 @@ if __name__ == "__main__":
 		# DEBUGGING Button/Direction recognition
 		# print "btn5 = " + str(btn5) + "\tbtn4 = " + str(btn4) + "\tbtn3 = " + str(btn3) + "\tbtn2 = " + str(btn2) + "\tbtn1 = " + str(btn1) + "\tLHdirection =" + LH_direction , 
 
-		mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
+		# mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
 
 		# print "\tmod_bit_str=" + mod_bit_str ,
 
-		mod_lock_bit_str = str(kb.LM_lock) + str(kb.LA_lock) + str(kb.LS_lock) + str(kb.LC_lock) + str(kb.RM_lock) + str(kb.RA_lock) + str(kb.RS_lock) + str(kb.RC_lock)
+		# mod_lock_bit_str = str(kb.LM_lock) + str(kb.LA_lock) + str(kb.LS_lock) + str(kb.LC_lock) + str(kb.RM_lock) + str(kb.RA_lock) + str(kb.RS_lock) + str(kb.RC_lock)
 
 		# print "\tmod_lock_bit_str=" + mod_lock_bit_str ,
 
@@ -921,7 +922,7 @@ if __name__ == "__main__":
 									kb.LS_lock = 0  # and left shift modifier lock off 
 								elif kb.LS == 1 :
 									kb.LS_lock = 1 # turn left shift modifier lock on (for endless characters/functions)
-								print "in loop"
+								# print "in loop"
 
 								kb.depressed_analog_shift_modifier = -1 # don't allow more toggling until analog-click is depressed, then re-pressed
 
@@ -963,8 +964,6 @@ if __name__ == "__main__":
 # ======================= CURSOR CHARACTER FUNCTIONALITY ====================================#					
 					
 					kb.iface.send_keys( int(kb.last_mod_bit_str,2), [kb.last_hid,0,0,0,0,0] ) # display char_cursor
-					print "display char_cursor and sleep 1/2 a second" ,
-					time.sleep(0.5)
 					kb.iface.send_keys( int("00000000",2), [42,0,0,0,0,0] ) # backspace char_cursor
 					print "backspace char_cursor",
 		
