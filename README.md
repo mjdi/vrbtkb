@@ -107,17 +107,13 @@ confirm that spidev exists with
 	
 	ls /dev/spidev*
 
-Use crontab to allow for headless operation (run "man 5 crontab" to learn more about it)
+Use systemwide crontab to allow for headless operation"
 
-	crontab -e
-
-	SHELL=/bin/bash
-		
-	MAILTO=""
+	sudo nano /etc/crontab
 	
-	PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+add the following line to the file and use Ctrl-O to save the edit
 
-	@reboot root bash /home/chip/vrbtkb/startup.sh
+	@reboot        chip     sleep 7; echo "chip" | sudo bash /home/chip/vrbtkb/startup.sh 
 
 NOW REBOOT!
 
