@@ -290,13 +290,13 @@ def get_capsalpha_char_str(btn_idx, dir_idx):
 
 def get_char_str(arr_idx, btn_idx, dir_idx):
     if   arr_idx == 1 :
-	return get_numspecial_char_str(btn_idx, dir_idx):
+	return get_numspecial_char_str(btn_idx, dir_idx)
     elif arr_idx == 2 :
-	return get_arrowfunc_char_str(btn_idx, dir_idx):
+	return get_arrowfunc_char_str(btn_idx, dir_idx)
     elif arr_idx == 3 :
-	return get_loweralpha_char_str(btn_idx, dir_idx):
+	return get_loweralpha_char_str(btn_idx, dir_idx)
     elif arr_idx == 4 :
-	return get_capsalpha_char_str(btn_idx, dir_idx):
+	return get_capsalpha_char_str(btn_idx, dir_idx)
 	
 def get_HID(char_str):
     return char_str_2_HID_code_and_shift_mod_required[char_str]["hid"]
