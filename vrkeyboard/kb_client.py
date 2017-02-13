@@ -4,305 +4,157 @@
 #
 # Adapted from www.linuxuser.co.uk/tutorials/emulate-a-bluetooth-keyboard-with-the-raspberry-pi
 #
-# also adapted from
+# also adapted from http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html
+import sys
+hand = str(sys.argv[1]) # accept the handedness as an C.L. argument, sys.argv[0] is the name of the python script itself
 
-# import RPi.GPIO as GPIO  #to use the GPIO pins, was used for RPi not CHIP
-import CHIP_IO.GPIO as GPIO		# https://github.com/xtacocorex/CHIP_IO for documentation
+import subprocess # also used to grep spi device Bus and Device integer values
+device = subprocess.check_output("ls /home/",shell=True).rstrip()
+
+if device == "pi" :
+	import RPi.GPIO as GPIO  #to use the GPIO pins, was used for RPi not CHIP
+elif device == "chip" :
+	import CHIP_IO.GPIO as GPIO		# https://github.com/xtacocorex/CHIP_IO for documentation
 # import CHIP_IO.OverlayManager as OM 	# https://github.com/xtacocorex/CHIP_IO, not necessary now with /etc/rc.local nano edit
 # OM.load("SPI2")
 import spidev   #to use joystick
-import subprocess # used to grep spi device Bus and Device integer values
 import dbus
 import dbus.service
 import dbus.mainloop.glib
 import time
 import os
-#import vr_keytable_left_and_right
 import numpy as np
 
-char_str_2_HID_code = {		
-	"Ee" : 41, 	# Escape			
-	"1_" : 30,
-	"!_" : 30, 	# requires Shift Modkey			
-	"2_" : 31,
-	"@_" : 31, 	# requires Shift Modkey	
-	"3_" : 32,
-	"#_" : 32, 	# requires Shift Modkey			
-	"4_" : 33,
-	"$_" : 33, 	# requires Shift Modkey
-	"5_" : 34,
-	"%_" : 34, 	# requires Shift Modkey
-	"6_" : 35,
-	"^_" : 35, 	# requires Shift Modkey
-	"7_" : 36,
-	"&_" : 36, 	# requires Shift Modkey
-	"8_" : 37,
-	"*_" : 37, 	# requires Shift Modkey
-	"9_" : 38,
-	"(_" : 38, 	# requires Shift Modkey
-	"0_" : 39,
-	")_" : 39, 	# requires Shift Modkey			
-	"-_" : 45, 
-	"__" : 45, 	# requires Shift Modkey
-	"=_" : 46,
-	"+_" : 46,	# requires Shift Modkey
-	"Be" : 42,	# Backspace
-	"Tb" : 43,	# Tab
-	"UT" : 43,	# Un-Tab, requires Shift Modkey
-	"q_" : 20,
-	"Q_" : 20,	# requires Shift Modkey
-	"w_" : 26,	
-	"W_" : 26,	# requires Shift Modkey
-	"e_" : 8,
-	"E_" : 8,	# requires Shift Modkey
-	"r_" : 21,
-	"R_" : 21,	# requires Shift Modkey
-	"t_" : 23,
-	"T_" : 23,	# requires Shift Modkey
-	"y_" : 28,
-	"Y_" : 28,	# requires Shift Modkey
-	"u_" : 24,
-	"U_" : 24,	# requires Shift Modkey
-	"i_" : 12,
-	"I_" : 12,	# requires Shift Modkey
-	"o_" : 18,
-	"O_" : 18,	# requires Shift Modkey
-	"p_" : 19,
-	"P_" : 19,	# requires Shift Modkey
-	"[_" : 47,
-	"{_" : 47,	# requires Shift Modkey
-	"]_" : 48,
-	"}_" : 48,	# requires Shift Modkey
-	"Er" : 40,	# Enter/Return
+char_str_2_HID_code_and_shift_mod_required = {		
+	"Ee" : { "hid" : 41 , "shift" : 0 }, 	# Escape			
+	"1_" : { "hid" : 30 , "shift" : 0 },
+	"!_" : { "hid" : 30 , "shift" : 1 },		
+	"2_" : { "hid" : 31 , "shift" : 0 },
+	"@_" : { "hid" : 31 , "shift" : 1 },
+	"3_" : { "hid" : 32 , "shift" : 0 },
+	"#_" : { "hid" : 32 , "shift" : 1 },		
+	"4_" : { "hid" : 33 , "shift" : 0 },
+	"$_" : { "hid" : 33 , "shift" : 1 },
+	"5_" : { "hid" : 34 , "shift" : 0 },
+	"%_" : { "hid" : 34 , "shift" : 1 },
+	"6_" : { "hid" : 35 , "shift" : 0 },
+	"^_" : { "hid" : 35 , "shift" : 1 },
+	"7_" : { "hid" : 36 , "shift" : 0 },
+	"&_" : { "hid" : 36 , "shift" : 1 },
+	"8_" : { "hid" : 37 , "shift" : 0 },
+	"*_" : { "hid" : 37 , "shift" : 1 },
+	"9_" : { "hid" : 38 , "shift" : 0 },
+	"(_" : { "hid" : 38 , "shift" : 1 },
+	"0_" : { "hid" : 39 , "shift" : 0 },
+	")_" : { "hid" : 39 , "shift" : 1 },		
+	"-_" : { "hid" : 45 , "shift" : 0 },
+	"__" : { "hid" : 45 , "shift" : 1 },
+	"=_" : { "hid" : 46 , "shift" : 0 },
+	"+_" : { "hid" : 46 , "shift" : 1 },
+	"Be" : { "hid" : 42 , "shift" : 0 },	# Backspace
+	"Tb" : { "hid" : 43 , "shift" : 0 },	# Tab
+	"UT" : { "hid" : 43 , "shift" : 1 },	# Un-Tab
+	"q_" : { "hid" : 20 , "shift" : 0 },
+	"Q_" : { "hid" : 20 , "shift" : 1 },
+	"w_" : { "hid" : 26 , "shift" : 0 },	
+	"W_" : { "hid" : 26 , "shift" : 1 },
+	"e_" : { "hid" : 8  , "shift" : 0 },
+	"E_" : { "hid" : 8  , "shift" : 1 },
+	"r_" : { "hid" : 21 , "shift" : 0 },
+	"R_" : { "hid" : 21 , "shift" : 1 },
+	"t_" : { "hid" : 23 , "shift" : 0 },
+	"T_" : { "hid" : 23 , "shift" : 1 },
+	"y_" : { "hid" : 28 , "shift" : 0 },
+	"Y_" : { "hid" : 28 , "shift" : 1 },
+	"u_" : { "hid" : 24 , "shift" : 0 },
+	"U_" : { "hid" : 24 , "shift" : 1 },
+	"i_" : { "hid" : 12 , "shift" : 0 },
+	"I_" : { "hid" : 12 , "shift" : 1 },
+	"o_" : { "hid" : 18 , "shift" : 0 },
+	"O_" : { "hid" : 18 , "shift" : 1 },
+	"p_" : { "hid" : 19 , "shift" : 0 },
+	"P_" : { "hid" : 19 , "shift" : 1 },
+	"[_" : { "hid" : 47 , "shift" : 0 },
+	"{_" : { "hid" : 47 , "shift" : 1 },
+	"]_" : { "hid" : 48 , "shift" : 0 },
+	"}_" : { "hid" : 48 , "shift" : 1 },
+	"Er" : { "hid" : 40 , "shift" : 0 },	# Enter/Return
 	#"KEY_LEFTCONTROL" : 224,	# Left Control, ================== Control ============
-	"a_" : 4,
-	"A_" : 4,	# requires Shift Modkey
-	"s_" : 22,
-	"S_" : 22,	# requires Shift Modkey
-	"d_" : 7,
-	"D_" : 7,	# requires Shift Modkey
-	"f_" : 9,
-	"F_" : 9,	# requires Shift Modkey
-	"g_" : 10,
-	"G_" : 10,	# requires Shift Modkey
-	"h_" : 11,
-	"H_" : 11,	# requires Shift Modkey
-	"j_" : 13,
-	"J_" : 13,	# requires Shift Modkey
-	"k_" : 14,
-	"K_" : 14,	# requires Shift Modkey
-	"l_" : 15,
-	"L_" : 15,	# requires Shift Modkey
-	";_" : 51,
-	":_" : 51,	# requires Shift Modkey
-	"'_" : 52,	# Apostrophe
-	"\"_" : 52,  	# Double quotes, requires Shift Modkey
-	"`_" : 53,	# Grave
-	"~_" : 53,	# requires Shift Modkey
+	"a_" : { "hid" : 4  , "shift" : 0 },
+	"A_" : { "hid" : 4  , "shift" : 1 },
+	"s_" : { "hid" : 22 , "shift" : 0 },
+	"S_" : { "hid" : 22 , "shift" : 1 },
+	"d_" : { "hid" : 7  , "shift" : 0 },
+	"D_" : { "hid" : 7  , "shift" : 1 },
+	"f_" : { "hid" : 9  , "shift" : 0 },
+	"F_" : { "hid" : 9  , "shift" : 1 },
+	"g_" : { "hid" : 10 , "shift" : 0 },
+	"G_" : { "hid" : 10 , "shift" : 1 },
+	"h_" : { "hid" : 11 , "shift" : 0 },
+	"H_" : { "hid" : 11 , "shift" : 1 },
+	"j_" : { "hid" : 13 , "shift" : 0 },
+	"J_" : { "hid" : 13 , "shift" : 1 },
+	"k_" : { "hid" : 14 , "shift" : 0 },
+	"K_" : { "hid" : 14 , "shift" : 1 },
+	"l_" : { "hid" : 15 , "shift" : 0 },
+	"L_" : { "hid" : 15 , "shift" : 1 },
+	";_" : { "hid" : 51 , "shift" : 0 },
+	":_" : { "hid" : 51 , "shift" : 1 },
+	"'_" : { "hid" : 52 , "shift" : 0 },	# Apostrophe
+	"\"_" :{ "hid" : 52 , "shift" : 1 },
+	"`_" : { "hid" : 53 , "shift" : 0 },	# Grave
+	"~_" : { "hid" : 53 , "shift" : 1 },
 	#"KEY_LEFTSHIFT" : 225,	# No Shift key, using Joystick set ============= SHIFT ==========  
-	"\\_" : 50,	# Backslash	
-	"|_" : 50, 	# Vertical Bar, requires Shift Modkey
-	"z_" : 29,
-	"Z_" : 29,	# requires Shift Modkey
-	"x_" : 27,
-	"X_" : 27,	# requires Shift Modkey
-	"c_" : 6,
-	"C_" : 6,	# requires Shift Modkey
-	"v_" : 25,
-	"V_" : 25,	# requires Shift Modkey
-	"b_" : 5,
-	"B_" : 5,	# requires Shift Modkey
-	"n_" : 17,
-	"N_" : 17,	# requires Shift Modkey
-	"m_" : 16,
-	"M_" : 16,	# requires Shift Modkey
-	",_" : 54,
-	"<_" : 54,	# Less than, requires Shift Modkey
-	"._" : 55,
-	">_" : 55,	# requires Shift Modkey
-	"/_" : 56,
-	"?_" : 56, # requires Shift Modkey
+	"\\_" : { "hid" : 50 , "shift" : 0 },	# Backslash	
+	"|_" : { "hid" : 50 , "shift" : 1 },
+	"z_" : { "hid" : 29 , "shift" : 0 },
+	"Z_" : { "hid" : 29 , "shift" : 1 },
+	"x_" : { "hid" : 27 , "shift" : 0 },
+	"X_" : { "hid" : 27 , "shift" : 1 },
+	"c_" : { "hid" : 6  , "shift" : 0 },
+	"C_" : { "hid" : 6  , "shift" : 1 },
+	"v_" : { "hid" : 25 , "shift" : 0 },
+	"V_" : { "hid" : 25 , "shift" : 1 },
+	"b_" : { "hid" : 5  , "shift" : 0 },
+	"B_" : { "hid" : 5  , "shift" : 1 },
+	"n_" : { "hid" : 17 , "shift" : 0 },
+	"N_" : { "hid" : 17 , "shift" : 1 },
+	"m_" : { "hid" : 16 , "shift" : 0 },
+	"M_" : { "hid" : 16 , "shift" : 1 },
+	",_" : { "hid" : 54 , "shift" : 0 },
+	"<_" : { "hid" : 54 , "shift" : 1 },
+	"._" : { "hid" : 55 , "shift" : 0 },
+	">_" : { "hid" : 55 , "shift" : 1 },
+	"/_" : { "hid" : 56 , "shift" : 0 },
+	"?_" : { "hid" : 56 , "shift" : 1 },
 	#"KEY_RIGHTSHIFT" : 229,
 	# "AT" : 226,	# Left Alt, we really only need one Alt  # ===============ALT========
-	"Se" : 44,	# Space
+	"Se" : { "hid" : 44 , "shift" : 0 },	# Space
 	#"KEY_CAPSLOCK" : 57,	# Don't really need if we have a joystic-Shift set
-	"F1" : 58,
-	"F2" : 59,
-	"F3" : 60,
-	"F4" : 61,
-	"F5" : 62,
-	"F6" : 63,
-	"F7" : 64,
-	"F8" : 65,
-	"F9" : 66,
-	"10" : 67,	# F10
-	"11" : 68,	# F11
-	"12" : 69,	# F12
+	"F1" : { "hid" : 58 , "shift" : 0 },
+	"F2" : { "hid" : 59 , "shift" : 0 },
+	"F3" : { "hid" : 60 , "shift" : 0 },
+	"F4" : { "hid" : 61 , "shift" : 0 },
+	"F5" : { "hid" : 62 , "shift" : 0 },
+	"F6" : { "hid" : 63 , "shift" : 0 },
+	"F7" : { "hid" : 64 , "shift" : 0 },
+	"F8" : { "hid" : 65 , "shift" : 0 },
+	"F9" : { "hid" : 66 , "shift" : 0 },
+	"10" : { "hid" : 67 , "shift" : 0 },	# F10
+	"11" : { "hid" : 68 , "shift" : 0 },	# F11
+	"12" : { "hid" : 69 , "shift" : 0 },	# F12
 	#"KEY_RIGHTCTRL" : 228,
 	#"KEY_RIGHTALT" : 230,
-	"He" : 74,	# Home
-	"Up" : 82,	# Up
-	"PU" : 75,	# Page Up
-	"Lt" : 80,	# Left
-	"Rt" : 79,	# Right
-	"Ed" : 77,	# End
-	"Dn" : 81,	# Down
-	"PD" : 78,	# Page Down
-	"It" : 73,	# Insert
-	"De" : 76,	# Delete
-	# 
-	# Multi-Functional Keys
-	#
-	#"KEY_MUTE" : 239,
-	#"KEY_VOLUMEDOWN" : 238,
-	#"KEY_VOLUMEUP" : 237,
-	#"KEY_POWER" : 102,
-	#"KEY_PAUSE" : 72,
-	#"KEY_LEFTMETA" : 227,
-	#"KEY_RIGHTMETA" : 231,
-	#"KEY_STOP" : 243,
-	#"KEY_OPEN" : 116,
-	#"KEY_BACK" : 241,
-	#"KEY_FORWARD" : 242,
-	#"KEY_NEXTSONG" : 235,
-	#"KEY_PLAYPAUSE" : 232,
-	#"KEY_PREVIOUSSONG" : 234,
-	#"KEY_STOPCD" : 233,
-	#"KEY_REFRESH" : 250,
-	#"KEY_SCROLLUP" : 245,
-    	#"KEY_SCROLLDOWN" : 246,
-}
-
-char_str_requires_shift_mod = {		
-	"Ee" : 0, 	# Escape			
-	"1_" : 0,
-	"!_" : 1, 	# requires Shift Modkey			
-	"2_" : 0,
-	"@_" : 1, 	# requires Shift Modkey	
-	"3_" : 0,
-	"#_" : 1, 	# requires Shift Modkey			
-	"4_" : 0,
-	"$_" : 1, 	# requires Shift Modkey
-	"5_" : 0,
-	"%_" : 1, 	# requires Shift Modkey
-	"6_" : 0,
-	"^_" : 1, 	# requires Shift Modkey
-	"7_" : 0,
-	"&_" : 1, 	# requires Shift Modkey
-	"8_" : 0,
-	"*_" : 1, 	# requires Shift Modkey
-	"9_" : 0,
-	"(_" : 1, 	# requires Shift Modkey
-	"0_" : 0,
-	")_" : 1, 	# requires Shift Modkey			
-	"-_" : 0, 
-	"__" : 1, 	# requires Shift Modkey
-	"=_" : 0,
-	"+_" : 1,	# requires Shift Modkey
-	"Be" : 0,	# Backspace
-	"Tb" : 0,	# Tab
-	"UT" : 1,	# Un-Tab, requires Shift Modkey
-	"q_" : 0,
-	"Q_" : 1,	# requires Shift Modkey
-	"w_" : 0,	
-	"W_" : 1,	# requires Shift Modkey
-	"e_" : 0,
-	"E_" : 1,	# requires Shift Modkey
-	"r_" : 0,
-	"R_" : 1,	# requires Shift Modkey
-	"t_" : 0,
-	"T_" : 1,	# requires Shift Modkey
-	"y_" : 0,
-	"Y_" : 1,	# requires Shift Modkey
-	"u_" : 0,
-	"U_" : 1,	# requires Shift Modkey
-	"i_" : 0,
-	"I_" : 1,	# requires Shift Modkey
-	"o_" : 0,
-	"O_" : 1,	# requires Shift Modkey
-	"p_" : 0,
-	"P_" : 1,	# requires Shift Modkey
-	"[_" : 0,
-	"{_" : 1,	# requires Shift Modkey
-	"]_" : 0,
-	"}_" : 1,	# requires Shift Modkey
-	"Er" : 0,	# Enter/Return
-	#"KEY_LEFTCONTROL" : 224,	# Left Control, ================== Control ============
-	"a_" : 0,
-	"A_" : 1,	# requires Shift Modkey
-	"s_" : 0,
-	"S_" : 1,	# requires Shift Modkey
-	"d_" : 0,
-	"D_" : 1,	# requires Shift Modkey
-	"f_" : 0,
-	"F_" : 1,	# requires Shift Modkey
-	"g_" : 0,
-	"G_" : 1,	# requires Shift Modkey
-	"h_" : 0,
-	"H_" : 1,	# requires Shift Modkey
-	"j_" : 0,
-	"J_" : 1,	# requires Shift Modkey
-	"k_" : 0,
-	"K_" : 1,	# requires Shift Modkey
-	"l_" : 0,
-	"L_" : 1,	# requires Shift Modkey
-	";_" : 0,
-	":_" : 1,	# requires Shift Modkey
-	"'_" : 0,	# Apostrophe
-	"\"_" : 1,  	# Double quotes, requires Shift Modkey
-	"`_" : 0,	# Grave
-	"~_" : 1,	# requires Shift Modkey
-	#"KEY_LEFTSHIFT" : 0,	# No Shift key, using Joystick set ============= SHIFT ==========  
-	"\\_" : 0,	# Backslash	
-	"|_" : 1, 	# Vertical Bar, requires Shift Modkey
-	"z_" : 0,
-	"Z_" : 1,	# requires Shift Modkey
-	"x_" : 0,
-	"X_" : 1,	# requires Shift Modkey
-	"c_" : 0,
-	"C_" : 1,	# requires Shift Modkey
-	"v_" : 0,
-	"V_" : 1,	# requires Shift Modkey
-	"b_" : 0,
-	"B_" : 1,	# requires Shift Modkey
-	"n_" : 0,
-	"N_" : 1,	# requires Shift Modkey
-	"m_" : 0,
-	"M_" : 1,	# requires Shift Modkey
-	",_" : 0,
-	"<_" : 1,	# Less than, requires Shift Modkey
-	"._" : 0,
-	">_" : 1,	# requires Shift Modkey
-	"/_" : 0,
-	"?_" : 1, # requires Shift Modkey
-	#"KEY_RIGHTSHIFT" : 0,
-	# "AT" : 0,	# Left Alt, we really only need one Alt  # ===============ALT========
-	"Se" : 0,	# Space
-	#"KEY_CAPSLOCK" : 0,	# Don't really need if we have a joystic-Shift set
-	"F1" : 0,
-	"F2" : 0,
-	"F3" : 0,
-	"F4" : 0,
-	"F5" : 0,
-	"F6" : 0,
-	"F7" : 0,
-	"F8" : 0,
-	"F9" : 0,
-	"10" : 0,	# F10
-	"11" : 0,	# F11
-	"12" : 0,	# F12
-	#"KEY_RIGHTCTRL" : 0,
-	#"KEY_RIGHTALT" : 0,
-	"He" : 0,	# Home
-	"Up" : 0,	# Up
-	"PU" : 0,	# Page Up
-	"Lt" : 0,	# Left
-	"Rt" : 0,	# Right
-	"Ed" : 0,	# End
-	"Dn" : 0,	# Down
-	"PD" : 0,	# Page Down
-	"It" : 0,	# Insert
-	"De" : 0,	# Delete
+	"He" : { "hid" : 74 , "shift" : 0 },	# Home
+	"Up" : { "hid" : 82 , "shift" : 0 },	# Up
+	"PU" : { "hid" : 75 , "shift" : 0 },	# Page Up
+	"Lt" : { "hid" : 80 , "shift" : 0 },	# Left
+	"Rt" : { "hid" : 79 , "shift" : 0 },	# Right
+	"Ed" : { "hid" : 77 , "shift" : 0 },	# End
+	"Dn" : { "hid" : 81 , "shift" : 0 },	# Down
+	"PD" : { "hid" : 78 , "shift" : 0 },	# Page Down
+	"It" : { "hid" : 73 , "shift" : 0 },	# Insert
+	"De" : { "hid" : 76 , "shift" : 0 },	# Delete
 	# 
 	# Multi-Functional Keys
 	#
@@ -332,32 +184,14 @@ char_str_requires_shift_mod = {
 # [finger][direction], where finger = {L5=0, L4=1, L3=2, L2=3, L1=4, R1=5, R2=6, R3=7, R4=8, R5=9}
 # and where direction = {neutral=0, north=1, east=2, south=3, west=4}, counting clockwise
 
-# accessed via Joyclick-North, since Number keys are on top side of qwerty keyboard
-numspecial_str_2D_array = np.array([
-	["1_","=_",")_","#_","(_"],
-	["2_","-_","It","$_","Ee"],
-	["3_","+_","Be","%_","De"],
-	["4_","*_","]_","^_","[_"],
-	["5_","__","__","__","__"],
-	["6_","__","__","__","__"],
-	["7_","!_",">_",":_","<_"],
-	["8_","@_","It",";_","Ee"],
-	["9_","&_","Be","|_","De"],
-	["0_","\\_","}_","/_","{_"]],
-	dtype="a2"
-	)
+# accessed via Joyclick-North, since numerical keys are located on top side of qwerty keyboard
 
 left_numspecial_str_2D_array = np.array([
 	["1_","=_",")_","#_","(_"],
 	["2_","-_","It","$_","Ee"],
 	["3_","+_","Be","%_","De"],
 	["4_","*_","]_","^_","[_"],
-	["5_","__","__","__","__"],
-	["6_","__","__","__","__"],
-	["7_","!_",">_",":_","<_"],
-	["8_","@_","It",";_","Ee"],
-	["9_","&_","Be","|_","De"],
-	["0_","\\_","}_","/_","{_"]],
+	["5_","__","__","__","__"]],
 	dtype="a2"
 	)
 
@@ -366,113 +200,109 @@ right_numspecial_str_2D_array = np.array([
 	["9_","&_","Be","|_","De"],
 	["8_","@_","It",";_","Ee"],
 	["7_","!_","<_",":_",">_"],
-	["6_","__","__","__","__"],
-	["5_","__","__","__","__"],
-	["4_","*_",")_","^_","(_"],
-	["3_","+_","Be","%_","De"],
-	["2_","-_","It","$_","Ee"],
-	["1_","=_",")_","#_","(_"]],
+	["6_","__","__","__","__"]],
 	dtype="a2"
 	)
 
-# accessed via Joyclick-East, since Arrow keys are on top side of qwerty keyboard
-arrow_str_2D_array = np.array([
+# accessed via Joyclick-East, since arrow keys are located on right side of qwerty keyboard
+
+left_arrowfunc_str_2D_array = np.array([
 	["Lt","F1","PD","11","PU"],
 	["Dn","F2","It","12","Ee"],
 	["Up","F3","Be","__","De"],
 	["Rt","F4","Ed","__","He"],
-	["F5","__","__","__","__"],
-	["F6","__","__","__","__"],
-	["He_","F7","Ed","__","He"],
-	["PD_","F8","Ee",",_","It"],
-	["PU_","F9","Be","._","De"],
-	["Ed_","10","PD","__","PU"]],
+	["F5","__","__","__","__"]],
+	dtype="a2"
+	)
+	
+right_arrowfunc_str_2D_array = np.array([
+	["Rt","10","PD","__","PU"],
+	["Dn","F9","Be","._","De"],
+	["Up","F8","It",",_","Ee"],
+	["Lt","F7","Ed","__","He"],
+	["F6","__","__","__","__"]],
 	dtype="a2"
 	)
 
-# accessed via Joyclick-South, (default mode)
-alpha_str_2D_array = np.array([
+# accessed via Joyclick-South, (default mode) since lowercase letters are located along the bottom of qwerty keyboard
+	
+left_loweralpha_str_2D_array = np.array([
 	["a_","q_","'_","z_","`_"],
 	["s_","w_","It","x_","Ee"],
 	["e_","d_","Be","c_","De"],
 	["t_","f_","r_","v_","g_"],
-	["__","__","__","__","__"],
-	["__","__","__","__","__"],
-	["n_","u_","m_","j_","h_"],
-	["i_","k_","It",",_","Ee"],
-	["o_","l_","Be","._","De"],
-	["p_","y_","/_","b_",";_"]],
+	["__","__","__","__","__"]],
 	dtype="a2"
 	)
 
-# accessed via Joyclick-South, (default mode)
-left_alpha_str_2D_array = np.array([
-	["a_","q_","'_","z_","`_"],
-	["s_","w_","It","x_","Ee"],
-	["e_","d_","Be","c_","De"],
-	["t_","f_","r_","v_","g_"],
-	["__","__","__","__","__"],
-	["__","__","__","__","__"],
-	["n_","u_","m_","j_","h_"],
-	["i_","k_","It",",_","Ee"],
-	["o_","l_","Be","._","De"],
-	["p_","y_","/_","b_",";_"]],
-	dtype="a2"
-	)
-
-# accessed via Joyclick-South, (default mode)
-right_alpha_str_2D_array = np.array([
+right_loweralpha_str_2D_array = np.array([
 	["p_","y_","/_","b_",";_"],
 	["o_","l_","Be","._","De"],
 	["i_","k_","It",",_","Ee"],
 	["n_","u_","m_","j_","h_"],
-	["__","__","__","__","__"],
-	["__","__","__","__","__"],
-	["t_","f_","r_","v_","g_"],
-	["e_","d_","Be","c_","De"],
-	["s_","w_","It","x_","Ee"],
-	["a_","q_","'_","z_","`_"]],
+	["__","__","__","__","__"]],
 	dtype="a2"
 	)
 
-# accessed via Joyclick-West, since Shift key is on left side of qwerty keyboard
-caps_str_2D_array = np.array([
+# accessed via Joyclick-West, since Caps key is located on left side of qwerty keyboard
+	
+left_capsalpha_str_2D_array = np.array([
 	["A_","Q_","\"_","Z_","~_"],
 	["S_","W_","It","X_","Ee"],
 	["E_","D_","Be","C_","De"],
 	["T_","F_","R_","V_","G_"],
-	["__","__","__","__","__"],
-	["__","__","__","__","__"],
-	["N_","U_","M_","J_","H_"],
-	["I_","K_","It","<_","Ee"],
+	["__","__","__","__","__"]],
+	dtype="a2"
+	)
+	
+right_capsalpha_str_2D_array = np.array([
+	["P_","Y_","?_","B_",":_"],
 	["O_","L_","Be",">_","De"],
-	["P_","Y_","?_","B_",":_"]],
+	["I_","K_","It","<_","Ee"],
+	["N_","U_","M_","J_","H_"],
+	["__","__","__","__","__"]],
 	dtype="a2"
 	)
 
-def get_numspecial_char_str(hand, btn_idx, dir_idx):
+def get_numspecial_char_str(btn_idx, dir_idx):
     if   hand == "left" :
     	return left_numspecial_str_2D_array[btn_idx][dir_idx]
     elif hand == "right" :
 	return right_numspecial_str_2D_array[btn_idx][dir_idx]
 
-def get_arrow_char_str(btn_idx, dir_idx):
-    return arrow_str_2D_array[btn_idx][dir_idx] 
-
-def get_alpha_char_str(hand, btn_idx, dir_idx):
+def get_arrowfunc_char_str(btn_idx, dir_idx):
     if   hand == "left" :
-    	return left_alpha_str_2D_array[btn_idx][dir_idx]
+        return left_arrowfunc_str_2D_array[btn_idx][dir_idx]
     elif hand == "right" :
-    	return right_alpha_str_2D_array[btn_idx][dir_idx]
+        return right_arrowfunc_str_2D_array[btn_idx][dir_idx]
+	
+def get_loweralpha_char_str(btn_idx, dir_idx):
+    if   hand == "left" :
+    	return left_loweralpha_str_2D_array[btn_idx][dir_idx]
+    elif hand == "right" :
+    	return right_loweralpha_str_2D_array[btn_idx][dir_idx]
 
-def get_caps_char_str(btn_idx, dir_idx):
-    return caps_str_2D_array[btn_idx][dir_idx]
+def get_capsalpha_char_str(btn_idx, dir_idx):
+    if   hand == "left" :
+	return left_capsalpha_str_2D_array[btn_idx][dir_idx]
+    elif hand == "right" :
+	return right_capsalpha_str_2D_array[btn_idx][dir_idx]
 
-def get_HID(char_str) :
-    return char_str_2_HID_code[char_str]
+def get_char_str(arr_idx, btn_idx, dir_idx):
+    if   arr_idx == 1 :
+	return get_numspecial_char_str(btn_idx, dir_idx):
+    elif arr_idx == 2 :
+	return get_arrowfunc_char_str(btn_idx, dir_idx):
+    elif arr_idx == 3 :
+	return get_loweralpha_char_str(btn_idx, dir_idx):
+    elif arr_idx == 4 :
+	return get_capsalpha_char_str(btn_idx, dir_idx):
+	
+def get_HID(char_str):
+    return char_str_2_HID_code_and_shift_mod_required[char_str]["hid"]
 
 def get_Shift_Required(char_str):
-    return char_str_requires_shift_mod[char_str]
+    return char_str_2_HID_code_and_shift_mod_required[char_str]["shift"]
 
 # ======================
 # Analog Joystick Setup
@@ -483,14 +313,12 @@ print "opening up SPI Bus to read Analog Pins"
 #open SPI bus
 spi = spidev.SpiDev()
 
-# Raspberry Pi Zero open
-# spi.open(0,0)
-
-# Next Thing Co. Chip spidev open ( spi.open(X,Y) opens the spi device located at /dev/spiX.Y )
-
-SPI_BUS = int(subprocess.check_output("ls /dev/spidev* | grep -oP '(\d+)\.' | grep -oP '(\d+)'", shell=True).rstrip())
-SPI_DEVICE = int(subprocess.check_output("ls /dev/spidev* | grep -oP '\.(\d+)' | grep -oP '(\d+)'", shell=True).rstrip())
-spi.open(SPI_BUS,SPI_DEVICE)
+if device == "pi" :
+	spi.open(0,0) # spidev open ( spi.open(X,Y) opens the spi device located at /dev/spiX.Y )
+elif device == "chip" :
+	SPI_BUS = int(subprocess.check_output("ls /dev/spidev* | grep -oP '(\d+)\.' | grep -oP '(\d+)'", shell=True).rstrip())
+	SPI_DEVICE = int(subprocess.check_output("ls /dev/spidev* | grep -oP '\.(\d+)' | grep -oP '(\d+)'", shell=True).rstrip())
+	spi.open(SPI_BUS,SPI_DEVICE)
 
 # Function to read SPI data from MCP3008 chip
 # Channel must be an integer 0-7
@@ -574,11 +402,8 @@ class VR_Keyboard():
 
 		# used to access the alpha_str_2D_array, for debugging purposes right now
 
-		self.arr_idx = 4;
-
-		#self.arr_idx = 3; # direction = {neutral=0, north=1, east=2, south=3, west=4}, counting clockwise
-
-		self.hand = "left"
+		self.arr_idx = 3; # default to loweralpha_char_str_2D_array 
+				  # direction = {neutral=0, north=1, east=2, south=3, west=4}, counting clockwise
 
 		# Initialize last variables
 		
@@ -590,8 +415,7 @@ class VR_Keyboard():
 		self.last_mod_bit_str = "00000000"
 		self.last_hid = -1
 
-
-		# Think about using a coniditional to check for in-valid index at start-up
+		# Think about using a conditional to check for in-valid index at start-up
 		self.last_btn_idx = -1
 		self.last_dir_idx = -1
 		self.last_arr_idx = 4 # default to lowercase letters
@@ -876,17 +700,11 @@ if __name__ == "__main__":
 
 		# DEBUGGING Button/Direction recognition
 		# print "btn5 = " + str(btn5) + "\tbtn4 = " + str(btn4) + "\tbtn3 = " + str(btn3) + "\tbtn2 = " + str(btn2) + "\tbtn1 = " + str(btn1) + "\tLHdirection =" + LH_direction , 
-
 		# mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
-
 		# print "\tmod_bit_str=" + mod_bit_str ,
-
 		# mod_lock_bit_str = str(kb.LM_lock) + str(kb.LA_lock) + str(kb.LS_lock) + str(kb.LC_lock) + str(kb.RM_lock) + str(kb.RA_lock) + str(kb.RS_lock) + str(kb.RC_lock)
-
 		# print "\tmod_lock_bit_str=" + mod_lock_bit_str ,
-
  		# print "\tdepressed_analog_shift_modifier = " + str(kb.depressed_analog_shift_modifier) , 
-
  		# print "\tkb.LS = " + str(kb.LS) + "\tkb.LS_lock = " + str(kb.LS_lock) ,
 		
 		if (kb.btns_pressed[0] + kb.btns_pressed[1] + kb.btns_pressed[2] + kb.btns_pressed[3] + kb.btns_pressed[4]) > 0 : # if button is pressed, show prospective cursor
@@ -899,7 +717,7 @@ if __name__ == "__main__":
 
 				# Mechanism for changing character sets, using analog click (joyclick) + cardinal direction to change to new set (N=numsp,E=arrow,S=alpha,W=shift)
 
-				if (btn_idx == 4 or btn_idx == 5) : # Left or Right Analog clicks respectively
+				if  btn_idx == 4 : # if Analog Stick click
 					if not dir_idx == 0 : # if non-deadzone analog-click (i.e. with a direction)
 						kb.last_arr_idx = dir_idx
 
@@ -934,23 +752,12 @@ if __name__ == "__main__":
 				# print "\tmod_bit_str" + mod_bit_str ,
 
 				if not hid == -1 :
+	
 					arr_idx = kb.last_arr_idx # Get array index for determining which set of character we are currently typing
 
 					if char_str == "" : # if no white-space flick char_str assigned
-						if   arr_idx == 1 :
-							char_str = get_numspecial_char_str(kb.hand, btn_idx, dir_idx) 
-						elif arr_idx == 2 :
-							kb.hand = "right"
-							char_str = get_alpha_char_str(kb.hand, btn_idx, dir_idx) 
-							#char_str = get_arrow_char_str(btn_idx, dir_idx) 
-						elif arr_idx == 3 :
-							char_str = get_arrow_char_str(btn_idx, dir_idx)
-							#char_str = get_alpha_char_str(btn_idx, dir_idx) 
-						elif arr_idx == 4 :
-							kb.hand = "left"
-							char_str = get_alpha_char_str(kb.hand,btn_idx, dir_idx) 
-							#char_str = get_caps_char_str(btn_idx, dir_idx)
-
+						char_str = get_char_str(arr_idx, btn_idx, dir_idx)
+	
 					if get_Shift_Required(char_str) == 1 :
 						kb.LS = 1 # turn left shift modifier on
 
@@ -961,17 +768,23 @@ if __name__ == "__main__":
 					# DEBUGGING final character set index (arr_idx), 2-character long key string, hid code, & modifier bit string 
 					# print "\tarr_idx =" + str(arr_idx) + "\tchar_str = " + char_str + "\tHID = " + str(hid) + "\tmod_bit_str" + mod_bit_str ,
 
-# ======================= CURSOR CHARACTER FUNCTIONALITY ====================================#					
+# ======================= CURSOR CHARACTER FUNCTIONALITY ====================================#
+
+					# requires sending blank keypresses in between to avoid character repetition (but slow!)
 					
 					kb.iface.send_keys( int(kb.last_mod_bit_str,2), [kb.last_hid,0,0,0,0,0] ) # display char_cursor
+					print "display char_cursor" ,
+					kb.iface.send_keys( int("00000000",2), [0,0,0,0,0,0] ) # blank char_cursor
+				
 					kb.iface.send_keys( int("00000000",2), [42,0,0,0,0,0] ) # backspace char_cursor
 					print "backspace char_cursor",
+					kb.iface.send_keys( int("00000000",2), [0,0,0,0,0,0] ) # blank char_cursor
 		
 					kb.reset_joystick_path() # reset joystick path so we prevent white-space flicks when joystick resets to neutral
 					#kb.reset_modifiers() # reset modifiers when you type a character (this will prevent ctrl and shift from being held though)
 			else:
 				kb.last_mod_bit_str = str(kb.LM) + str(kb.LA) + str(kb.LS) + str(kb.LC) + str(kb.RM) + str(kb.RA) + str(kb.RS) + str(kb.RC)
-
+				
 				kb.iface.send_keys( int(kb.last_mod_bit_str,2), [0,0,0,0,0,0] ) # send only any locked modifiers (for alt-tab, etc.)
 		
 		elif kb.last_hid != -1 :	
