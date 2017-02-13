@@ -24,11 +24,11 @@ from bluetooth import *
 
 # imports added for vrbtkb
 import subprocess
+device = subprocess.check_output("ls /home/",shell=True).rstrip()
 hand = str(sys.argv[1]) # accept the handedness as an C.L. argument, sys.argv[0] is the name of the python script itself
 
 import gtk
 from dbus.mainloop.glib import DBusGMainLoop
-
 
 #
 #define a bluez 5 profile object for our keyboard
@@ -77,8 +77,6 @@ class BTKbBluezProfile(dbus.service.Object):
 #
 class BTKbDevice(): 
     MY_ADDRESS = subprocess.check_output("hciconfig | grep 'BD' | grep -oP '..:..:..:..:..:..'", shell=True)
-
-    device = subprocess.check_output("ls /home/",shell=True).rstrip()
 	
     if subprocess.check_output("hostname -I", shell=True).rstrip() == "" :
 	MY_DEV_NAME = device + "_" + hand + "_hand_wlan_not_connected"
