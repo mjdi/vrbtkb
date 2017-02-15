@@ -54,6 +54,7 @@ inet 10.0.0.xxx where the 10.0.0.xxx is the CHIPs IP on your local network. Scri
 	
 #**setup Bluetooth (Via SSH or COM port)** 
 
+	sudo apt-get remove blueman
 	sudo apt-get install git python-gobject bluez bluez-tools bluez-firmware python-bluez python-dev python-pip 
 	git clone https://github.com/mjdi/vrbtkb
 	sudo cp /home/chip/vrbtkb/dbus/org.yaptb.btkbservice.conf /etc/dbus-1/system.d 
