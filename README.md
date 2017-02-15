@@ -83,6 +83,9 @@ Now, the device should be registered, and when you reboot the CHIP and wait ~ 20
 
 	git clone https://github.com/doceme/py-spidev
 	cd ./py-spidev
+	
+	sudo apt-get install python
+	
 	sudo python setup.py install
 	cd ..
 
