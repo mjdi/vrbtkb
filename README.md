@@ -47,12 +47,11 @@ sudo apt-get install git
 
 	sudo apt-get remove blueman (conflicts with 'sudo /etc/init.d/bluetooth stop' command?
 
-	sudo apt-get install python-gobject bluez bluez-tools bluez-firmware python-bluez python-dev python-pip  http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html
+	sudo apt-get install python-gobject bluez bluez-tools bluez-firmware python-bluez python-dev python-pip 
 
 	git clone https://github.com/mjdi/vrbtkb
 
 	sudo cp /home/chip/vrbtkb/dbus/org.yaptb.btkbservice.conf /etc/dbus-1/system.d 
-http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html
 
 # do the bluetoothctl setup as usual
 
