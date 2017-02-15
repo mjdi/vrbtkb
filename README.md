@@ -54,12 +54,8 @@ inet 10.0.0.xxx where the 10.0.0.xxx is the CHIPs IP on your local network. Scri
 	
 #**setup Bluetooth (Via SSH or COM port)** 
 
-	sudo apt-get install git
-
-	sudo apt-get install python-gobject bluez bluez-tools bluez-firmware python-bluez python-dev python-pip 
-
+	sudo apt-get install git python-gobject bluez bluez-tools bluez-firmware python-bluez python-dev python-pip 
 	git clone https://github.com/mjdi/vrbtkb
-
 	sudo cp /home/chip/vrbtkb/dbus/org.yaptb.btkbservice.conf /etc/dbus-1/system.d 
 	
 do the bluetoothctl setup as usual
@@ -83,9 +79,6 @@ Now, the device should be registered, and when you reboot the CHIP and wait ~ 20
 
 	git clone https://github.com/doceme/py-spidev
 	cd ./py-spidev
-	
-	sudo apt-get install python
-	
 	sudo python setup.py install
 	cd ..
 
