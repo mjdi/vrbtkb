@@ -50,6 +50,8 @@ inet 10.0.0.xxx where the 10.0.0.xxx is the CHIPs IP on your local network. Scri
 	
 	sudo reboot
 
+do the bluetoothctl setup as usual
+
 	sudo apt-get install git
 
 	sudo apt-get install python-gobject bluez bluez-tools bluez-firmware python-bluez python-dev python-pip 
@@ -57,8 +59,21 @@ inet 10.0.0.xxx where the 10.0.0.xxx is the CHIPs IP on your local network. Scri
 	git clone https://github.com/mjdi/vrbtkb
 
 	sudo cp /home/chip/vrbtkb/dbus/org.yaptb.btkbservice.conf /etc/dbus-1/system.d 
+	
+	bluetoothctl
+	
+in the [bluetooth#] prompt that shows up:
 
-#**do the bluetoothctl setup as usual**
+	agent on
+	default-agent
+	scan on
+	discoverable on
+	
+try to pair to CHIP with android smartphone (register new device)
+
+	BEFORE PRESSING YES ON THE ANDROID PHONE, enter (yes) in the bluetoothctl prompt when it asks you to on the CHIP
+	
+Now, the device should be registered, and when you reboot the CHIP and wait ~ 20 sec (after it fully boots), you should be able to connect the Smartphone in order to use the CHIP as a BT keyboard
 
 #**SpiDev setup for CHIP**
 
