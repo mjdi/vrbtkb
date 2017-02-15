@@ -28,7 +28,7 @@ https://github.com/xtacocorex/CHIP_IO
 		self.btn4_pin = "GPIO4"
 		self.btn5_pin = "GPIO5"
 
-#**setup up WiFi and SSH (Via COM port)** 
+#**setup WiFi and SSH capabilities (Via COM port)** 
 
 https://www.reddit.com/r/ChipCommunity/comments/5hndoj/setting_up_the_chip_under_win10_walkthrough/
 
@@ -49,8 +49,8 @@ Wlan0
 inet 10.0.0.xxx where the 10.0.0.xxx is the CHIPs IP on your local network. Scribble down your CHIPs IP-adress.
 	
 	sudo reboot
-
-do the bluetoothctl setup as usual
+	
+#**setup Bluetooth (Via SSH or COM port)** 
 
 	sudo apt-get install git
 
@@ -60,6 +60,8 @@ do the bluetoothctl setup as usual
 
 	sudo cp /home/chip/vrbtkb/dbus/org.yaptb.btkbservice.conf /etc/dbus-1/system.d 
 	
+do the bluetoothctl setup as usual
+
 	bluetoothctl
 	
 in the [bluetooth#] prompt that shows up:
