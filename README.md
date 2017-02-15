@@ -15,7 +15,7 @@ Add line '@bash /home/pi/vrbtkb/startup.sh' to the end of '/home/pi/.config/lxse
 
 #**INSTRUCTIONS FOR SETTING UP WITH Next Thing Co. CHIP (all scripts have been updated specifically for the CHIP) **
 
-Flash 4.4 (non-headless, trying now) headless (FEL mode shorting FEL and GND) http://flash.getchip.com/
+Flash 4.4 server (FEL mode by shorting FEL and GND pins) http://flash.getchip.com/
 
 ~~delete the driver > libusbK > Flashing Mode Chip thingee
 
@@ -23,7 +23,18 @@ Flash 4.4 (non-headless, trying now) headless (FEL mode shorting FEL and GND) ht
 
 https://bbs.nextthing.co/t/updated-cdc-composite-gadget-4-4-driver-issue-on-windows/7458
 
-(Via COM port, setup up WiFi and SSH) https://www.reddit.com/r/ChipCommunity/comments/5hndoj/setting_up_the_chip_under_win10_walkthrough/
+# **CHIP_IO pin names**
+
+https://github.com/xtacocorex/CHIP_IO
+
+		self.btn2_pin = "GPIO2"
+		self.btn3_pin = "GPIO3"
+		self.btn4_pin = "GPIO4"
+		self.btn5_pin = "GPIO5"
+
+# **setup up WiFi and SSH (Via COM port) ** 
+
+https://www.reddit.com/r/ChipCommunity/comments/5hndoj/setting_up_the_chip_under_win10_walkthrough/
 
 	sudo nmtui
 	apt-get update
@@ -37,15 +48,13 @@ https://bbs.nextthing.co/t/updated-cdc-composite-gadget-4-4-driver-issue-on-wind
 	ip addr show
 	
 You are looking for something like:
+
 Wlan0
 inet 10.0.0.xxx where the 10.0.0.xxx is the CHIPs IP on your local network. Scribble down your CHIPs IP-adress.
 	
 	sudo reboot
 
-(git is for some reason not included)
-sudo apt-get install git
-
-	sudo apt-get remove blueman (conflicts with 'sudo /etc/init.d/bluetooth stop' command?
+	sudo apt-get install git
 
 	sudo apt-get install python-gobject bluez bluez-tools bluez-firmware python-bluez python-dev python-pip 
 
@@ -53,22 +62,35 @@ sudo apt-get install git
 
 	sudo cp /home/chip/vrbtkb/dbus/org.yaptb.btkbservice.conf /etc/dbus-1/system.d 
 
-# do the bluetoothctl setup as usual
+#**do the bluetoothctl setup as usual**
+
+#** SpiDev setup for CHIP **
 
 	git clone https://github.com/doceme/py-spidev
 	cd ./py-spidev
 	sudo python setup.py install
 	cd ..
 
-Did you try do install the device tree overlay in /etc/rc.local? It is in /lib/firmware !
 https://bbs.nextthing.co/t/spi-serial-communication-on-chip/11937/5
 
-I just added these lines into "/etc/rc.local" as @danjperron suggested:
+	sudo nano /etc/rc.local
+
+add these two lines to the end of rc.local (so it runs on startup)
 
 	mkdir -p /sys/kernel/config/device-tree/overlays/spi
 	cat /lib/firmware/nextthingco/chip/sample-spi.dtbo > /sys/kernel/config/device-tree/overlays/spi/dtbo
 
-~the 4.4.13 ? kernel somehow already includes the DTC? or was that what I downloaded, via the dtc git clone, probably ya~ (so SPI and GPIO work off the bat!!)
+then in the terminal run http://www.chip-community.org/index.php/SPI_support (short MOSI and MISO to test spidev with the instructions there)
+	
+	sudo modprobe spidev 
+	
+to activate the spidev
+
+confirm that spidev exists with
+	
+	ls /dev/spidev*
+
+#** GPIO setup for CHIP **
 
 ^^ Turns out the latest 4.4 CHIP kernel does set the CONFIG_CONGIFS on https://github.com/xtacocorex/CHIP_IO
 ("OverlayManager requires a 4.4 kernel with the CONFIG_OF_CONFIGFS option enabled in the kernel config.")
@@ -85,26 +107,8 @@ I just added these lines into "/etc/rc.local" as @danjperron suggested:
 	sudo python setup.py install
 	cd ..
 	sudo rm -rf CHIP_IO
-
-#make sure to clone this repo as well as the CHIP_IO repo (following the install instructions there specifically for python2.7)
-
-	sudo python
-
-in the Python REPI that comes up, run 
-
-	import CHIP_IO.OverlayManager as OM
-	OM.load("SPI2") 
-	quit()
 	
-then in the terminal run http://www.chip-community.org/index.php/SPI_support (short MOSI and MISO to test spidev with the instructions there)
-	
-	sudo modprobe spidev 
-	
-to activate the spidev
-
-confirm that spidev exists with
-	
-	ls /dev/spidev*
+#** Headless setup for CHIP **
 
 Use systemwide crontab to allow for headless operation"
 
@@ -115,10 +119,3 @@ add the following line to the file and use Ctrl-O to save the edit
 	@reboot        chip     sleep 7; echo "chip" | sudo bash /home/chip/vrbtkb/startup.sh 
 
 NOW REBOOT!
-
-CHIP_IO pin names: https://github.com/xtacocorex/CHIP_IO
-
-		self.btn2_pin = "GPIO2"
-		self.btn3_pin = "GPIO3"
-		self.btn4_pin = "GPIO4"
-		self.btn5_pin = "GPIO5"
