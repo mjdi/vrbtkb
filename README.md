@@ -35,14 +35,14 @@ https://github.com/xtacocorex/CHIP_IO
 https://www.reddit.com/r/ChipCommunity/comments/5hndoj/setting_up_the_chip_under_win10_walkthrough/
 
 	sudo nmtui
-	apt-get update
-	apt-get install xrdp
+	sudo apt-get update
+	sudo apt-get install xrdp
 	echo xfce4-session >~/.xsession
 	nano /etc/xrdp/startwm.sh
 
 <- For me it have worked to just exit without any editing.
 
-	service xrdp restart
+	sudo service xrdp restart
 	ip addr show
 	
 You are looking for something like:
@@ -87,7 +87,7 @@ https://bbs.nextthing.co/t/spi-serial-communication-on-chip/11937/5
 
 	sudo nano /etc/rc.local
 
-add these two lines to the end of rc.local (so it runs on startup)
+add these two lines to the end of rc.local, just before "exit 0" (so it runs on startup) 
 
 	mkdir -p /sys/kernel/config/device-tree/overlays/spi
 	cat /lib/firmware/nextthingco/chip/sample-spi.dtbo > /sys/kernel/config/device-tree/overlays/spi/dtbo
@@ -98,7 +98,9 @@ then in the terminal run http://www.chip-community.org/index.php/SPI_support (sh
 	
 to activate the spidev
 
-confirm that spidev exists with
+	sudo reboot
+
+and then confirm that spidev exists with
 	
 	ls /dev/spidev*
 
@@ -107,7 +109,6 @@ confirm that spidev exists with
 ^^ Turns out the latest 4.4 CHIP kernel does set the CONFIG_CONGIFS on https://github.com/xtacocorex/CHIP_IO
 ("OverlayManager requires a 4.4 kernel with the CONFIG_OF_CONFIGFS option enabled in the kernel config.")
 
-	sudo apt-get update
 	sudo apt-get install git build-essential python-dev python-pip flex bison -y
 	git clone https://github.com/atenart/dtc
 	cd dtc
