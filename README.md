@@ -50,7 +50,7 @@ You are looking for something like:
 Wlan0
 inet 10.0.0.xxx where the 10.0.0.xxx is the CHIPs IP on your local network. Scribble down your CHIPs IP-adress.
 	
-	sudo reboot
+~~sudo reboot
 	
 #**setup Bluetooth (Via SSH or COM port)** 
 
@@ -98,7 +98,7 @@ then in the terminal run http://www.chip-community.org/index.php/SPI_support (sh
 	
 to activate the spidev
 
-	sudo reboot
+~~sudo reboot
 
 and then confirm that spidev exists with
 	
@@ -132,3 +132,5 @@ add the following line to the file and use Ctrl-O to save the edit
 	@reboot        chip     sleep 7; echo "chip" | sudo bash /home/chip/vrbtkb/startup.sh 
 
 NOW REBOOT!
+
+	sudo reboot
