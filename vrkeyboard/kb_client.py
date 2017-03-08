@@ -422,7 +422,7 @@ class VR_Keyboard():
 		self.last_btns_state = [0,0,0,0,0]
 		self.last_hid = -1
 		
-		kb.joystick_cycle_non_modifier_keys_arr = ["Se", "Er", "__", "Tb", "Be", "De"]
+		self.joystick_cycle_non_modifier_keys_arr = ["Se", "Er", "__", "Tb", "Be", "De"]
 
 		self.reset_joystick_path_booleans()
 
