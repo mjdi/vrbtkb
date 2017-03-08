@@ -36,7 +36,8 @@ import numpy as np
 # Character Layout 
 # =================
 
-key_str_2_HID_code_and_shift_mod_required = {		
+key_str_2_HID_code_and_shift_mod_required = {
+	"Bk" : { "hid" :  0 , "shift" : 0 },	# Blank key, used to prevent repeating of previously pressed keys
 	"Ee" : { "hid" : 41 , "shift" : 0 }, 	# Escape			
 	"1_" : { "hid" : 30 , "shift" : 0 },
 	"!_" : { "hid" : 30 , "shift" : 1 },		
@@ -247,7 +248,7 @@ left_loweralpha_key_str_2D_array = np.array([
 	["s_","w_","Rt","x_","Lt"],
 	["e_","d_","Up","c_","Dn"],
 	["t_","f_","r_","v_","g_"],
-	["-_", "" , "" , "" , "" ]],
+	["__", "" , "" , "" , "" ]],
 	dtype="a2")
 
 right_loweralpha_key_str_2D_array = np.array([
@@ -255,7 +256,7 @@ right_loweralpha_key_str_2D_array = np.array([
 	["o_","l_","Rt","._","Lt"],
 	["i_","k_","Dn",",_","Up"],
 	["n_","u_","m_","j_","h_"],
-	["-_", "" , "" , "" , "" ]],
+	["__", "" , "" , "" , "" ]],
 	dtype="a2")
 
 # accessed via Joyclick-West, since Caps key is located on left side of qwerty keyboard
@@ -265,7 +266,7 @@ left_capsalpha_key_str_2D_array = np.array([
 	["S_","W_","Rt","X_","Lt"],
 	["E_","D_","Up","C_","Dn"],
 	["T_","F_","R_","V_","G_"],
-	["-_", "" , "" , "" , "" ]],
+	["__", "" , "" , "" , "" ]],
 	dtype="a2")
 	
 right_capsalpha_key_str_2D_array = np.array([
@@ -273,7 +274,7 @@ right_capsalpha_key_str_2D_array = np.array([
 	["O_","L_","Rt",">_","Lt"],
 	["I_","K_","Dn","<_","Up"],
 	["N_","U_","M_","J_","H_"],
-	["-_", "" , "" , "" , "" ]],
+	["__", "" , "" , "" , "" ]],
 	dtype="a2")
 
 def get_numspecial_key_str(btn_idx, dir_idx):
@@ -562,15 +563,13 @@ def get_dir_idx(kb):
 
 def get_key_str_if_joystick_cycle(kb):
 
-	if kb.dir_idx == 0 : # if at deadzone, check if any whitespace characters or Bksp or Del were entered
-
-		# 2-edge long simple cycles: White-space (and underscore) characters
+	if kb.dir_idx == 0 : # if at deadzone, check if any whitespace characters, modifiers, or Bksp or Del were entered
 
 		if not ( kb.N2W or kb.W2S or kb.S2E or kb.E2N or kb.N2E or kb.E2S or kb.S2W or kb.W2N ) : # no rotation whatsoever
 			
 			if   kb.D2N : # Flick (north)
 
-				kb.key_str = "Se" 	# Space
+				kb.key_str = "Bk" 	# Blank Key, used to prevent repeating of previously pressed White-space keys
 
 			elif kb.D2E : # Flick (east)
 
@@ -578,7 +577,7 @@ def get_key_str_if_joystick_cycle(kb):
 
 			elif kb.D2S : # Flick (south)
 
-				kb.key_str = "__"	# Underscore
+				kb.key_str = "Se"	# Space
 
 			elif kb.D2W : # Flick (west)
 
