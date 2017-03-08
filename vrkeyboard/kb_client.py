@@ -186,10 +186,10 @@ key_str_2_HID_code_and_shift_mod_required = {
 	#"KEY_STOPCD" : 233,
 	#"KEY_REFRESH" : 250,
 	#"KEY_SCROLLUP" : 245,
-    #"KEY_SCROLLDOWN" : 246,
+    	#"KEY_SCROLLDOWN" : 246,
 
-    # created to allow toggling Cursor-Mode
-    "CT" : { "hid" : -1, "shift" : 0 }, #Cursor toggle key
+    	# created to allow toggling Cursor-Mode
+    	"CT" : { "hid" : -1, "shift" : 0 }, # Cursor toggle key, dummy entry
 }
 
 def get_HID(key_str):
@@ -280,7 +280,7 @@ def get_numspecial_key_str(btn_idx, dir_idx):
     if   hand == "left" :
     	return left_numspecial_key_str_2D_array[btn_idx][dir_idx]
     elif hand == "right" :
-		return right_numspecial_key_str_2D_array[btn_idx][dir_idx]
+	return right_numspecial_key_str_2D_array[btn_idx][dir_idx]
 
 def get_arrowfunc_key_str(btn_idx, dir_idx):
     if   hand == "left" :
@@ -296,19 +296,19 @@ def get_loweralpha_key_str(btn_idx, dir_idx):
 
 def get_capsalpha_key_str(btn_idx, dir_idx):
     if   hand == "left" :
-		return left_capsalpha_key_str_2D_array[btn_idx][dir_idx]
+	return left_capsalpha_key_str_2D_array[btn_idx][dir_idx]
     elif hand == "right" :
-		return right_capsalpha_key_str_2D_array[btn_idx][dir_idx]
+	return right_capsalpha_key_str_2D_array[btn_idx][dir_idx]
 
 def get_key_str(arr_idx, btn_idx, dir_idx):
     if   arr_idx == 1 :
-		return get_numspecial_key_str(btn_idx, dir_idx)
+	return get_numspecial_key_str(btn_idx, dir_idx)
     elif arr_idx == 2 :
-		return get_arrowfunc_key_str(btn_idx, dir_idx)
+	return get_arrowfunc_key_str(btn_idx, dir_idx)
     elif arr_idx == 3 :
-		return get_loweralpha_key_str(btn_idx, dir_idx)
+	return get_loweralpha_key_str(btn_idx, dir_idx)
     elif arr_idx == 4 :
-		return get_capsalpha_key_str(btn_idx, dir_idx)
+	return get_capsalpha_key_str(btn_idx, dir_idx)
 	
 
 # ======================
@@ -376,30 +376,29 @@ class VR_Keyboard():
 
 		if device == "pi" :
  
-       		GPIO.setmode(GPIO.BOARD)
+			GPIO.setmode(GPIO.BOARD)
 
-           	self.btn2_pin = 33
-           	self.btn3_pin = 31
-           	self.btn4_pin = 35
-           	self.btn5_pin = 37
+			self.btn2_pin = 33
+			self.btn3_pin = 31
+			self.btn4_pin = 35
+			self.btn5_pin = 37
 
-           	GPIO.setup(self.btn2_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # index finger
-           	GPIO.setup(self.btn3_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # middle finger
-           	GPIO.setup(self.btn4_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # ring finger
-           	GPIO.setup(self.btn5_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # pinky finger
+			GPIO.setup(self.btn2_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # index finger
+			GPIO.setup(self.btn3_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # middle finger
+			GPIO.setup(self.btn4_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # ring finger
+			GPIO.setup(self.btn5_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN) # pinky finger
 
-        elif device == "chip" : # https://github.com/xtacocorex/CHIP_IO for documentation
+		elif device == "chip" : # https://github.com/xtacocorex/CHIP_IO for documentation
 
-        	self.btn2_pin = "GPIO2"
-        	self.btn3_pin = "GPIO3"
-            self.btn4_pin = "GPIO4"
-            self.btn5_pin = "GPIO5"
+			self.btn2_pin = "GPIO2"
+			self.btn3_pin = "GPIO3"
+		    	self.btn4_pin = "GPIO4"
+		    	self.btn5_pin = "GPIO5"
 
-            GPIO.setup(self.btn2_pin, GPIO.IN) # index finger
-            GPIO.setup(self.btn3_pin, GPIO.IN) # middle finger
-            GPIO.setup(self.btn4_pin, GPIO.IN) # ring finger
-            GPIO.setup(self.btn5_pin, GPIO.IN) # pinky finger
-	
+		    	GPIO.setup(self.btn2_pin, GPIO.IN) # index finger
+		    	GPIO.setup(self.btn3_pin, GPIO.IN) # middle finger
+		    	GPIO.setup(self.btn4_pin, GPIO.IN) # ring finger
+		    	GPIO.setup(self.btn5_pin, GPIO.IN) # pinky finger
 
 		# Deprecated, left over code
 
@@ -658,7 +657,7 @@ def get_btns_state(kb):
 	kb.btns_state[1] = GPIO.input(kb.btn2_pin)	# off = 0, on = 1
 	kb.btns_state[2] = GPIO.input(kb.btn3_pin)	# off = 0, on = 1
 	kb.btns_state[3] = GPIO.input(kb.btn4_pin)	# off = 0, on = 1
-    kb.btns_state[4] = GPIO.input(kb.btn5_pin)	# off = 0, on = 1
+    	kb.btns_state[4] = GPIO.input(kb.btn5_pin)	# off = 0, on = 1
 	
 	kb.num_btns_pressed = sum(kb.btns_state)
 
