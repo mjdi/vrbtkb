@@ -248,7 +248,7 @@ left_loweralpha_key_str_2D_array = np.array([
 	["s_","w_","Rt","x_","Lt"],
 	["e_","d_","Up","c_","Dn"],
 	["t_","f_","r_","v_","g_"],
-	["__", "" , "" , "" , "" ]],
+	["-_", "" , "" , "" , "" ]],
 	dtype="a2")
 
 right_loweralpha_key_str_2D_array = np.array([
@@ -266,7 +266,7 @@ left_capsalpha_key_str_2D_array = np.array([
 	["S_","W_","Rt","X_","Lt"],
 	["E_","D_","Up","C_","Dn"],
 	["T_","F_","R_","V_","G_"],
-	["__", "" , "" , "" , "" ]],
+	["-_", "" , "" , "" , "" ]],
 	dtype="a2")
 	
 right_capsalpha_key_str_2D_array = np.array([
