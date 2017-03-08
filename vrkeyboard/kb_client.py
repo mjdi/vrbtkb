@@ -640,7 +640,7 @@ def get_key_str_if_joystick_cycle(kb):
 				kb.key_str = "LS"	# Left Shift
 
 		# Don't reset joystick path for Whitespace Char & Backspace/Delete, thereby repeatedly typing these characters until the Joystick leaves deadzone again (or another button is pressed)
-		if not kb.key_str in joystick_cycle_non_modifier_keys_arr : 
+		if not kb.key_str in kb.joystick_cycle_non_modifier_keys_arr : 
 			kb = reset_joystick_path_booleans(kb)
 
 	return kb
