@@ -429,10 +429,11 @@ class VR_Keyboard():
 		# modifier toggle in this 3-state manner: none -> once -> always (locked)
 		
 		self.mod_key_str_2_idx = { "RM" : 0, "RA" : 1, "RS" : 2, "RC" : 3, "LM" : 4, "LA" : 5, "LS" : 6, "LC" : 7 }
-
-		self.reset_modifier_locks()
-
+		self.mod_arr = [0,0,0,0,0,0,0,0]
+		self.mod_lock_arr = [0,0,0,0,0,0,0,0]
+		
 		self.reset_modifiers()
+		self.reset_modifier_locks()
 
 		# end of __init__	
 		
