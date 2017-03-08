@@ -419,10 +419,10 @@ class VR_Keyboard():
 		self.last_arr_idx = 3 	# default to loweralpha_key_str_2D_array, arr_idx = { 1=>numspecial, 2=>arrowfunc, 3=>loweralpha, 4=>capsalpha }
 		self.last_dir_idx = -1
 		self.last_mod_bit_str = "00000000"
-		self.last_btns_state = (0,0,0,0,0)
+		self.last_btns_state = [0,0,0,0,0]
 		self.last_hid = -1
 		
-		kb.joystick_cycle_non_modifier_keys_arr = ("Se", "Er", "__", "Tb", "Be", "De")
+		kb.joystick_cycle_non_modifier_keys_arr = ["Se", "Er", "__", "Tb", "Be", "De"]
 
 		self.reset_joystick_path_booleans()
 
@@ -791,7 +791,7 @@ if __name__ == "__main__":
 			btn_idx = -1; # we need to find the non-zero index of kb.btns_state
 
 			for i in range(0,len(kb.btns_state)) : # This can be replaced with a faster numpy method perhaps later, but for 5 elements it probably doesn't matter
-				if kb.btns_state[i]
+				if kb.btns_state[i] :
 					btn_idx = i
 
 			kb.key_str = get_key_str(kb.last_arr_idx, btn_idx, kb.dir_idx)
@@ -806,7 +806,7 @@ if __name__ == "__main__":
 
 				kb = type_hid_code_from_key_str(kb)
 
-        	kb.reset_joystick_path() # reset joystick path so we prevent white-space flicks when joystick resets to deadzone from cardinal direction
+        		kb.reset_joystick_path() # reset joystick path so we prevent white-space flicks when joystick resets to deadzone from cardinal direction
             
 		elif kb.num_btns_pressed == 2 :
 
