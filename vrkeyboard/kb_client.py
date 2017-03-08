@@ -744,6 +744,10 @@ if __name__ == "__main__":
 		if kb.key_str == "CT" :	# Cursor Toggle, input from the combination of full counter-clockwise and full clockwise rotations
 
 			kb.cursor_mode_on = int (not kb.cursor_mode_on) # toggle Cursor Mode on or off
+			
+			kb.reset_joystick_path_booleans()
+			kb.reset_non_locked_modifiers() # reset non-locked modifiers whenever you type a character
+			
 			continue
 
 		#debug_joystick_cycle(kb)
@@ -789,7 +793,7 @@ if __name__ == "__main__":
 
 			kb.key_str = get_key_str(kb.last_arr_idx, btn_idx, kb.dir_idx)
 
-			if cursor_mode_on :
+			if kb.cursor_mode_on :
 
 				flash_char_cursor_from_key_str(kb) # if key_str corresponds to a character
 
@@ -807,7 +811,7 @@ if __name__ == "__main__":
 
 			# Cascaded typing, to be done later
 
-			#if cursor_mode_on :
+			#if kb.cursor_mode_on :
 
 				# to be coded
 
