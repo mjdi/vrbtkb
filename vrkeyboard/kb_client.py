@@ -456,14 +456,14 @@ class VR_Keyboard():
 
 		# mod_lock_arr == {RM_lock, RA_lock, RS_lock, RC_lock, LM_lock, LA_lock, LS_lock, LC_lock} = {0,0,0,0,0,0,0,0} 
 
-		for i in range(0, len(self.mod_lock_arr)) :
+		for i in range(0, len(self.mod_lock_arr)-1) :
 			self.mod_lock_arr[i] = 0
 
 	def reset_non_locked_modifiers(self):
 
 		# mod_arr == {RM, RA, RS, RC, LM, LA, LS, LC} = {0,0,0,0,0,0,0,0} 
 
-		for i in range(0, len(self.mod_arr)) :
+		for i in range(0, len(self.mod_arr)-1) :
 			if not self.mod_lock_arr[i] == 1 :
 				self.mod_arr[i] = 0
 
@@ -784,7 +784,7 @@ if __name__ == "__main__":
 
 			btn_idx = -1; # we need to find the non-zero index of kb.btns_state
 
-			for i in range(0,len(kb.btns_state)) : # This can be replaced with a faster numpy method perhaps later, but for 5 elements it probably doesn't matter
+			for i in range(0,len(kb.btns_state)-1) : # This can be replaced with a faster numpy method perhaps later, but for 5 elements it probably doesn't matter
 				if kb.btns_state[i] :
 					btn_idx = i
 
