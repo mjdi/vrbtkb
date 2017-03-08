@@ -768,7 +768,7 @@ if __name__ == "__main__":
 			kb.last_dir_idx = -1 # reset after a character swap
 			kb.last_btns_state = kb.btns_state 
 
-			kb.reset_joystick_path()  # reset joystick path so we prevent joystick cycles when resets to neutral
+			kb.reset_joystick_path_booleans()  # reset joystick path so we prevent joystick cycles when resets to neutral
 			kb.reset_modifier_locks() # always reset modifier_locks when switching directions
 			kb.reset_non_locked_modifiers()  # reset non-locked modifiers when you type a character
 			
@@ -786,7 +786,7 @@ if __name__ == "__main__":
 
 			kb = type_hid_code_from_key_str(kb)
 
-			kb.reset_joystick_path()
+			kb.reset_joystick_path_booleans()
 			kb.reset_non_locked_modifiers() # reset non-locked modifiers whenever you type a character
 
 		elif kb.num_btns_pressed == 1 : # button pressed, find hid code
@@ -809,7 +809,7 @@ if __name__ == "__main__":
 
 				kb = type_hid_code_from_key_str(kb)
 
-        		kb.reset_joystick_path() # reset joystick path so we prevent white-space flicks when joystick resets to deadzone from cardinal direction
+        		kb.reset_joystick_path_booleans() # reset joystick path so we prevent white-space flicks when joystick resets to deadzone from cardinal direction
             
 		elif kb.num_btns_pressed == 2 :
 
