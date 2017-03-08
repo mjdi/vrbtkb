@@ -773,13 +773,13 @@ if __name__ == "__main__":
 
 		# 7 scenarios: 0, 1, or 2 buttons pressed (with cursor mode either on or off), or the blank character (typed only once to stop repeating characters)
 
-		if kb.num_btns_pressed == 0 and kb.key_str = "" : # Nothing pressed, no Joy-stick cycle, no key_str recorded
+		if kb.num_btns_pressed == 0 and kb.key_str == "" : # Nothing pressed, no Joy-stick cycle, no key_str recorded
 
 			if not kb.btns_state == kb.last_btns_state : # we only send blank key once! (so as not to slow down code with excess BT latency)
 
 				kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key, MAY NOT HAVE TO INCLUDE MOD
 
-		elif kb.num_btns_pressed == 0 and not kb.key_str = "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
+		elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
 
 			kb = type_hid_code_from_key_str(kb)
 
