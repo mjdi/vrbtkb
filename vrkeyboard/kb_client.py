@@ -747,7 +747,7 @@ if __name__ == "__main__":
 
 		kb = get_dir_idx(kb)
 
-		kb = get_key_str_if_joystick_simple_cycle(kb) 
+		kb = get_key_str_if_joystick_cycle(kb) 
 
 		if kb.key_str == "CT" :	# Cursor Toggle, input from the combination of full counter-clockwise and full clockwise rotations
 
