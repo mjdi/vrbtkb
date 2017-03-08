@@ -790,6 +790,7 @@ if __name__ == "__main__":
 			for i in range(0,len(kb.btns_state)-1) : # This can be replaced with a faster numpy method perhaps later, but for 5 elements it probably doesn't matter
 				if kb.btns_state[i] :
 					btn_idx = i
+					break
 
 			kb.key_str = get_key_str(kb.last_arr_idx, btn_idx, kb.dir_idx)
 
