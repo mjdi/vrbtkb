@@ -814,11 +814,11 @@ if __name__ == "__main__":
 
 			# Cascaded typing, to be done later
 
-			if cursor_mode_on :
+			#if cursor_mode_on :
 
 				# to be coded
 
-			else : # cursor mode is off, repeated characters allowed
+			#else : # cursor mode is off, repeated characters allowed
 
 				# to be coded
 
