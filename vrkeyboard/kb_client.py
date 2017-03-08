@@ -756,7 +756,7 @@ if __name__ == "__main__":
 			kb.cursor_mode_on = int (not kb.cursor_mode_on) # toggle Cursor Mode on or off
 			continue
 
-		#debug_joystick_simple_cycle(kb)
+		#debug_joystick_cycle(kb)
 		#debug_modifer_toggles(kb)
 
 		kb = get_btns_state(kb)
