@@ -692,7 +692,7 @@ def debug_selected_key(kb):
 
 def type_hid_code_from_key_str(kb):
 
-	if get_Shift_Required(key_str) == 1 :
+	if get_Shift_Required(kb.key_str) == 1 :
 		if hand == "left" :
 			kb.mod_arr[kb.mod_key_str_2_idx["LS"]] = 1 # turn left shift modifier on
 		elif hand == "right" : 
@@ -705,7 +705,7 @@ def type_hid_code_from_key_str(kb):
 
 def flash_char_cursor_from_key_str(kb):
 
-	if get_Shift_Required(key_str) == 1 :
+	if get_Shift_Required(kb.key_str) == 1 :
 		if hand == "left" :
 			kb.mod_arr[kb.mod_key_str_2_idx["LS"]] = 1 # turn left shift modifier on
 		elif hand == "right" : 
