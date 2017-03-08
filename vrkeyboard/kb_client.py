@@ -754,7 +754,7 @@ if __name__ == "__main__":
 		if kb.key_str == "CT" :	# Cursor Toggle, input from the combination of full counter-clockwise and full clockwise rotations
 
 			kb.cursor_mode_on = int (not kb.cursor_mode_on) # toggle Cursor Mode on or off
-			break
+			continue
 
 		#debug_joystick_simple_cycle(kb)
 		#debug_modifer_toggles(kb)
@@ -772,7 +772,7 @@ if __name__ == "__main__":
 			kb.reset_modifier_locks() # always reset modifier_locks when switching directions
 			kb.reset_non_locked_modifiers()  # reset non-locked modifiers when you type a character
 			
-			break
+			continue
 
 		# 7 scenarios: 0, 1, or 2 buttons pressed (with cursor mode either on or off), or the blank character (typed only once to stop repeating characters)
 
@@ -813,7 +813,7 @@ if __name__ == "__main__":
             
 		elif kb.num_btns_pressed == 2 :
 
-			break
+			continue
 
 			# Cascaded typing, to be done later
 
@@ -827,7 +827,7 @@ if __name__ == "__main__":
 
 		else : # kb.num_btns_pressed > 2 will run into problems with BT latency (it's impossible to know which of the 2nd and 3rd pressed buttons was pressed first)
 
-			break # to be coded
+			continue # to be coded
 		
 		kb.last_dir_idx = kb.dir_idx
 		kb.last_btns_state = kb.btns_state
