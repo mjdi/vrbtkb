@@ -702,7 +702,6 @@ def type_hid_code_from_key_str(kb):
 
 	kb.iface.send_keys( int(get_mod_bit_str(kb),2), [get_HID(kb.key_str),0,0,0,0,0] )
 
-
 def flash_char_cursor_from_key_str(kb):
 
 	if get_Shift_Required(kb.key_str) == 1 :
@@ -778,7 +777,7 @@ if __name__ == "__main__":
 
 		elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
 
-			kb = type_hid_code_from_key_str(kb)
+			type_hid_code_from_key_str(kb)
 
 			kb.reset_joystick_path_booleans()
 			kb.reset_non_locked_modifiers() # reset non-locked modifiers whenever you type a character
@@ -802,7 +801,7 @@ if __name__ == "__main__":
 
 			else : # cursor mode is off, repeated characters allowed
 
-				kb = type_hid_code_from_key_str(kb)
+				type_hid_code_from_key_str(kb)
 
         		kb.reset_joystick_path_booleans() # reset joystick path so we prevent white-space flicks when joystick resets to deadzone from cardinal direction
             
