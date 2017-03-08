@@ -480,16 +480,6 @@ class VR_Keyboard():
 
 def get_dir_idx(kb):
 
-    # determine direction_index (map x/y to cardinal directions, seen below), using circular deadzone!
-	#      \     North      /
-	#       \ ____________ /
-	#        |            |
-	#  West  | “deadzone” |  East 
-	#        |____________|
-	#       /              \
-	#      /     South      \
-
-
 	# read x and y potentiometer values
 	xpos = ReadChannel(1)
 	ypos = ReadChannel(2)
@@ -505,7 +495,7 @@ def get_dir_idx(kb):
 	# Determine dir_idx
 
 	#if abs(xpos) < ( kb.deadzone_width / 2 ) and abs(ypos) < ( kb.deadzone_width / 2 ) : 	# square deadzone
-	if (xpos * xpos + ypos * ypos) < kb.deadzone_width * kb.deadzone_width / 4 : 			# circular deadzone
+	if (xpos * xpos + ypos * ypos) < kb.deadzone_width * kb.deadzone_width / 4 : 		# circular deadzone
 		kb.direction_str = 'deadz'
 		kb.dir_idx = 0
 
