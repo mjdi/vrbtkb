@@ -432,7 +432,7 @@ class VR_Keyboard():
 		self.mod_arr = [0,0,0,0,0,0,0,0]
 		self.mod_lock_arr = [0,0,0,0,0,0,0,0]
 		
-		self.reset_modifiers()
+		self.reset_non_locked_modifiers()
 		self.reset_modifier_locks()
 
 		# end of __init__	
@@ -458,7 +458,7 @@ class VR_Keyboard():
 		for i in range(0, len(self.mod_lock_arr)) :
 			self.mod_lock_arr[i] = 0
 
-	def reset_modifiers(self):
+	def reset_non_locked_modifiers(self):
 
 		# mod_arr == {RM, RA, RS, RC, LM, LA, LS, LC} = {0,0,0,0,0,0,0,0} 
 
