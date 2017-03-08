@@ -393,8 +393,9 @@ class VR_Keyboard():
 			self.btn2_pin = "GPIO2"
 			self.btn3_pin = "GPIO3"
 		    	self.btn4_pin = "GPIO4"
-		    	self.btn5_pin = "GPIO5"
-
+		    	#self.btn5_pin = "GPIO5" # doesn't seem to be working
+			self.btn5_pin = "GPIO6"
+			
 		    	GPIO.setup(self.btn2_pin, GPIO.IN) # index finger
 		    	GPIO.setup(self.btn3_pin, GPIO.IN) # middle finger
 		    	GPIO.setup(self.btn4_pin, GPIO.IN) # ring finger
@@ -646,8 +647,8 @@ def get_btns_state(kb):
 
 	kb.btns_state = [0,0,0,0,0]
 	
-	kb.btns_state[0] = ReadChannel(0)			# off = ~1024 , on = 0
-	kb.btns_state[1] = GPIO.input(kb.btn2_pin)	# off = 0, on = 1
+	kb.btns_state[0] = int(not bool ReadChannel(0)) # off = ~1024 , on = 0 (we transform this to 0 off and 1 on) 
+	kb.btns_state[1] = GPIO.input(kb.btn2_pin) 	# off = 0, on = 1
 	kb.btns_state[2] = GPIO.input(kb.btn3_pin)	# off = 0, on = 1
 	kb.btns_state[3] = GPIO.input(kb.btn4_pin)	# off = 0, on = 1
     	kb.btns_state[4] = GPIO.input(kb.btn5_pin)	# off = 0, on = 1
