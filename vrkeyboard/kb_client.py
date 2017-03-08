@@ -654,6 +654,8 @@ def debug_joystick_cycle(kb):
 
 def get_btns_state(kb):
 
+	kb.btns_state = [0,0,0,0,0]
+	
 	kb.btns_state[0] = ReadChannel(0)			# off = ~1024 , on = 0
 	kb.btns_state[1] = GPIO.input(kb.btn2_pin)	# off = 0, on = 1
 	kb.btns_state[2] = GPIO.input(kb.btn3_pin)	# off = 0, on = 1
