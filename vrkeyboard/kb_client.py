@@ -692,7 +692,7 @@ class VR_Keyboard():
 		
 		#self.debug_selected_key()
 		
-		if not kb.key_str == "" : # Extra precaution in the event that a "" key_str slips by (like with changing characters sets)
+		if not self.key_str == "" : # Extra precaution in the event that a "" key_str slips by (like with changing characters sets)
 			
 			self.activate_shift_mod_if_required_for_key_str()
 
@@ -705,7 +705,7 @@ class VR_Keyboard():
 		
 		#self.debug_selected_key()
 		
-		if not kb.key_str == "" : # Extra precaution in the event that a "" key_str slips by (like with changing characters sets)
+		if not self.key_str == "" : # Extra precaution in the event that a "" key_str slips by (like with changing characters sets)
 		
 			self.current_char_cursor_key_str = self.key_str # store for when we type by releasing button (repeating is not possible)
 			
