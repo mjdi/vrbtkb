@@ -792,7 +792,7 @@ if __name__ == "__main__":
 
 			continue
 
-			# Cascaded typing, to be done later
+			# Cascaded typing, to be done later 
 
 			#if kb.cursor_mode_on :
 
