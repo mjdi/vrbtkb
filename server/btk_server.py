@@ -83,7 +83,7 @@ class BTKbDevice():
     if subprocess.check_output("hostname -I | grep -oP '...\....\..\...'", shell=True).rstrip() == "" : 
 	MY_DEV_NAME = device + "_" + hand + "_hand_wlan_not_connected"
     else :
-    	MY_DEV_NAME = device + "_" + hand + "_hand_" + subprocess.check_output("hostname -I | grep -oP '...\....\..\...'"", shell=True).rstrip()
+    	MY_DEV_NAME = device + "_" + hand + "_hand_" + subprocess.check_output("hostname -I | grep -oP '...\....\..\...'", shell=True).rstrip()
 	
     #define some constants
     P_CTRL =17  #Service port - must match port configured in SDP record
