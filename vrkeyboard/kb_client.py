@@ -694,10 +694,12 @@ class VR_Keyboard():
 		
 		self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] )
 		
-		kb.reset_non_locked_modifiers()
-		kb.reset_joystick_path_booleans()
+		self.reset_non_locked_modifiers()
+		self.reset_joystick_path_booleans()
 
 	def flash_char_cursor_from_key_str(self):
+		
+		self.current_char_cursor_key_str = self.key_str # store for when we type by releasing button (repeating is not possible)
 		
 		#self.debug_selected_key()
 		self.activate_shift_mod_if_required_for_key_str()
@@ -712,8 +714,8 @@ class VR_Keyboard():
 		self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
 		time.sleep(0.5) # wait for 1/2 a second before continuing 
 		
-		kb.reset_non_locked_modifiers()
-		kb.reset_joystick_path_booleans()
+		self.reset_non_locked_modifiers()
+		self.reset_joystick_path_booleans()
 
 if __name__ == "__main__":
 
@@ -763,17 +765,16 @@ if __name__ == "__main__":
 
 		if kb.num_btns_pressed == 0 and kb.key_str == "" : # Nothing pressed, no Joy-stick cycle, no key_str recorded yet
 
-			if kb.cursor_mode_on :
+			if not kb.btns_state == kb.last_btns_state : # we only (type and) send blank key once! (so as not to slow down code with excess BT latency)
+			
+				if kb.cursor_mode_on :
+					
+					kb.key_str = kb.current_char_cursor_key_str # since typing function uses self.key_str
+					kb.current_char_cursor_key_str = "" # reset for next cursor char
 				
-				kb.type_hid_code_from_key_str()
+					kb.type_hid_code_from_key_str() # Having let go of all buttons, we type the last cursor character
 				
 				kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
-				
-			else :
-
-				if not kb.btns_state == kb.last_btns_state : # we only send blank key once! (so as not to slow down code with excess BT latency)
-
-					kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
 
 		elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
 
