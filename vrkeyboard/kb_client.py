@@ -603,7 +603,6 @@ class VR_Keyboard():
 	def debug_joystick_cycle(self):
 
 		print "{D2N,D2E,D2S,D2W} = [" + str(self.D2N) + str(self.D2E) + str(self.D2S) + str(self.D2W) + "], " ,
-		print "{N2D,E2D,S2D,W2D} = [" + str(self.N2D) + str(self.E2D) + str(self.S2D) + str(self.W2D) + "], " ,
 		print "{N2W,W2S,S2E,E2N} = [" + str(self.N2W) + str(self.W2S) + str(self.S2E) + str(self.E2N) + "], " ,
 		print "{N2E,E2S,S2W,W2N} = [" + str(self.N2E) + str(self.E2S) + str(self.S2W) + str(self.W2N) + "], " ,  
 
