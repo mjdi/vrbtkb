@@ -466,13 +466,13 @@ class VR_Keyboard():
 
 	def reset_non_locked_modifiers(self):
 		
-		for i in range(0, len(self.mod_arr)-1) :
+		for i in range(0, len(self.mod_arr)) : # range(start,stop[,step]) generates all numbers up to but not including stop 
 			if not self.mod_lock_arr[i] == 1 :
 				self.mod_arr[i] = 0
 		
 	def reset_modifier_locks(self):
 
-		for i in range(0, len(self.mod_lock_arr)-1) :
+		for i in range(0, len(self.mod_lock_arr)) : # range(start,stop[,step]) generates all numbers up to but not including stop 
 			self.mod_lock_arr[i] = 0
 
 
@@ -668,7 +668,7 @@ class VR_Keyboard():
 			self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] )
 
 			self.reset_non_locked_modifiers()
-			self.reset_joystick_path_booleans()
+			self.reset_joystick_path_booleans() # reset joystick path to prevent new joystick cycles as it resets to deadzone
 
 	def flash_char_cursor_from_key_str(self):
 		
@@ -717,7 +717,7 @@ if __name__ == "__main__":
 		if   kb.key_str == "CT" : # Cursor Toggle, input from the combination of full counter-clockwise and full clockwise rotations
 
 			kb.cursor_mode_on = int (not kb.cursor_mode_on) # toggle "Cursor Mode" on or off
-			kb.reset_joystick_path_booleans()
+			kb.reset_joystick_path_booleans() # reset joystick path to prevent new joystick cycles as it resets to deadzone
 			kb.reset_non_locked_modifiers() # reset non-locked modifiers when you toggle Cursor Mode
 			continue
 			
@@ -735,9 +735,9 @@ if __name__ == "__main__":
 			kb.last_dir_idx = -1 # reset after a character swap
 			kb.last_btns_state = kb.btns_state 
 
-			kb.reset_joystick_path_booleans()  # reset joystick path so we prevent joystick cycles when resets to neutral
-			kb.reset_modifier_locks() # always reset modifier_locks when switching directions
+			kb.reset_joystick_path_booleans()  # reset joystick path to prevent new joystick cycles as it resets to deadzone
 			kb.reset_non_locked_modifiers()  # reset non-locked modifiers when you type a character
+			kb.reset_modifier_locks() # always reset modifier_locks when switching directions
 			
 			continue
 
