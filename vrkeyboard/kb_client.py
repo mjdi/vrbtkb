@@ -438,6 +438,16 @@ class VR_Keyboard():
 		self.reset_modifier_locks()
 
 		# end of __init__	
+
+	# Deprecated: forward keyboard events to the dbus service (deprecated, not used in this script, as we manually do so instead)
+	def send_input(self):
+
+		bin_str=""
+		element=self.kb_state[2]
+		for bit in element:
+			bin_str += str(bit) # forms 8 char string which represents modifier(s), i.e. "00100000" is left shift
+
+			self.iface.send_keys(int(bin_str,2),self.kb_state[4:10] )
 		
 	def reset_joystick_path_booleans(self):
 		self.D2N = 0 # deadzone to north
@@ -468,262 +478,237 @@ class VR_Keyboard():
 			if not self.mod_lock_arr[i] == 1 :
 				self.mod_arr[i] = 0
 
-	# Deprecated: forward keyboard events to the dbus service (deprecated, not used in this script, as we manually do so instead)
-	def send_input(self):
+	def get_dir_idx(self):
 
-		bin_str=""
-		element=self.kb_state[2]
-		for bit in element:
-			bin_str += str(bit) # forms 8 char string which represents modifier(s), i.e. "00100000" is left shift
+		# read x and y potentiometer values
+		xpos = ReadChannel(1)
+		ypos = ReadChannel(2)
 
-			self.iface.send_keys(int(bin_str,2),self.kb_state[4:10] )
+		#Center values at zero by subtracting 512
+		xpos = xpos - ( self.analog_dimension / 2 )
+		ypos = ypos - ( self.analog_dimension / 2 )
 
-# subroutines in main 
+		# (hand prototype)rotate control stick 180 degrees if need be 
+		# xpos = -xpos
+		# ypos = -ypos
 
-def get_dir_idx(kb):
+		# Determine dir_idx
 
-	# read x and y potentiometer values
-	xpos = ReadChannel(1)
-	ypos = ReadChannel(2)
+		#if abs(xpos) < ( kb.deadzone_width / 2 ) and abs(ypos) < ( kb.deadzone_width / 2 ) : 	# square deadzone
+		if (xpos * xpos + ypos * ypos) < self.deadzone_width * self.deadzone_width / 4 : 	# circular deadzone
+			self.direction_str = 'deadz'
+			self.dir_idx = 0
+
+			if   self.last_dir_idx == 1 :
+				self.N2D = 1
+			elif self.last_dir_idx == 2 :	
+				self.E2D = 1
+			elif self.last_dir_idx == 3 :	
+				self.S2D = 1
+			elif self.last_dir_idx == 4 :	
+				self.W2D = 1	
+
+		else :
+			if ypos >= abs(xpos) :
+
+				self.direction_str = 'north'
+				self.dir_idx = 1
+
+				if   self.last_dir_idx == 0 :
+					self.D2N = 1
+				elif self.last_dir_idx == 2 :
+					self.E2N = 1
+				elif self.last_dir_idx == 4 :
+					self.W2N = 1
+
+			if ypos <= -abs(xpos) :
+
+				self.direction_str = 'south'
+				self.dir_idx = 3
+
+				if   self.last_dir_idx == 0 :
+					self.D2S = 1
+				elif self.last_dir_idx == 2 :
+					self.E2S = 1
+				elif self.last_dir_idx == 4 :
+					self.W2S = 1
+
+			if xpos > abs(ypos) :
+
+				self.direction_str = 'east_'
+				self.dir_idx = 2
+
+				if   self.last_dir_idx == 0 :
+					self.D2E = 1
+				elif self.last_dir_idx == 1 :
+					self.N2E = 1
+				elif self.last_dir_idx == 3 :
+					self.S2E = 1
+
+			if xpos < -abs(ypos) :
+
+				self.direction_str = 'west_'
+				self.dir_idx = 4
+
+				if   self.last_dir_idx == 0 :
+					self.D2W = 1
+				elif self.last_dir_idx == 1 :
+					self.N2W = 1
+				elif self.last_dir_idx == 3 :
+					self.S2W = 1
+
+	def get_key_str_if_joystick_cycle(self):
+
+		if self.dir_idx == 0 : # if at deadzone, check if any whitespace characters, modifiers, or Bksp or Del were entered
+
+			if not ( self.N2W or self.W2S or self.S2E or self.E2N or self.N2E or self.E2S or self.S2W or self.W2N ) : # no rotation whatsoever
+
+				if   self.D2N : # Flick (north)
+
+					self.key_str = "Bk" 	# Blank Key, used to prevent repeating of previously pressed White-space keys
+
+				elif self.D2E : # Flick (east)
+
+					self.key_str = "Er" 	# Enter
+
+				elif self.D2S : # Flick (south)
+
+					self.key_str = "Se"	# Space
+
+				elif self.D2W : # Flick (west)
+
+					self.key_str = "Tb"	# Tab
+
+			else : # some amount of rotation
+
+				if   self.N2E * self.E2S * self.S2W * self.W2N * self.N2W * self.W2S * self.S2E * self.E2N : # full counter-clockwise rotation & full clockwise rotation
+
+					self.key_str = "CT"	# Cursor Toggle
+
+				elif self.N2E * self.E2S * self.S2W * self.W2N and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # full clockwise rotation only
+
+					self.key_str = "De"	# Delete
+
+				elif self.N2W * self.W2S * self.S2E * self.E2N and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # full counter-clockwise rotation only
+
+					self.key_str = "Be"	# Backspace
+
+				elif self.N2E * self.E2S and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # clockwise half rotation (east) only
+
+					self.key_str = "RC"	# Right Ctrl
+
+				elif self.E2S * self.S2W and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # clockwise half rotation (south) only
+
+					self.key_str = "RM"	# Right Meta
+
+				elif self.S2W * self.W2N and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # clockwise half rotation (west) only
+
+					self.key_str = "RA"	# Right Alt
+
+				elif self.W2N * self.N2E and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # clockwise half rotation (north) only
+
+					self.key_str = "RS"	# Right Shift
+
+				elif self.N2W * self.W2S and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # counter-clockwise half rotation (west) only
+
+					self.key_str = "LC"	# Left Control
+
+				elif self.W2S * self.S2E and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # counter-clockwise half rotation (south) only
+
+					self.key_str = "LM"	# Left Meta
+
+				elif self.S2E * self.E2N and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # counter-clockwise half rotation (east) only
+
+					self.key_str = "LA"	# Left Alt
+
+				elif self.E2N * self.N2W and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # counter-clockwise half rotation (north) only
+
+					self.key_str = "LS"	# Left Shift
+
+			# Don't reset joystick path for Whitespace Char & Backspace/Delete, thereby repeatedly typing these characters until the Joystick leaves deadzone again (or another button is pressed)
+			if not self.key_str in self.joystick_cycle_non_modifier_keys_arr : 
+				self.reset_joystick_path_booleans() # DO reset joystick paths for modifiers so as to not repeatedly toggle them
+
+
+	def debug_joystick_cycle(self):
+
+		print "{D2N,D2E,D2S,D2W} = [" + str(self.D2N) + str(self.D2E) + str(self.D2S) + str(self.D2W) + "], " ,
+		print "{N2D,E2D,S2D,W2D} = [" + str(self.N2D) + str(self.E2D) + str(self.S2D) + str(self.W2D) + "], " ,
+		print "{N2W,W2S,S2E,E2N} = [" + str(self.N2W) + str(self.W2S) + str(self.S2E) + str(self.E2N) + "], " ,
+		print "{N2E,E2S,S2W,W2N} = [" + str(self.N2E) + str(self.E2S) + str(self.S2W) + str(self.W2N) + "], " ,  
+
+	def get_btns_state(self):
+
+		self.btns_state = [0,0,0,0,0]
+		self.btns_state[0] = GPIO.input(self.btn5_pin)	# off = 0, on = 1
+		self.btns_state[1] = GPIO.input(self.btn4_pin)	# off = 0, on = 1
+		self.btns_state[2] = GPIO.input(self.btn3_pin)	# off = 0, on = 1
+		self.btns_state[3] = GPIO.input(self.btn2_pin) 	# off = 0, on = 1
+		self.btns_state[4] = int( not bool(ReadChannel(0)) ) 	# off = ~1024 , on = 0 (we transform this to 0 off and 1 on)
+
+		self.num_btns_pressed = sum(self.btns_state)
 	
-	#Center values at zero by subtracting 512
-	xpos = xpos - ( kb.analog_dimension / 2 )
-	ypos = ypos - ( kb.analog_dimension / 2 )
+	def get_mod_bit_str(self):
 
-	# (hand prototype)rotate control stick 180 degrees if need be 
-	# xpos = -xpos
-	# ypos = -ypos
+		return ''.join( str(x) for x in self.mod_arr )
 
-	# Determine dir_idx
+	def debug_modifer_toggles(self):
 
-	#if abs(xpos) < ( kb.deadzone_width / 2 ) and abs(ypos) < ( kb.deadzone_width / 2 ) : 	# square deadzone
-	if (xpos * xpos + ypos * ypos) < kb.deadzone_width * kb.deadzone_width / 4 : 		# circular deadzone
-		kb.direction_str = 'deadz'
-		kb.dir_idx = 0
+		print "\tmod_bit_str=" + self.get_mod_bit_str() ,
+		print "\tmod_lock_bit_str=" + ''.join( str(x) for x in self.mod_lock_arr ) ,
 
-		if   kb.last_dir_idx == 1 :
-			kb.N2D = 1
-		elif kb.last_dir_idx == 2 :	
-			kb.E2D = 1
-		elif kb.last_dir_idx == 3 :	
-			kb.S2D = 1
-		elif kb.last_dir_idx == 4 :	
-			kb.W2D = 1	
+	def toggle_modifer(self):
 
-	else :
-		if ypos >= abs(xpos) :
+		i = self.mod_key_str_2_idx[self.key_str]
 
-			kb.direction_str = 'north'
-			kb.dir_idx = 1
+		# 3-state toggle conditional logic
 
-			if   kb.last_dir_idx == 0 :
-				kb.D2N = 1
-			elif kb.last_dir_idx == 2 :
-				kb.E2N = 1
-			elif kb.last_dir_idx == 4 :
-				kb.W2N = 1
+		if   self.mod_arr[i] == 0 :
 
-		if ypos <= -abs(xpos) :
+			self.mod_arr[i] = 1 # turn modifier on (turns off after typing a single character/function key)
 
-			kb.direction_str = 'south'
-			kb.dir_idx = 3
+		elif self.mod_arr[i] == 1 and self.mod_lock_arr[i] == 1 :
 
-			if   kb.last_dir_idx == 0 :
-				kb.D2S = 1
-			elif kb.last_dir_idx == 2 :
-				kb.E2S = 1
-			elif kb.last_dir_idx == 4 :
-				kb.W2S = 1
+			self.mod_arr[i] = 0 # turn both left ctrl off 
+			self.mod_lock_arr[i] = 0  # and modifier lock off 
 
-		if xpos > abs(ypos) :
+		elif self.mod_arr[i] == 1 :
 
-			kb.direction_str = 'east_'
-			kb.dir_idx = 2
+			self.mod_lock_arr[i] = 1 # turn modifier lock on (stays on for all subsequent character/function keys)
 
-			if   kb.last_dir_idx == 0 :
-				kb.D2E = 1
-			elif kb.last_dir_idx == 1 :
-				kb.N2E = 1
-			elif kb.last_dir_idx == 3 :
-				kb.S2E = 1
+	def debug_selected_key(self):
 
-		if xpos < -abs(ypos) :
+		print "\tarr_idx =" + str(self.last_arr_idx) + "\tkey_str = " + self.key_str + "\tHID = " + str(self.hid) + "\tmod_bit_str" + self.get_mod_bit_str() ,
 
-			kb.direction_str = 'west_'
-			kb.dir_idx = 4
-
-			if   kb.last_dir_idx == 0 :
-				kb.D2W = 1
-			elif kb.last_dir_idx == 1 :
-				kb.N2W = 1
-			elif kb.last_dir_idx == 3 :
-				kb.S2W = 1
-
-	return kb
-
-def get_key_str_if_joystick_cycle(kb):
-
-	if kb.dir_idx == 0 : # if at deadzone, check if any whitespace characters, modifiers, or Bksp or Del were entered
-
-		if not ( kb.N2W or kb.W2S or kb.S2E or kb.E2N or kb.N2E or kb.E2S or kb.S2W or kb.W2N ) : # no rotation whatsoever
-			
-			if   kb.D2N : # Flick (north)
-
-				kb.key_str = "Bk" 	# Blank Key, used to prevent repeating of previously pressed White-space keys
-
-			elif kb.D2E : # Flick (east)
-
-				kb.key_str = "Er" 	# Enter
-
-			elif kb.D2S : # Flick (south)
-
-				kb.key_str = "Se"	# Space
-
-			elif kb.D2W : # Flick (west)
-
-				kb.key_str = "Tb"	# Tab
-
-		else : # some amount of rotation
-			
-			if   kb.N2E * kb.E2S * kb.S2W * kb.W2N * kb.N2W * kb.W2S * kb.S2E * kb.E2N : # full counter-clockwise rotation & full clockwise rotation
-
-				kb.key_str = "CT"	# Cursor Toggle
-
-			elif kb.N2E * kb.E2S * kb.S2W * kb.W2N and not ( kb.N2E or kb.E2S or kb.S2W or kb.W2N ) : # full clockwise rotation only
-
-				kb.key_str = "De"	# Delete
-
-			elif kb.N2W * kb.W2S * kb.S2E * kb.E2N and not ( kb.N2W or kb.W2S or kb.S2E or kb.E2N ) : # full counter-clockwise rotation only
-
-				kb.key_str = "Be"	# Backspace
-
-			elif kb.N2E * kb.E2S and not ( kb.N2W or kb.W2S or kb.S2E or kb.E2N ) : # clockwise half rotation (east) only
-
-				kb.key_str = "RC"	# Right Ctrl
-
-			elif kb.E2S * kb.S2W and not ( kb.N2W or kb.W2S or kb.S2E or kb.E2N ) : # clockwise half rotation (south) only
-
-				kb.key_str = "RM"	# Right Meta
-
-			elif kb.S2W * kb.W2N and not ( kb.N2W or kb.W2S or kb.S2E or kb.E2N ) : # clockwise half rotation (west) only
-
-				kb.key_str = "RA"	# Right Alt
-
-			elif kb.W2N * kb.N2E and not ( kb.N2W or kb.W2S or kb.S2E or kb.E2N ) : # clockwise half rotation (north) only
-
-				kb.key_str = "RS"	# Right Shift
-
-			elif kb.N2W * kb.W2S and not ( kb.N2E or kb.E2S or kb.S2W or kb.W2N ) : # counter-clockwise half rotation (west) only
-
-				kb.key_str = "LC"	# Left Control
-
-			elif kb.W2S * kb.S2E and not ( kb.N2E or kb.E2S or kb.S2W or kb.W2N ) : # counter-clockwise half rotation (south) only
-
-				kb.key_str = "LM"	# Left Meta
-
-			elif kb.S2E * kb.E2N and not ( kb.N2E or kb.E2S or kb.S2W or kb.W2N ) : # counter-clockwise half rotation (east) only
-
-				kb.key_str = "LA"	# Left Alt
-
-			elif kb.E2N * kb.N2W and not ( kb.N2E or kb.E2S or kb.S2W or kb.W2N ) : # counter-clockwise half rotation (north) only
-
-				kb.key_str = "LS"	# Left Shift
-
-		# Don't reset joystick path for Whitespace Char & Backspace/Delete, thereby repeatedly typing these characters until the Joystick leaves deadzone again (or another button is pressed)
-		if not kb.key_str in kb.joystick_cycle_non_modifier_keys_arr : 
-			kb.reset_joystick_path_booleans()
-
-	return kb
-
-def debug_joystick_cycle(kb):
-
-	print "{D2N,D2E,D2S,D2W} = [" + str(kb.D2N) + str(kb.D2E) + str(kb.D2S) + str(kb.D2W) + "], " ,
-	print "{N2D,E2D,S2D,W2D} = [" + str(kb.N2D) + str(kb.E2D) + str(kb.S2D) + str(kb.W2D) + "], " ,
-	print "{N2W,W2S,S2E,E2N} = [" + str(kb.N2W) + str(kb.W2S) + str(kb.S2E) + str(kb.E2N) + "], " ,
-	print "{N2E,E2S,S2W,W2N} = [" + str(kb.N2E) + str(kb.E2S) + str(kb.S2W) + str(kb.W2N) + "], " ,  
-
-def get_btns_state(kb):
-
-	kb.btns_state = [0,0,0,0,0]
-	kb.btns_state[0] = GPIO.input(kb.btn5_pin)	# off = 0, on = 1
-	kb.btns_state[1] = GPIO.input(kb.btn4_pin)	# off = 0, on = 1
-	kb.btns_state[2] = GPIO.input(kb.btn3_pin)	# off = 0, on = 1
-	kb.btns_state[3] = GPIO.input(kb.btn2_pin) 	# off = 0, on = 1
-    	kb.btns_state[4] = int( not bool(ReadChannel(0)) ) 	# off = ~1024 , on = 0 (we transform this to 0 off and 1 on)
+	def activate_shift_mod_if_required_for_key_str(self)
 	
-	kb.num_btns_pressed = sum(kb.btns_state)
+		if get_Shift_Required(self.key_str) == 1 :
+			if hand == "left" :
+				self.mod_arr[self.mod_key_str_2_idx["LS"]] = 1 # turn left shift modifier on
+			elif hand == "right" : 
+				self.mod_arr[self.mod_key_str_2_idx["RS"]] = 1 # turn right shift modifier on
+		
+	def type_hid_code_from_key_str(self):
 
-	return kb
+		self.activate_shift_mod_if_required_for_key_str()
+		
+		#self.debug_selected_key()
 
-def get_mod_bit_str(kb):
+		self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] )
 
-	return ''.join( str(x) for x in kb.mod_arr )
+	def flash_char_cursor_from_key_str(self):
+		
+		self.activate_shift_mod_if_required_for_key_str()
 
-def debug_modifer_toggles(kb):
-
-	print "\tmod_bit_str=" + get_mod_bit_str(kb) ,
-	print "\tmod_lock_bit_str=" + ''.join( str(x) for x in kb.mod_lock_arr ) ,
-
-def toggle_modifer(kb):
-
-	i = mod_key_str_2_idx[kb.key_str]
-
-	# 3-state toggle conditional logic
-
-	if   kb.mod_arr[i] == 0 :
-
-		kb.mod_arr[i] = 1 # turn modifier on (turns off after typing a single character/function key)
-
-	elif kb.mod_arr[i] == 1 and kb.mod_lock_arr[i] == 1 :
-
-		kb.mod_arr[i] = 0 # turn both left ctrl off 
-		kb.mod_lock_arr[i] = 0  # and modifier lock off 
-
-	elif kb.mod_arr[i] == 1 :
-
-		kb.mod_lock_arr[i] = 1 # turn modifier lock on (stays on for all subsequent character/function keys)
-
-	return kb
-
-def debug_selected_key(kb):
-
-	print "\tarr_idx =" + str(kb.last_arr_idx) + "\tkey_str = " + kb.key_str + "\tHID = " + str(kb.hid) + "\tmod_bit_str" + get_mod_bit_str(kb) ,
-
-def type_hid_code_from_key_str(kb):
-
-	if get_Shift_Required(kb.key_str) == 1 :
-		if hand == "left" :
-			kb.mod_arr[kb.mod_key_str_2_idx["LS"]] = 1 # turn left shift modifier on
-		elif hand == "right" : 
-			kb.mod_arr[kb.mod_key_str_2_idx["RS"]] = 1 # turn right shift modifier on
-
-	#debug_selected_key(kb)
-
-	kb.iface.send_keys( int(get_mod_bit_str(kb),2), [get_HID(kb.key_str),0,0,0,0,0] )
-
-def flash_char_cursor_from_key_str(kb):
-
-	if get_Shift_Required(kb.key_str) == 1 :
-		if hand == "left" :
-			kb.mod_arr[kb.mod_key_str_2_idx["LS"]] = 1 # turn left shift modifier on
-		elif hand == "right" : 
-			kb.mod_arr[kb.mod_key_str_2_idx["RS"]] = 1 # turn right shift modifier on
-
-	# this (in it's current state, can be definitely be optimized) requires sending blank keypresses in between to avoid character repetition (but slow!)
-	
-	#print "display char_cursor" ,
-	kb.iface.send_keys( int(get_mod_bit_str(kb),2), [get_HID(kb.key_str),0,0,0,0,0] ) # display char_cursor
-	kb.iface.send_keys( int("00000000",2), [0,0,0,0,0,0] ) # blank char_cursor to stop "lift" previous key
-	
-	#print "backspace char_cursor",
-	kb.iface.send_keys( int("00000000",2), [42,0,0,0,0,0] ) # backspace char_cursor
-	kb.iface.send_keys( int("00000000",2), [0,0,0,0,0,0] ) # blank char_cursor to stop "lift" previous key
-
-# main
+		# this (in it's current state, can be definitely be optimized) requires sending blank keypresses in between to avoid character repetition (but slow!)
+		self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) # display char_cursor
+		self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
+		self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
+		self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
 
 if __name__ == "__main__":
 
-	print "Running up VR Bluetooth Keyboard"
+	print "Running VR Bluetooth Keyboard"
 
 	kb = VR_Keyboard()
 
@@ -735,9 +720,9 @@ if __name__ == "__main__":
 		kb.key_str = ""
 		kb.hid = 0	# default to blank character
 
-		kb = get_dir_idx(kb)
+		kb.get_dir_idx()
 
-		kb = get_key_str_if_joystick_cycle(kb) 
+		kb.get_key_str_if_joystick_cycle() 
 
 		if kb.key_str == "CT" :	# Cursor Toggle, input from the combination of full counter-clockwise and full clockwise rotations
 
@@ -748,11 +733,10 @@ if __name__ == "__main__":
 			
 			continue
 
-		#debug_joystick_cycle(kb)
-		#debug_modifer_toggles(kb)
+		#kb.debug_joystick_cycle()
+		#kb.debug_modifer_toggles()
 
-		kb = get_btns_state(kb)
-
+		kb.get_btns_state()
 
 		if kb.btns_state[0] and kb.dir_idx in range(1,4) : # Joy-stick Click + direction = character set swap, no typing here
 
@@ -772,11 +756,11 @@ if __name__ == "__main__":
 
 			if not kb.btns_state == kb.last_btns_state : # we only send blank key once! (so as not to slow down code with excess BT latency)
 
-				kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key, MAY NOT HAVE TO INCLUDE MOD
+				kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key, no modifiers necessary, don't change modifier toggles
 
 		elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
 
-			type_hid_code_from_key_str(kb)
+			kb.type_hid_code_from_key_str()
 
 			kb.reset_joystick_path_booleans()
 			kb.reset_non_locked_modifiers() # reset non-locked modifiers whenever you type a character
@@ -794,13 +778,13 @@ if __name__ == "__main__":
 
 			if kb.cursor_mode_on :
 
-				flash_char_cursor_from_key_str(kb) # if key_str corresponds to a character
+				kb.flash_char_cursor_from_key_str() # if key_str corresponds to a character
 
 				kb.reset_non_locked_modifiers() # reset non-locked modifiers whenever you type a character
 
 			else : # cursor mode is off, repeated characters allowed
 
-				type_hid_code_from_key_str(kb)
+				kb.type_hid_code_from_key_str()
 
         		kb.reset_joystick_path_booleans() # reset joystick path so we prevent white-space flicks when joystick resets to deadzone from cardinal direction
             
