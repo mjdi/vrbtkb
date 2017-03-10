@@ -680,8 +680,8 @@ class VR_Keyboard():
 
 		print "\tarr_idx =" + str(self.last_arr_idx) + "\tkey_str = " + self.key_str + "\tHID = " + str(self.hid) + "\tmod_bit_str" + self.get_mod_bit_str() ,
 
-	def activate_shift_mod_if_required_for_key_str(self)
-	
+	def activate_shift_mod_if_required_for_key_str(self):
+		
 		if get_Shift_Required(self.key_str) == 1 :
 			if hand == "left" :
 				self.mod_arr[self.mod_key_str_2_idx["LS"]] = 1 # turn left shift modifier on
