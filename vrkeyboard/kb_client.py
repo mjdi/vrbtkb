@@ -585,11 +585,11 @@ class VR_Keyboard():
 
 					self.key_str = "CT"	# Cursor Toggle
 
-				elif self.N2E * self.E2S * self.S2W * self.W2N and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # full clockwise rotation only
+				elif self.N2E * self.E2S * self.S2W * self.W2N and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # full clockwise rotation only
 
 					self.key_str = "De"	# Delete
 
-				elif self.N2W * self.W2S * self.S2E * self.E2N and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # full counter-clockwise rotation only
+				elif self.N2W * self.W2S * self.S2E * self.E2N and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # full counter-clockwise rotation only
 
 					self.key_str = "Be"	# Backspace
 
@@ -689,22 +689,31 @@ class VR_Keyboard():
 				self.mod_arr[self.mod_key_str_2_idx["RS"]] = 1 # turn right shift modifier on
 		
 	def type_hid_code_from_key_str(self):
-
+		#self.debug_selected_key()
 		self.activate_shift_mod_if_required_for_key_str()
 		
-		#self.debug_selected_key()
-
 		self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] )
+		
+		kb.reset_non_locked_modifiers()
+		kb.reset_joystick_path_booleans()
 
 	def flash_char_cursor_from_key_str(self):
 		
+		#self.debug_selected_key()
 		self.activate_shift_mod_if_required_for_key_str()
-
+		
 		# this (in it's current state, can be definitely be optimized) requires sending blank keypresses in between to avoid character repetition (but slow!)
+		
 		self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) # display char_cursor
 		self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
+		time.sleep(0.5) # wait for 1/2 a second before deleting flashed character
+		
 		self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
 		self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
+		time.sleep(0.5) # wait for 1/2 a second before continuing 
+		
+		kb.reset_non_locked_modifiers()
+		kb.reset_joystick_path_booleans()
 
 if __name__ == "__main__":
 
@@ -752,11 +761,19 @@ if __name__ == "__main__":
 
 		# 7 scenarios: 0, 1, or 2 buttons pressed (with cursor mode either on or off), or the blank character (typed only once to stop repeating characters)
 
-		if kb.num_btns_pressed == 0 and kb.key_str == "" : # Nothing pressed, no Joy-stick cycle, no key_str recorded
+		if kb.num_btns_pressed == 0 and kb.key_str == "" : # Nothing pressed, no Joy-stick cycle, no key_str recorded yet
 
-			if not kb.btns_state == kb.last_btns_state : # we only send blank key once! (so as not to slow down code with excess BT latency)
+			if kb.cursor_mode_on :
+				
+				kb.type_hid_code_from_key_str()
+				
+				kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
+				
+			else :
 
-				kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key, no modifiers necessary, don't change modifier toggles
+				if not kb.btns_state == kb.last_btns_state : # we only send blank key once! (so as not to slow down code with excess BT latency)
+
+					kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
 
 		elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
 
@@ -780,13 +797,11 @@ if __name__ == "__main__":
 
 				kb.flash_char_cursor_from_key_str() # if key_str corresponds to a character
 
-				kb.reset_non_locked_modifiers() # reset non-locked modifiers whenever you type a character
-
 			else : # cursor mode is off, repeated characters allowed
+				
+				if not kb.last_btns_state == kb.btns_state : # don't repeatedly send same hid code (only need it once to "hold" key down, it's only lifted via "blank" key)
 
-				kb.type_hid_code_from_key_str()
-
-        		kb.reset_joystick_path_booleans() # reset joystick path so we prevent white-space flicks when joystick resets to deadzone from cardinal direction
+					kb.type_hid_code_from_key_str()
             
 		elif kb.num_btns_pressed == 2 :
 
