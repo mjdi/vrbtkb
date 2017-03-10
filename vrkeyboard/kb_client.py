@@ -729,7 +729,8 @@ if __name__ == "__main__":
 
 		kb.get_btns_state()
 
-		if kb.btns_state[4] and kb.dir_idx in range(1,4) : # Joy-stick Click + direction = character set swap, no typing here
+						    # range(start,stop[,step]) generates all numbers up to but not including stop
+		if kb.btns_state[4] and kb.dir_idx in range(1,5) : # Joy-stick Click + direction = character set swap, no typing here
 
 			kb.last_arr_idx = kb.dir_idx
 			kb.last_dir_idx = -1 # reset after a character swap
