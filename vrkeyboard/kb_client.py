@@ -208,18 +208,18 @@ def get_Shift_Required(key_str):
 # accessed via Joyclick-North, since numerical keys are located on top side of qwerty keyboard
 
 left_numspecial_key_str_2D_array = np.array([
-	["1_","!_","<_","=_",">_"],
+	["1_","!_",">_","=_","<_"],
 	["2_","@_","Rt","+_","Lt"],
 	["3_","#_","Up","-_","Dn"],
-	["4_","$_","(_","%_",")_"],
+	["4_","$_",")_","%_","(_"],
 	["5_", "" , "" , "" , "" ]],
 	dtype="a2")
 
 right_numspecial_key_str_2D_array = np.array([
-	["0_","|_","{_","\\_","}_"],
+	["0_","|_","}_","\\_","{_"],
 	["9_","/_","Rt",";_","Lt"],
 	["8_","*_","Dn",":_","Up"],
-	["7_","&_","[_","^_","]_"],
+	["7_","&_","]_","^_","[_"],
 	["6_", "" , "" , "" , "" ]],
 	dtype="a2")
 
@@ -424,7 +424,7 @@ class VR_Keyboard():
 		self.last_btns_state = [0,0,0,0,0]
 		self.last_hid = -1
 		
-		self.joystick_cycle_non_modifier_keys_arr = ["Se", "Er", "__", "Tb", "Be", "De"]
+		self.joystick_cycle_non_modifier_keys_arr = ["Be", "De", "Bk", "Er", "Se", "Tb", ]
 
 		self.reset_joystick_path_booleans()
 
@@ -557,78 +557,48 @@ class VR_Keyboard():
 				elif self.last_dir_idx == 3 :
 					self.S2W = 1
 
-	def get_key_str_if_joystick_cycle(self):
+	def get_key_str_if_joystick_deadzone_cycle(self):
 
-		if self.dir_idx == 0 : # if at deadzone, check if any whitespace characters, modifiers, or Bksp or Del were entered
+		num_CW_edges  = self.N2W + self.W2S + self.S2E + self.E2N # number of clockwise edges traveled along deadzone cycle
+		num_CCW_edges = self.N2E + self.E2S + self.S2W + self.E2N # number of counter-clockwise edges traveled along deadzone cycle
 
-			if not ( self.N2W or self.W2S or self.S2E or self.E2N or self.N2E or self.E2S or self.S2W or self.W2N ) : # no rotation whatsoever
+		if   num_CW_edges == 4 and num_CCW_edges == 4 : # both full counter-clockwise & full clockwise rotations
+			self.key_str = "CT"	# Cursor Toggle
+		elif num_CW_edges == 4 and num_CCW_edges == 0 : # full clockwise rotation only
+			self.key_str = "De"	# Delete
+		elif num_CW_edges == 0 and num_CCW_edges == 4 : # full counter-clockwise rotation only
+			self.key_str = "Be"	# Backspace
+		elif num_CW_edges == 2 and num_CCW_edges == 0 : # clockwise half rotation only
+			if   self.N2E and self.E2S : # eastern
+				self.key_str = "RC"	# Right Ctrl
+			elif self.E2S and self.S2W : # southern
+				self.key_str = "RM"	# Right Meta
+			elif self.S2W and self.W2N : # western
+				self.key_str = "RA"	# Right Alt
+			elif self.W2N and self.N2E : # northern
+				self.key_str = "RS"	# Right Shift
+		elif num_CW_edges == 0 and num_CCW_edges == 2 : # counter-clockwise half rotation only
+			if   self.N2W and self.W2S : # eastern
+				self.key_str = "LC"	# Left Control
+			elif self.W2S and self.S2E : # southern
+				self.key_str = "LM"	# Left Meta
+			elif self.S2E and self.E2N : # western
+				self.key_str = "LA"	# Left Alt
+			elif self.E2N and self.N2W : # northern
+				self.key_str = "LS"	# Left Shift
+		elif num_CW_edges == 0 and num_CCW_edges == 0 : # no joystick rotation at all, but check for joystick "flick"
+			if   self.D2N : # Flick (north)
+				self.key_str = "Bk" 	# Blank Key, used to prevent repeating of previously pressed White-space keys
+			elif self.D2E : # Flick (east)
+				self.key_str = "Er" 	# Enter
+			elif self.D2S : # Flick (south)
+				self.key_str = "Se"	# Space
+			elif self.D2W : # Flick (west)
+				self.key_str = "Tb"	# Tab
 
-				if   self.D2N : # Flick (north)
-
-					self.key_str = "Bk" 	# Blank Key, used to prevent repeating of previously pressed White-space keys
-
-				elif self.D2E : # Flick (east)
-
-					self.key_str = "Er" 	# Enter
-
-				elif self.D2S : # Flick (south)
-
-					self.key_str = "Se"	# Space
-
-				elif self.D2W : # Flick (west)
-
-					self.key_str = "Tb"	# Tab
-
-			else : # some amount of rotation
-
-				if   self.N2E * self.E2S * self.S2W * self.W2N * self.N2W * self.W2S * self.S2E * self.E2N : # full counter-clockwise rotation & full clockwise rotation
-
-					self.key_str = "CT"	# Cursor Toggle
-
-				elif self.N2E * self.E2S * self.S2W * self.W2N and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # full clockwise rotation only
-
-					self.key_str = "De"	# Delete
-
-				elif self.N2W * self.W2S * self.S2E * self.E2N and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # full counter-clockwise rotation only
-
-					self.key_str = "Be"	# Backspace
-
-				elif self.N2E * self.E2S and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # clockwise half rotation (east) only
-
-					self.key_str = "RC"	# Right Ctrl
-
-				elif self.E2S * self.S2W and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # clockwise half rotation (south) only
-
-					self.key_str = "RM"	# Right Meta
-
-				elif self.S2W * self.W2N and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # clockwise half rotation (west) only
-
-					self.key_str = "RA"	# Right Alt
-
-				elif self.W2N * self.N2E and not ( self.N2W or self.W2S or self.S2E or self.E2N ) : # clockwise half rotation (north) only
-
-					self.key_str = "RS"	# Right Shift
-
-				elif self.N2W * self.W2S and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # counter-clockwise half rotation (west) only
-
-					self.key_str = "LC"	# Left Control
-
-				elif self.W2S * self.S2E and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # counter-clockwise half rotation (south) only
-
-					self.key_str = "LM"	# Left Meta
-
-				elif self.S2E * self.E2N and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # counter-clockwise half rotation (east) only
-
-					self.key_str = "LA"	# Left Alt
-
-				elif self.E2N * self.N2W and not ( self.N2E or self.E2S or self.S2W or self.W2N ) : # counter-clockwise half rotation (north) only
-
-					self.key_str = "LS"	# Left Shift
-
-			# Don't reset joystick path for Whitespace Char & Backspace/Delete, thereby repeatedly typing these characters until the Joystick leaves deadzone again (or another button is pressed)
-			if not self.key_str in self.joystick_cycle_non_modifier_keys_arr : 
-				self.reset_joystick_path_booleans() # DO reset joystick paths for modifiers so as to not repeatedly toggle them
-
+		# Don't reset joystick paths booleans for Whitespace & Bksp/Del (these keys are "held" until the Joystick inputs "Blank" key to "lift")
+		if not self.key_str in self.joystick_cycle_non_modifier_keys_arr : 
+			self.reset_joystick_path_booleans() # DO reset joystick paths for modifiers so as to not repeatedly toggle them
 
 	def debug_joystick_cycle(self):
 
@@ -740,7 +710,9 @@ if __name__ == "__main__":
 
 		kb.get_dir_idx()
 
-		kb.get_key_str_if_joystick_cycle() 
+		if self.dir_idx == 0 : # if at deadzone, check if any whitespace characters, modifiers, or Bksp or Del were entered
+		
+			kb.get_key_str_if_joystick_deadzone_cycle() 
 
 		if kb.key_str == "CT" :	# Cursor Toggle, input from the combination of full counter-clockwise and full clockwise rotations
 
@@ -756,7 +728,7 @@ if __name__ == "__main__":
 
 		kb.get_btns_state()
 
-		if kb.btns_state[0] and kb.dir_idx in range(1,4) : # Joy-stick Click + direction = character set swap, no typing here
+		if kb.btns_state[4] and kb.dir_idx in range(1,4) : # Joy-stick Click + direction = character set swap, no typing here
 
 			print "Changing Character Set \n"
 			
