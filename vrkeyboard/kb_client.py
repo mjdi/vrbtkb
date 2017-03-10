@@ -559,14 +559,14 @@ class VR_Keyboard():
 
 	def get_key_str_if_joystick_deadzone_cycle(self):
 
-		num_CW_edges  = self.N2W + self.W2S + self.S2E + self.E2N # number of clockwise edges traveled along deadzone cycle
-		num_CCW_edges = self.N2E + self.E2S + self.S2W + self.E2N # number of counter-clockwise edges traveled along deadzone cycle
+		num_CW_edges  = self.N2E + self.E2S + self.S2W + self.W2N # number of clockwise edges traveled along deadzone cycle
+		num_CCW_edges = self.N2W + self.W2S + self.S2E + self.E2N # number of counter-clockwise edges traveled along deadzone cycle
 
 		# Due to the imprecision of the ADC reading the joystick, there may be some noise which is causing the joystick
 		# to cross the boundaries between Cardinal directions multiple times (depending on the polling speed as well)
 		# Specifically, N->E and E->N seem to be entangled as well as N->W and W->N (The bottom edges seem to be okay atm)
 		# In order to account for this, more experimenting with the kb.debug_joystick_cycle() function needs to be done...
-		# In the meantime, we can use slightly strict conditionals in order to achieve the same effect (order is important now!)
+		# In the meantime, we can use slightly less strict conditionals in order to achieve the same effect (their order is now important too!)
 		
 		if   num_CW_edges == 4 and num_CCW_edges == 4 : # both full counter-clockwise & full clockwise rotations
 			self.key_str = "CT"	# Cursor Toggle
