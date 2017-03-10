@@ -689,33 +689,40 @@ class VR_Keyboard():
 				self.mod_arr[self.mod_key_str_2_idx["RS"]] = 1 # turn right shift modifier on
 		
 	def type_hid_code_from_key_str(self):
+		
 		#self.debug_selected_key()
-		self.activate_shift_mod_if_required_for_key_str()
 		
-		self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] )
-		
-		self.reset_non_locked_modifiers()
-		self.reset_joystick_path_booleans()
+		if not kb.key_str == "" : # Extra precaution in the event that a "" key_str slips by (like with changing characters sets)
+			
+			self.activate_shift_mod_if_required_for_key_str()
+
+			self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] )
+
+			self.reset_non_locked_modifiers()
+			self.reset_joystick_path_booleans()
 
 	def flash_char_cursor_from_key_str(self):
 		
-		self.current_char_cursor_key_str = self.key_str # store for when we type by releasing button (repeating is not possible)
-		
 		#self.debug_selected_key()
-		self.activate_shift_mod_if_required_for_key_str()
 		
-		# this (in it's current state, can be definitely be optimized) requires sending blank keypresses in between to avoid character repetition (but slow!)
+		if not kb.key_str == "" : # Extra precaution in the event that a "" key_str slips by (like with changing characters sets)
 		
-		self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) # display char_cursor
-		self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
-		time.sleep(0.5) # wait for 1/2 a second before deleting flashed character
-		
-		self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
-		self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
-		time.sleep(0.5) # wait for 1/2 a second before continuing 
-		
-		self.reset_non_locked_modifiers()
-		self.reset_joystick_path_booleans()
+			self.current_char_cursor_key_str = self.key_str # store for when we type by releasing button (repeating is not possible)
+			
+			self.activate_shift_mod_if_required_for_key_str()
+
+			# this (in it's current state, can be definitely be optimized) requires sending blank keypresses in between to avoid character repetition (but slow!)
+
+			self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) # display char_cursor
+			self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
+			time.sleep(0.5) # wait for 1/2 a second before deleting flashed character
+
+			self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
+			self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
+			time.sleep(0.5) # wait for 1/2 a second before continuing 
+
+			self.reset_non_locked_modifiers()
+			self.reset_joystick_path_booleans()
 
 if __name__ == "__main__":
 
@@ -751,6 +758,8 @@ if __name__ == "__main__":
 
 		if kb.btns_state[0] and kb.dir_idx in range(1,4) : # Joy-stick Click + direction = character set swap, no typing here
 
+			print "Changing Character Set \n"
+			
 			kb.last_arr_idx = kb.dir_idx
 			kb.last_dir_idx = -1 # reset after a character swap
 			kb.last_btns_state = kb.btns_state 
