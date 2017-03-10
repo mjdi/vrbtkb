@@ -562,13 +562,19 @@ class VR_Keyboard():
 		num_CW_edges  = self.N2W + self.W2S + self.S2E + self.E2N # number of clockwise edges traveled along deadzone cycle
 		num_CCW_edges = self.N2E + self.E2S + self.S2W + self.E2N # number of counter-clockwise edges traveled along deadzone cycle
 
+		# Due to the imprecision of the ADC reading the joystick, there may be some noise which is causing the joystick
+		# to cross the boundaries between Cardinal directions multiple times (depending on the polling speed as well)
+		# Specifically, N->E and E->N seem to be entangled as well as N->W and W->N (The bottom edges seem to be okay atm)
+		# In order to account for this, more experimenting with the kb.debug_joystick_cycle() function needs to be done...
+		# In the meantime, we can use slightly strict conditionals in order to achieve the same effect (order is important now!)
+		
 		if   num_CW_edges == 4 and num_CCW_edges == 4 : # both full counter-clockwise & full clockwise rotations
 			self.key_str = "CT"	# Cursor Toggle
-		elif num_CW_edges == 4 and num_CCW_edges == 0 : # full clockwise rotation only
+		elif num_CW_edges == 4 and num_CCW_edges <= 2 : # full clockwise rotation only
 			self.key_str = "De"	# Delete
-		elif num_CW_edges == 0 and num_CCW_edges == 4 : # full counter-clockwise rotation only
+		elif num_CW_edges <= 2 and num_CCW_edges == 4 : # full counter-clockwise rotation only
 			self.key_str = "Be"	# Backspace
-		elif num_CW_edges == 2 and num_CCW_edges == 0 : # clockwise half rotation only
+		elif num_CW_edges == 2 and num_CCW_edges <= 1 : # clockwise half rotation only
 			if   self.N2E and self.E2S : # eastern
 				self.key_str = "RC"	# Right Ctrl
 			elif self.E2S and self.S2W : # southern
@@ -577,7 +583,7 @@ class VR_Keyboard():
 				self.key_str = "RA"	# Right Alt
 			elif self.W2N and self.N2E : # northern
 				self.key_str = "RS"	# Right Shift
-		elif num_CW_edges == 0 and num_CCW_edges == 2 : # counter-clockwise half rotation only
+		elif num_CW_edges <= 1 and num_CCW_edges == 2 : # counter-clockwise half rotation only
 			if   self.N2W and self.W2S : # eastern
 				self.key_str = "LC"	# Left Control
 			elif self.W2S and self.S2E : # southern
@@ -723,6 +729,7 @@ if __name__ == "__main__":
 			continue
 
 		#kb.debug_joystick_cycle()
+		# print "\n"
 		#kb.debug_modifer_toggles()
 
 		kb.get_btns_state()
