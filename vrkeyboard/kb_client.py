@@ -602,10 +602,6 @@ class VR_Keyboard():
 			elif self.D2W : # Flick (west)
 				self.key_str = "Tb"	# Tab
 
-		# Don't reset joystick paths booleans for Whitespace & Bksp/Del (these keys are "held" until the Joystick inputs "Blank" key to "lift")
-		if not self.key_str in self.joystick_cycle_non_modifier_keys_arr : 
-			self.reset_joystick_path_booleans() # DO reset joystick paths for modifiers so as to not repeatedly toggle them
-
 	def debug_joystick_cycle(self):
 
 		print "{D2N,D2E,D2S,D2W} = [" + str(self.D2N) + str(self.D2E) + str(self.D2S) + str(self.D2W) + "], " ,
@@ -718,19 +714,23 @@ if __name__ == "__main__":
 		if kb.dir_idx == 0 : # if at deadzone, check if any whitespace characters, modifiers, or Bksp or Del were entered
 		
 			kb.get_key_str_if_joystick_deadzone_cycle() 
-
-		if kb.key_str == "CT" :	# Cursor Toggle, input from the combination of full counter-clockwise and full clockwise rotations
-
-			kb.cursor_mode_on = int (not kb.cursor_mode_on) # toggle Cursor Mode on or off
 			
-			kb.reset_joystick_path_booleans()
-			kb.reset_non_locked_modifiers() # reset non-locked modifiers whenever you type a character
-			
-			continue
-
 		#kb.debug_joystick_cycle()
 		#kb.debug_modifer_toggles()
 		#print "\n"
+
+		if   kb.key_str == "CT" : # Cursor Toggle, input from the combination of full counter-clockwise and full clockwise rotations
+
+			kb.cursor_mode_on = int (not kb.cursor_mode_on) # toggle "Cursor Mode" on or off
+			kb.reset_joystick_path_booleans()
+			kb.reset_non_locked_modifiers() # reset non-locked modifiers when you toggle Cursor Mode
+			continue
+			
+		elif kb.key_str in kb.mod_key_str_2_idx :
+		
+			kb.toggle_modifer()
+			kb.reset_joystick_path_booleans()
+			continue
 
 		kb.get_btns_state()
 
@@ -756,7 +756,6 @@ if __name__ == "__main__":
 					
 					kb.key_str = kb.current_char_cursor_key_str # since typing function uses self.key_str
 					kb.current_char_cursor_key_str = "" # reset for next cursor char
-				
 					kb.type_hid_code_from_key_str() # Having let go of all buttons, we type the last cursor character
 				
 				kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
@@ -765,15 +764,14 @@ if __name__ == "__main__":
 
 			kb.type_hid_code_from_key_str()
 
-			kb.reset_joystick_path_booleans()
-			kb.reset_non_locked_modifiers() # reset non-locked modifiers whenever you type a character
-
 		elif kb.num_btns_pressed == 1 : # button pressed, find hid code
 
 			btn_idx = -1; # we need to find the non-zero index of kb.btns_state
 
 			for i in range(0,len(kb.btns_state)-1) : # This can be replaced with a faster numpy method perhaps later, but for 5 elements it probably doesn't matter
+				
 				if kb.btns_state[i] :
+					
 					btn_idx = i
 					break
 
