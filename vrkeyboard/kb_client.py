@@ -494,8 +494,8 @@ class VR_Keyboard():
 
 		# Determine dir_idx
 
-		#if abs(xpos) < ( kb.deadzone_width / 2 ) and abs(ypos) < ( kb.deadzone_width / 2 ) : 	# square deadzone
-		if (xpos * xpos + ypos * ypos) < self.deadzone_width * self.deadzone_width / 4 : 	# circular deadzone
+		#if abs(xpos) < ( kb.deadzone_width / 2 ) and abs(ypos) < ( kb.deadzone_width / 2 ) : 	 # square deadzone
+		if (xpos * xpos + ypos * ypos) < (self.deadzone_width / 2) * (self.deadzone_width / 2) : # circular deadzone
 			self.direction_str = 'deadz'
 			self.dir_idx = 0
 
@@ -509,7 +509,7 @@ class VR_Keyboard():
 				self.W2D = 1	
 
 		else :
-			if ypos >= abs(xpos) :
+			if    ypos >= abs(xpos) :
 
 				self.direction_str = 'north'
 				self.dir_idx = 1
@@ -521,7 +521,7 @@ class VR_Keyboard():
 				elif self.last_dir_idx == 4 :
 					self.W2N = 1
 
-			if ypos <= -abs(xpos) :
+			elif -ypos >= abs(xpos) :
 
 				self.direction_str = 'south'
 				self.dir_idx = 3
@@ -533,7 +533,7 @@ class VR_Keyboard():
 				elif self.last_dir_idx == 4 :
 					self.W2S = 1
 
-			if xpos > abs(ypos) :
+			elif  xpos >= abs(ypos) :
 
 				self.direction_str = 'east_'
 				self.dir_idx = 2
@@ -545,7 +545,7 @@ class VR_Keyboard():
 				elif self.last_dir_idx == 3 :
 					self.S2E = 1
 
-			if xpos < -abs(ypos) :
+			elif -xpos >= abs(ypos) :
 
 				self.direction_str = 'west_'
 				self.dir_idx = 4
