@@ -2,13 +2,11 @@
 
 sudo /etc/init.d/bluetooth stop; sudo /usr/sbin/bluetoothd --nodetach --debug -p time &
 
-sleep 5
+sleep 3
 
 sudo hciconfig hcio; sudo hciconfig hcio up; sudo hciconfig hcio lm master &
 
-sleep 5
-
-device=$(ls /home | perl -pe 'chomp if eof')
+sleep 3
 
 sudo python /home/$device/vrbtkb/server/btk_server.py left & # using ~/ causes /root/ instead
 # sudo python /home/$device/vrbtkb/server/btk_server.py right &
