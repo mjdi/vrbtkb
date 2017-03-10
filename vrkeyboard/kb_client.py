@@ -202,7 +202,7 @@ def get_Shift_Required(key_str):
 # Hardcoded key_str_2D arrays (which are then used to get HID codes + necessary modifiers) 
 # are accessed via a combination of finger and direction, the joystick navigating between str_arrays
 
-# [finger][direction], where finger = {L5=0, L4=1, L3=2, L2=3, L1=4, R1=5, R2=6, R3=7, R4=8, R5=9}
+# [finger][direction], where finger = {L5=0, L4=1, L3=2, L2=3, L1=4} or {R5=0, R4=1, R3=2, R2=3, R1=4}
 # and where direction = {neutral=0, north=1, east=2, south=3, west=4}, counting clockwise
 
 # accessed via Joyclick-North, since numerical keys are located on top side of qwerty keyboard
