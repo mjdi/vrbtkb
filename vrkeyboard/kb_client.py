@@ -729,15 +729,13 @@ if __name__ == "__main__":
 			continue
 
 		#kb.debug_joystick_cycle()
-		# print "\n"
 		#kb.debug_modifer_toggles()
+		#print "\n"
 
 		kb.get_btns_state()
 
 		if kb.btns_state[4] and kb.dir_idx in range(1,4) : # Joy-stick Click + direction = character set swap, no typing here
 
-			print "Changing Character Set \n"
-			
 			kb.last_arr_idx = kb.dir_idx
 			kb.last_dir_idx = -1 # reset after a character swap
 			kb.last_btns_state = kb.btns_state 
