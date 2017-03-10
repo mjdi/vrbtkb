@@ -463,20 +463,18 @@ class VR_Keyboard():
 		self.W2N = 0 # west to north
 		self.W2S = 0 # west to south
 
-	def reset_modifier_locks(self):
 
-		# mod_lock_arr == {RM_lock, RA_lock, RS_lock, RC_lock, LM_lock, LA_lock, LS_lock, LC_lock} = {0,0,0,0,0,0,0,0} 
+	def reset_non_locked_modifiers(self):
+		
+		for i in range(0, len(self.mod_arr)-1) :
+			if not self.mod_lock_arr[i] == 1 :
+				self.mod_arr[i] = 0
+		
+	def reset_modifier_locks(self):
 
 		for i in range(0, len(self.mod_lock_arr)-1) :
 			self.mod_lock_arr[i] = 0
 
-	def reset_non_locked_modifiers(self):
-
-		# mod_arr == {RM, RA, RS, RC, LM, LA, LS, LC} = {0,0,0,0,0,0,0,0} 
-
-		for i in range(0, len(self.mod_arr)-1) :
-			if not self.mod_lock_arr[i] == 1 :
-				self.mod_arr[i] = 0
 
 	def get_dir_idx(self):
 
@@ -686,14 +684,11 @@ class VR_Keyboard():
 
 			self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) # display char_cursor
 			self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
-			time.sleep(0.5) # wait for 1/2 a second before deleting flashed character
+			time.sleep(0.25) # wait for a 1/4 of a second before deleting flashed character
 
 			self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
 			self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
-			time.sleep(0.5) # wait for 1/2 a second before continuing 
-
-			self.reset_non_locked_modifiers()
-			self.reset_joystick_path_booleans()
+			time.sleep(0.25) # wait for a 1/4 of a second before continuing 
 
 if __name__ == "__main__":
 
