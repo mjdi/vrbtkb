@@ -28,7 +28,7 @@ https://github.com/xtacocorex/CHIP_IO
 		self.btn2_pin = "GPIO2"
 		self.btn3_pin = "GPIO3"
 		self.btn4_pin = "GPIO4"
-		self.btn5_pin = "GPIO5"
+		self.btn5_pin = "GPIO6"
 
 #**setup WiFi and SSH capabilities (Via COM port)** 
 
