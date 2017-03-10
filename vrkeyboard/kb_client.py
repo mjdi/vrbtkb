@@ -710,7 +710,7 @@ if __name__ == "__main__":
 
 		kb.get_dir_idx()
 
-		if self.dir_idx == 0 : # if at deadzone, check if any whitespace characters, modifiers, or Bksp or Del were entered
+		if kb.dir_idx == 0 : # if at deadzone, check if any whitespace characters, modifiers, or Bksp or Del were entered
 		
 			kb.get_key_str_if_joystick_deadzone_cycle() 
 
