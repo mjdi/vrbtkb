@@ -208,10 +208,10 @@ def get_Shift_Required(key_str):
 # accessed via Joyclick-North, since numerical keys are located on top side of qwerty keyboard
 
 left_numspecial_key_str_2D_array = np.array([
-	["1_","=_",")_","#_","(_"],
+	["1_","=_","<_","#_",">_"],
 	["2_","-_","Rt","$_","Lt"],
 	["3_","+_","Up","%_","Dn"],
-	["4_","*_","]_","^_","[_"],
+	["4_","*_","(_","^_",")_"],
 	["5_", "" , "" , "" , "" ]],
 	dtype="a2")
 
@@ -219,7 +219,7 @@ right_numspecial_key_str_2D_array = np.array([
 	["0_","\\_","{_","/_","}_"],
 	["9_","&_","Rt","|_","Lt"],
 	["8_","@_","Dn",";_","Up"],
-	["7_","!_","<_",":_",">_"],
+	["7_","!_","[_",":_","]_"],
 	["6_", "" , "" , "" , "" ]],
 	dtype="a2")
 
