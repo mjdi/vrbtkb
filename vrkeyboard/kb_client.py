@@ -645,7 +645,7 @@ class VR_Keyboard():
 
 	def debug_selected_key(self):
 
-		print "\tarr_idx =" + str(self.last_arr_idx) + "\tkey_str = " + self.key_str + "\tHID = " + str(self.hid) + "\tmod_bit_str" + self.get_mod_bit_str() ,
+		print "\tarr_idx =" + str(self.last_arr_idx) + "\tkey_str = " + self.key_str + "\tmod_bit_str" + self.get_mod_bit_str() ,
 
 	def activate_shift_mod_if_required_for_key_str(self):
 		
@@ -696,11 +696,7 @@ if __name__ == "__main__":
 
 	while True: # main while loop
 
-		# reset/initialize dir_idx, key_str, and hid every loop
-
-		kb.dir_idx = -1
 		kb.key_str = ""
-		kb.hid = 0	# default to blank character
 
 		kb.get_dir_idx()
 
