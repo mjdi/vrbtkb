@@ -41,19 +41,19 @@ class VR_Keyboard_Ignition():
 
 		self.deadzone_width = 64 		# 2^7 / 2, (hardcoded)
 
-def reset_joystick_path_booleans(self):
-  self.D2N = 0 # deadzone to north
-  self.D2E = 0 # deadzone to east
-  self.D2S = 0 # deadzone to south
-  self.D2W = 0 # deadzone to west
-  self.N2E = 0 # north to east
-  self.N2W = 0 # north to west
-  self.E2N = 0 # east to north
-  self.E2S = 0 # east to south
-  self.S2E = 0 # south to east
-  self.S2W = 0 # south to west
-  self.W2N = 0 # west to north
-  self.W2S = 0 # west to south
+	def reset_joystick_path_booleans(self):
+		  self.D2N = 0 # deadzone to north
+		  self.D2E = 0 # deadzone to east
+		  self.D2S = 0 # deadzone to south
+		  self.D2W = 0 # deadzone to west
+		  self.N2E = 0 # north to east
+		  self.N2W = 0 # north to west
+		  self.E2N = 0 # east to north
+		  self.E2S = 0 # east to south
+		  self.S2E = 0 # south to east
+		  self.S2W = 0 # south to west
+		  self.W2N = 0 # west to north
+		  self.W2S = 0 # west to south
   
   	def get_dir_idx(self):
 
@@ -136,20 +136,22 @@ def reset_joystick_path_booleans(self):
   
   	def debug_joystick_cycle(self):
 
-      print "{D2N,D2E,D2S,D2W} = [" + str(self.D2N) + str(self.D2E) + str(self.D2S) + str(self.D2W) + "], " ,
-      print "{N2W,W2S,S2E,E2N} = [" + str(self.N2W) + str(self.W2S) + str(self.S2E) + str(self.E2N) + "], " ,
-      print "{N2E,E2S,S2W,W2N} = [" + str(self.N2E) + str(self.E2S) + str(self.S2W) + str(self.W2N) + "], " ,  
+	      print "{D2N,D2E,D2S,D2W} = [" + str(self.D2N) + str(self.D2E) + str(self.D2S) + str(self.D2W) + "], " ,
+	      print "{N2W,W2S,S2E,E2N} = [" + str(self.N2W) + str(self.W2S) + str(self.S2E) + str(self.E2N) + "], " ,
+	      print "{N2E,E2S,S2W,W2N} = [" + str(self.N2E) + str(self.E2S) + str(self.S2W) + str(self.W2N) + "], " ,  
 
-    def check_joystick_deadzone_cycle_for_ignition(self):
+	def check_joystick_deadzone_cycle_for_ignition(self):
 
-      num_CW_edges  = self.N2E + self.E2S + self.S2W + self.W2N # number of clockwise edges traveled along deadzone cycle
-      num_CCW_edges = self.N2W + self.W2S + self.S2E + self.E2N # number of counter-clockwise edges traveled along deadzone cycle
-      
-      if   num_CW_edges == 4 and num_CCW_edges == 4 : # both full counter-clockwise & full clockwise rotations
-        
-        os.system("sudo python /home/" + device + "/vrbtkb/vrkeyboard/kb_client.py " + hand + " &")
-        
-        sys.exit()
+		num_CW_edges  = self.N2E + self.E2S + self.S2W + self.W2N # number of clockwise edges traveled along deadzone cycle
+		num_CCW_edges = self.N2W + self.W2S + self.S2E + self.E2N # number of counter-clockwise edges traveled along deadzone cycle
+
+		if   num_CW_edges == 4 and num_CCW_edges == 4 : # both full counter-clockwise & full clockwise rotations
+
+			spi.close()
+			
+			os.system("sudo python /home/" + device + "/vrbtkb/vrkeyboard/kb_client.py " + hand + " &")
+			
+			sys.exit()
 
   if __name__ == "__main__":
   
