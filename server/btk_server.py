@@ -78,12 +78,10 @@ class BTKbBluezProfile(dbus.service.Object):
 class BTKbDevice(): 
     MY_ADDRESS = subprocess.check_output("hciconfig | grep 'BD' | grep -oP '..:..:..:..:..:..'", shell=True)
 	
-
-	
-    if subprocess.check_output("hostname -I | grep -oP '...\....\..\...'", shell=True).rstrip() == "" : 
+    #if subprocess.check_output("hostname -I | grep -oP '...\....\..\...'", shell=True).rstrip() == "" : 
 	MY_DEV_NAME = device + "_" + hand + "_hand_wlan_not_connected"
-    else :
-    	MY_DEV_NAME = device + "_" + hand + "_hand_" + subprocess.check_output("hostname -I | grep -oP '...\....\..\...'", shell=True).rstrip()
+    #else :
+    #	MY_DEV_NAME = device + "_" + hand + "_hand_" + subprocess.check_output("hostname -I | grep -oP '...\....\..\...'", shell=True).rstrip()
 	
     #define some constants
     P_CTRL =17  #Service port - must match port configured in SDP record
@@ -179,7 +177,9 @@ class BTKbDevice():
         print ("Got a connection on the interrupt channel from " + cinfo[0])
 
 	# ==== Initiate kb_client.py as soon as connection is made! ==== #
-	os.system("sudo python /home/" + device + "/vrbtkb/vrkeyboard/kb_client.py " + hand + " &")
+	
+	# functionality of starting kb.py is now relegated to the kb_ignition.py script (requires Full CW and Full CCW rotations)
+	#os.system("sudo python /home/" + device + "/vrbtkb/vrkeyboard/kb_client.py " + hand + " &")
 
     #send a string to the bluetooth host machine
     def send_string(self,message):
