@@ -157,7 +157,7 @@ class VR_Keyboard_Ignition():
 
 if __name__ == "__main__":
 
-	kb_gate = VR_Keynoard_Ignition()
+	kb_gate = VR_Keyboard_Ignition()
 
 	while True: # main while loop
 
