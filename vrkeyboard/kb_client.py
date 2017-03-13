@@ -607,10 +607,14 @@ class VR_Keyboard():
 	def get_btns_state(self):
 
 		self.btns_state = [0,0,0,0,0]
-		self.btns_state[0] = GPIO.input(self.btn5_pin)	# off = 0, on = 1
-		self.btns_state[1] = GPIO.input(self.btn4_pin)	# off = 0, on = 1
-		self.btns_state[2] = GPIO.input(self.btn3_pin)	# off = 0, on = 1
-		self.btns_state[3] = GPIO.input(self.btn2_pin) 	# off = 0, on = 1
+		#self.btns_state[0] = GPIO.input(self.btn5_pin)	# off = 0, on = 1
+		#self.btns_state[1] = GPIO.input(self.btn4_pin)	# off = 0, on = 1
+		#self.btns_state[2] = GPIO.input(self.btn3_pin)	# off = 0, on = 1
+		#self.btns_state[3] = GPIO.input(self.btn2_pin) 	# off = 0, on = 1
+		self.btns_state[0] = int( not bool(GPIO.input(self.btn5_pin)) )	# off = 1, on = 0
+		self.btns_state[1] = int( not bool(GPIO.input(self.btn4_pin)) )	# off = 1, on = 0
+		self.btns_state[2] = int( not bool(GPIO.input(self.btn3_pin)) )	# off = 1, on = 0
+		self.btns_state[3] = int( not bool(GPIO.input(self.btn2_pin)) )	# off = 1, on = 0
 		self.btns_state[4] = int( not bool(ReadChannel(0)) ) 	# off = ~1024 , on = 0 (we transform this to 0 off and 1 on)
 
 		self.num_btns_pressed = sum(self.btns_state)
