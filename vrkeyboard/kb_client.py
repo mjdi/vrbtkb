@@ -693,113 +693,118 @@ class VR_Keyboard():
 			time.sleep(0.25) # wait for a 1/4 of a second before continuing 
 
 if __name__ == "__main__":
-
-	kb = VR_Keyboard()
 	
-	print "Running VR Bluetooth Keyboard"
+	try :
+	
+		kb = VR_Keyboard()
 
-	while True: # main while loop
+		print "Running VR Bluetooth Keyboard"
 
-		kb.key_str = ""
+		while True: # main while loop
 
-		kb.get_dir_idx()
+			kb.key_str = ""
 
-		if kb.dir_idx == 0 : # if at deadzone, check if any whitespace characters, modifiers, or Bksp or Del were entered
-		
-			kb.get_key_str_if_joystick_deadzone_cycle() 
-			
-		#kb.debug_joystick_cycle()
-		#kb.debug_modifer_toggles()
-		#print "\n"
+			kb.get_dir_idx()
 
-		if   kb.key_str == "CT" : # Cursor Toggle, input from the combination of full counter-clockwise and full clockwise rotations
+			if kb.dir_idx == 0 : # if at deadzone, check if any whitespace characters, modifiers, or Bksp or Del were entered
 
-			kb.cursor_mode_on = int (not kb.cursor_mode_on) # toggle "Cursor Mode" on or off
-			kb.reset_joystick_path_booleans() # reset joystick path to prevent new joystick cycles as it resets to deadzone
-			kb.reset_non_locked_modifiers() # reset non-locked modifiers when you toggle Cursor Mode
-			continue
-			
-		elif kb.key_str in kb.mod_key_str_2_idx :
-		
-			kb.toggle_modifer()
-			kb.reset_joystick_path_booleans()
-			continue
+				kb.get_key_str_if_joystick_deadzone_cycle() 
 
-		kb.get_btns_state()
+			#kb.debug_joystick_cycle()
+			#kb.debug_modifer_toggles()
+			#print "\n"
 
-						    # range(start,stop[,step]) generates all numbers up to but not including stop
-		if kb.btns_state[4] and kb.dir_idx in range(1,5) : # Joy-stick Click + direction = character set swap, no typing here
+			if   kb.key_str == "CT" : # Cursor Toggle, input from the combination of full counter-clockwise and full clockwise rotations
 
-			kb.last_arr_idx = kb.dir_idx
-			kb.last_dir_idx = -1 # reset after a character swap
-			kb.last_btns_state = kb.btns_state 
+				kb.cursor_mode_on = int (not kb.cursor_mode_on) # toggle "Cursor Mode" on or off
+				kb.reset_joystick_path_booleans() # reset joystick path to prevent new joystick cycles as it resets to deadzone
+				kb.reset_non_locked_modifiers() # reset non-locked modifiers when you toggle Cursor Mode
+				continue
 
-			kb.reset_joystick_path_booleans()  # reset joystick path to prevent new joystick cycles as it resets to deadzone
-			kb.reset_non_locked_modifiers()  # reset non-locked modifiers when you type a character
-			kb.reset_modifier_locks() # always reset modifier_locks when switching directions
-			
-			continue
+			elif kb.key_str in kb.mod_key_str_2_idx :
 
-		# 7 scenarios: 0, 1, or 2 buttons pressed (with cursor mode either on or off), or the blank character (typed only once to stop repeating characters)
+				kb.toggle_modifer()
+				kb.reset_joystick_path_booleans()
+				continue
 
-		if kb.num_btns_pressed == 0 and kb.key_str == "" : # Nothing pressed, no Joy-stick cycle, no key_str recorded yet
+			kb.get_btns_state()
 
-			if not kb.btns_state == kb.last_btns_state : # we only (type and) send blank key once! (so as not to slow down code with excess BT latency)
-			
+							    # range(start,stop[,step]) generates all numbers up to but not including stop
+			if kb.btns_state[4] and kb.dir_idx in range(1,5) : # Joy-stick Click + direction = character set swap, no typing here
+
+				kb.last_arr_idx = kb.dir_idx
+				kb.last_dir_idx = -1 # reset after a character swap
+				kb.last_btns_state = kb.btns_state 
+
+				kb.reset_joystick_path_booleans()  # reset joystick path to prevent new joystick cycles as it resets to deadzone
+				kb.reset_non_locked_modifiers()  # reset non-locked modifiers when you type a character
+				kb.reset_modifier_locks() # always reset modifier_locks when switching directions
+
+				continue
+
+			# 7 scenarios: 0, 1, or 2 buttons pressed (with cursor mode either on or off), or the blank character (typed only once to stop repeating characters)
+
+			if kb.num_btns_pressed == 0 and kb.key_str == "" : # Nothing pressed, no Joy-stick cycle, no key_str recorded yet
+
+				if not kb.btns_state == kb.last_btns_state : # we only (type and) send blank key once! (so as not to slow down code with excess BT latency)
+
+					if kb.cursor_mode_on :
+
+						kb.key_str = kb.current_char_cursor_key_str # since typing function uses self.key_str
+						kb.current_char_cursor_key_str = "" # reset for next cursor char
+						kb.type_hid_code_from_key_str() # Having let go of all buttons, we type the last cursor character
+
+					kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
+
+			elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
+
+				kb.type_hid_code_from_key_str()
+
+			elif kb.num_btns_pressed == 1 : # button pressed, find hid code
+
+				btn_idx = -1; # we need to find the non-zero index of kb.btns_state
+
+				for i in range(0,len(kb.btns_state)-1) : # This can be replaced with a faster numpy method perhaps later, but for 5 elements it probably doesn't matter
+
+					if kb.btns_state[i] :
+
+						btn_idx = i
+						break
+
+				kb.key_str = get_key_str(kb.last_arr_idx, btn_idx, kb.dir_idx)
+
 				if kb.cursor_mode_on :
-					
-					kb.key_str = kb.current_char_cursor_key_str # since typing function uses self.key_str
-					kb.current_char_cursor_key_str = "" # reset for next cursor char
-					kb.type_hid_code_from_key_str() # Having let go of all buttons, we type the last cursor character
-				
-				kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
 
-		elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
+					kb.flash_char_cursor_from_key_str() # if key_str corresponds to a character
 
-			kb.type_hid_code_from_key_str()
+				else : # cursor mode is off, repeated characters allowed
 
-		elif kb.num_btns_pressed == 1 : # button pressed, find hid code
+					if not kb.last_btns_state == kb.btns_state : # don't repeatedly send same hid code (only need it once to "hold" key down, it's only lifted via "blank" key)
 
-			btn_idx = -1; # we need to find the non-zero index of kb.btns_state
+						kb.type_hid_code_from_key_str()
 
-			for i in range(0,len(kb.btns_state)-1) : # This can be replaced with a faster numpy method perhaps later, but for 5 elements it probably doesn't matter
-				
-				if kb.btns_state[i] :
-					
-					btn_idx = i
-					break
+			elif kb.num_btns_pressed == 2 :
 
-			kb.key_str = get_key_str(kb.last_arr_idx, btn_idx, kb.dir_idx)
+				continue
 
-			if kb.cursor_mode_on :
+				# Cascaded typing, to be done later 
 
-				kb.flash_char_cursor_from_key_str() # if key_str corresponds to a character
+				#if kb.cursor_mode_on :
 
-			else : # cursor mode is off, repeated characters allowed
-				
-				if not kb.last_btns_state == kb.btns_state : # don't repeatedly send same hid code (only need it once to "hold" key down, it's only lifted via "blank" key)
+					# to be coded
 
-					kb.type_hid_code_from_key_str()
-            
-		elif kb.num_btns_pressed == 2 :
+				#else : # cursor mode is off, repeated characters allowed
 
-			continue
+					# to be coded
 
-			# Cascaded typing, to be done later 
+			else : # kb.num_btns_pressed > 2 will run into problems with BT latency (it's impossible to know which of the 2nd and 3rd pressed buttons was pressed first)
 
-			#if kb.cursor_mode_on :
+				continue # to be coded
 
-				# to be coded
+			kb.last_dir_idx = kb.dir_idx
+			kb.last_btns_state = kb.btns_state
 
-			#else : # cursor mode is off, repeated characters allowed
-
-				# to be coded
-
-		else : # kb.num_btns_pressed > 2 will run into problems with BT latency (it's impossible to know which of the 2nd and 3rd pressed buttons was pressed first)
-
-			continue # to be coded
+			#print "\n" ,
+	except RuntimeError :
 		
-		kb.last_dir_idx = kb.dir_idx
-		kb.last_btns_state = kb.btns_state
-
-		#print "\n" ,
+		GPIO.cleanup()
