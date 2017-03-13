@@ -163,8 +163,8 @@ if __name__ == "__main__":
 
 		kb_gate.get_dir_idx()
 
-		if kb.dir_idx == 0 :
+		if kb_gate.dir_idx == 0 :
 
 		 	kb_gate.check_joystick_deadzone_cycle_for_ignition()
 
-		kb.last_dir_idx = kb.dir_idx
+		kb_gate.last_dir_idx = kb_gate.dir_idx
