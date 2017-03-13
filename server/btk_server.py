@@ -78,8 +78,10 @@ class BTKbBluezProfile(dbus.service.Object):
 class BTKbDevice(): 
     MY_ADDRESS = subprocess.check_output("hciconfig | grep 'BD' | grep -oP '..:..:..:..:..:..'", shell=True)
 	
+    MY_DEV_NAME = device + "_" + hand + "_hand_wlan_not_connected"
+	
     #if subprocess.check_output("hostname -I | grep -oP '...\....\..\...'", shell=True).rstrip() == "" : 
-	MY_DEV_NAME = device + "_" + hand + "_hand_wlan_not_connected"
+    #	MY_DEV_NAME = device + "_" + hand + "_hand_wlan_not_connected"
     #else :
     #	MY_DEV_NAME = device + "_" + hand + "_hand_" + subprocess.check_output("hostname -I | grep -oP '...\....\..\...'", shell=True).rstrip()
 	
