@@ -10,5 +10,8 @@ sleep 3
 
 device=$(ls /home | perl -pe 'chomp if eof')
 
-sudo python /home/$device/vrbtkb/server/btk_server.py left & # using ~/ causes /root/ instead
-# sudo python /home/$device/vrbtkb/server/btk_server.py right &
+# $1 is the first argument taken by startup.sh ( which should be either "left" or "right" in the /etc/crontab entry, no quotations )
+
+sudo python /home/$device/vrbtkb/server/btk_server.py $1 & # using ~/ causes /root/ instead
+
+sudo python /home/$device/vrbtkb/vrkeyboard/kb_ignition.py $1 & # using ~/ causes /root/ instead
