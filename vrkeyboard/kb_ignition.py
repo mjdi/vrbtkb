@@ -37,6 +37,8 @@ class VR_Keyboard_Ignition():
 
 	def __init__(self):
     
+		print "Entering KB_Ignition Script...\n"
+
 		self.analog_dimension = 1024 	# based on 10 bit ADC (MPC3008)
 
 		self.deadzone_width = 64 		# 2^7 / 2, (hardcoded)
@@ -150,7 +152,7 @@ class VR_Keyboard_Ignition():
 		num_CCW_edges = self.N2W + self.W2S + self.S2E + self.E2N # number of counter-clockwise edges traveled along deadzone cycle
 
 		if   num_CW_edges == 4 and num_CCW_edges == 4 : # both full counter-clockwise & full clockwise rotations
-
+			
 			spi.close()
 			
 			os.system("sudo python /home/" + device + "/vrbtkb/vrkeyboard/kb_client.py " + hand + " &")
