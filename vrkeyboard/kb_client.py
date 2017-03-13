@@ -807,4 +807,6 @@ if __name__ == "__main__":
 			#print "\n" ,
 	except RuntimeError :
 		
+		print "Exiting kb_client.py, and cleaning up the GPIO...\n"
+		
 		GPIO.cleanup()
