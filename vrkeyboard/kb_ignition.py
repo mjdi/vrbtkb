@@ -40,6 +40,8 @@ class VR_Keyboard_Ignition():
 		self.analog_dimension = 1024 	# based on 10 bit ADC (MPC3008)
 
 		self.deadzone_width = 64 		# 2^7 / 2, (hardcoded)
+		
+		self.last_dir_idx = -1
 
 	def reset_joystick_path_booleans(self):
 		  self.D2N = 0 # deadzone to north
@@ -153,16 +155,16 @@ class VR_Keyboard_Ignition():
 			
 			sys.exit()
 
-  if __name__ == "__main__":
-  
-    kb_gate = VR_Keynoard_Ignition()
-  
-    	while True: # main while loop
-      
-        		kb_gate.get_dir_idx()
-            
-            if kb.dir_idx == 0 :
-            
-                 kb_gate.check_joystick_deadzone_cycle_for_ignition()
-            
-            kb.last_dir_idx = kb.dir_idx
+if __name__ == "__main__":
+
+	kb_gate = VR_Keynoard_Ignition()
+
+	while True: # main while loop
+
+		kb_gate.get_dir_idx()
+
+		if kb.dir_idx == 0 :
+
+		 	kb_gate.check_joystick_deadzone_cycle_for_ignition()
+
+		kb.last_dir_idx = kb.dir_idx
