@@ -42,6 +42,8 @@ class VR_Keyboard_Ignition():
 		self.deadzone_width = 64 		# 2^7 / 2, (hardcoded)
 		
 		self.last_dir_idx = -1
+		
+		self.reset_joystick_path_booleans()
 
 	def reset_joystick_path_booleans(self):
 		  self.D2N = 0 # deadzone to north
