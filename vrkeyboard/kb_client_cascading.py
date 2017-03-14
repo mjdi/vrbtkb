@@ -654,10 +654,10 @@ class VR_Keyboard():
 									       
                         if self.num_btns_pressed - self.last_btns_pressed == 1 : # new button was pressed
                             self.btns_stack.append(pressed_or_released_btn) # add pressed button to top (end) of stack
-                            print "new button pressed:" + pressed_or_released_btn "\n"
+                            print "new button pressed:" + pressed_or_released_btn +  "\n"
                         else : # self.num_btns_pressed - self.last_btns_pressed == - 1
                             self.btns_stack.remove(pressed_or_released_btn) # remove released button from stack
-                            print "old button released:" + pressed_or_released_btn "\n"
+                            print "old button released:" + pressed_or_released_btn + "\n"
                     
                     # more than one button pressed or removed between polls
                     else : 
