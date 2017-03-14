@@ -631,8 +631,10 @@ class VR_Keyboard():
            
         else : # VR Keyboard is in the while loop now, update self.btns_stack
   
-            # compare buttons states between subsequent loops of while loop (polling) 
-            if not cmp( kb.last_btns_state, kb.btns_state ) :
+            # compare buttons states between subsequent loops of while loop (polling)
+	
+            # cmp(list1,list2) returns 0 if they are the same, 1 if list1 > list2, and -1 if list1 < list2	    
+            if not cmp( kb.last_btns_state, kb.btns_state ) == 0 :
   
                 # update buttons stack as usual if single button was released or pressed between polls 
                 if not self.last_num_btns_pressed == self.num_btns_pressed :
@@ -847,7 +849,7 @@ if __name__ == "__main__":
 
                 #print "\n" ,
 									       
-    except (RuntimeError, AttributeError) :
+    except RuntimeError : #(RuntimeError, AttributeError) :
 		
         print "Exiting kb_client.py, and cleaning up the GPIO...\n"
 		
