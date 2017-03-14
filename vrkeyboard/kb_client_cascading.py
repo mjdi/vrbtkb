@@ -638,25 +638,28 @@ class VR_Keyboard():
   
             # compare buttons states between subsequent loops of while loop (polling)
 	
-            # cmp(list1,list2) returns 0 if they are the same, 1 if list1 > list2, and -1 if list1 < list2	    
-            if not cmp( self.last_btns_state, self.btns_state ) == 0 :
+	    # cmp(list1,list2) returns 0 if they are the same, 1 if list1 > list2, and -1 if list1 < list2	
+	    if not cmp(self.btns_state, [0,0,0,0,0]) == 0 : # ignore empty btns_state (if last_btns_state still has 1 btn in it)
+			
+                # cmp(list1,list2) returns 0 if they are the same, 1 if list1 > list2, and -1 if list1 < list2	    
+                if not cmp( self.last_btns_state, self.btns_state ) == 0 :
   
-                # determine which button(s) were pressed or released and append or remove it from the stack accordingly 
-                for i in range(0,len(self.btns_state)) :
+                    # determine which button(s) were pressed or released and append or remove it from the stack accordingly 
+                    for i in range(0,len(self.btns_state)) :
 				
-                    # sum should equal 2 (if same), 1 (if different), or 0 (if same)
-                    if (self.btns_state[i] + self.last_btns_state[i]) == 1 : # if different
+                        # sum should equal 2 (if same), 1 (if different), or 0 (if same)
+                        if (self.btns_state[i] + self.last_btns_state[i]) == 1 : # if different
 					
-                        if self.btns_state[i] == 1 : # new btn pressed
-                            print "new button(s) pressed : " + str(i) + ", " ,
-                            self.btns_stack.append(i) # add pressed button to top (end) of stack
+                            if self.btns_state[i] == 1 : # new btn pressed
+                                print "new button(s) pressed : " + str(i) + ", " ,
+                                self.btns_stack.append(i) # add pressed button to top (end) of stack
 
 				
-                        elif self.btns_state[i] == 0: # old btn released from anywhere in stack
-                            print "old button(s) released :" + str(i) + ", " ,				
-                            self.btns_stack.remove(i) # remove released button from stack
+                            elif self.btns_state[i] == 0: # old btn released from anywhere in stack
+                                print "old button(s) released :" + str(i) + ", " ,				
+                                self.btns_stack.remove(i) # remove released button from stack
                             
-                print "\n"
+                    print "\n"
               
     def debug_btns_state_and_stack(self):
 	
