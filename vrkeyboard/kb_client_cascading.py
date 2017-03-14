@@ -670,12 +670,12 @@ class VR_Keyboard():
 			# use same priority of thumb to pinky to fill in stack
               
     def debug_btns_state_and_stack(self):
-        print "btns_state = [" + self.btns_state[0] + "," + self.btns_state[1] + "," + self.btns_state[2] + "," + self.btns_state[3] + "," + self.btns_state[4] + "] \t" , 
+        print "btns_state = [" + str(self.btns_state[0]) + "," + str(self.btns_state[1]) + "," + str(self.btns_state[2]) + "," + str(self.btns_state[3]) + "," + str(self.btns_state[4]) + "]\t" , 
 	
 	if self.btns_stack :
 	    print "btns_stack = [" ,
 	    for i in range(0,len(self.btns_stack)) :
-                print self.btns_stack[i] + "," ,
+                print str(self.btns_stack[i]) + "," ,
             print "]\n"
         else :
 	    print "btns_stack = []\n"
