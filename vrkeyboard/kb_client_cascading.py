@@ -661,6 +661,10 @@ class VR_Keyboard():
                     
                     # more than one button pressed or removed between polls
                     else : 
+			
+			print "...Two or more buttons changed in btns_stack...\n"
+			
+			continue
 				
 # use same priority of thumb to pinky to fill in stack
               
