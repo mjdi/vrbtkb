@@ -660,6 +660,8 @@ class VR_Keyboard():
               
     def debug_btns_state_and_stack(self):
 	
+        print "last_btns_state = [" + str(self.last_btns_state[0]) + "," + str(self.last_btns_state[1]) + "," + str(self.last_btns_state[2]) + "," + str(self.last_btns_state[3]) + "," + str(self.last_btns_state[4]) + "]\t" , 
+	
         print "btns_state = [" + str(self.btns_state[0]) + "," + str(self.btns_state[1]) + "," + str(self.btns_state[2]) + "," + str(self.btns_state[3]) + "," + str(self.btns_state[4]) + "]\t" , 
 	
 	if self.btns_stack :
