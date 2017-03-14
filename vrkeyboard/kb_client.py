@@ -590,11 +590,11 @@ class VR_Keyboard():
 				self.key_str = "LS"	# Left Shift
 		elif num_CW_edges == 0 and num_CCW_edges == 0 : # no joystick rotation at all, but check for joystick "flick"
 			if   self.D2N : # Flick (north)
-				self.key_str = "Bk" 	# Blank Key, used to prevent repeating of previously pressed White-space keys
+				self.key_str = "Se" 	# Space
 			elif self.D2E : # Flick (east)
 				self.key_str = "Er" 	# Enter
 			elif self.D2S : # Flick (south)
-				self.key_str = "Se"	# Space
+				self.key_str = "Bk"	# Blank Key, used to prevent repeating of previously pressed White-space keys
 			elif self.D2W : # Flick (west)
 				self.key_str = "Tb"	# Tab
 
@@ -691,6 +691,8 @@ class VR_Keyboard():
 			self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
 			self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
 			time.sleep(0.25) # wait for a 1/4 of a second before continuing 
+			
+			self.reset_joystick_path_booleans()
 
 if __name__ == "__main__":
 	
@@ -759,6 +761,10 @@ if __name__ == "__main__":
 			elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
 
 				kb.type_hid_code_from_key_str()
+				
+				if kb.cursor_mode_on :
+					
+					kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
 
 			elif kb.num_btns_pressed == 1 : # button pressed, find hid code
 
