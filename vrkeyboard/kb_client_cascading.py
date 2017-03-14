@@ -585,11 +585,11 @@ class VR_Keyboard():
                 self.key_str = "LS"	# Left Shift
         elif num_CW_edges == 0 and num_CCW_edges == 0 : # no joystick rotation at all, but check for joystick "flick"
             if   self.D2N : # Flick (north)
-                self.key_str = "Bk" 	# Blank Key, used to prevent repeating of previously pressed White-space keys
+                self.key_str = "Se" 	# Space
             elif self.D2E : # Flick (east)
                 self.key_str = "Er" 	# Enter
             elif self.D2S : # Flick (south)
-                self.key_str = "Se"	# Space
+                self.key_str = "Bk"	# Blank Key, used to prevent repeating of previously pressed White-space keys
             elif self.D2W : # Flick (west)
                 self.key_str = "Tb"	# Tab
 
@@ -658,11 +658,10 @@ class VR_Keyboard():
                             
                             self.btns_stack.remove(pressed_or_released_btn) # remove released button from stack
                 
-                # more than one button pressed or removed between polls
-                else : 
-          
-                    # use same priority of thumb to pinky to fill in stack
-              
+                    # more than one button pressed or removed between polls
+                    else : 
+				
+# use same priority of thumb to pinky to fill in stack
               
     def get_mod_bit_str(self):
         return ''.join( str(x) for x in self.mod_arr )
@@ -724,7 +723,9 @@ class VR_Keyboard():
 
             self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
             self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
-            time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before continuing 
+            time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before continuing
+				  
+            self.reset_joystick_path_booleans() # reset joystick path to prevent new joystick cycles as it resets to deadzone
 
 if __name__ == "__main__":
 	
