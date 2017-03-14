@@ -166,7 +166,7 @@ key_str_2_HID_code_and_shift_mod_required = {
     "Dn" : { "hid" : 81 , "shift" : 0 , "cursor" : 0 },	# Down
     "PD" : { "hid" : 78 , "shift" : 0 , "cursor" : 0 },	# Page Down
     "It" : { "hid" : 73 , "shift" : 0 , "cursor" : 0 },	# Insert
-    "De" : { "hid" : 76 , "shift" : 0 , "cursor" : 0 },	# Delete
+    "De" : { "hid" : 76 , "shift" : 0 , "cursor" : 1 },	# Delete
     # 
     # Multi-Functional Keys
     #
@@ -643,6 +643,8 @@ class VR_Keyboard():
 			
                 # cmp(list1,list2) returns 0 if they are the same, 1 if list1 > list2, and -1 if list1 < list2	    
                 if not cmp( self.last_btns_state, self.btns_state ) == 0 :
+			
+		    kb.debug_btns_state_and_stack()	
   
                     # determine which button(s) were pressed or released and append or remove it from the stack accordingly 
                     for i in range(0,len(self.btns_state)) :
@@ -784,8 +786,6 @@ if __name__ == "__main__":
             kb.get_btns_state()
       
             kb.update_btns_stack()
-	
-	    kb.debug_btns_state_and_stack()
 
             # range(start,stop[,step]) generates all numbers up to but not including stop
             if kb.btns_state[4] and kb.dir_idx in range(1,5) : # Joy-stick Click + direction = character set swap, no typing here
@@ -839,7 +839,6 @@ if __name__ == "__main__":
 
                 kb.last_dir_idx = kb.dir_idx
                 kb.last_btns_state = kb.btns_state
-                
                 kb.last_num_btns_pressed = kb.num_btns_pressed
 
                 #print "\n" ,
