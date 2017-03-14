@@ -423,6 +423,7 @@ class VR_Keyboard():
 	self.btns_state = [-1,-1,-1,-1,-1]
         self.last_btns_state = [-1,-1,-1,-1,-1]
         self.num_btns_pressed = -1
+	self.last_num_btns_pressed = -1
         self.btns_stack = [] # assumed empty at beginning, but determine just proceeding initialization
         self.last_hid = -1
 
@@ -617,59 +618,43 @@ class VR_Keyboard():
 	
         # loop through each button in order from pinky [0] to thumb [4] and add pressed buttons to stack (on VR Keyboard startup)
     
-        if cmp( self.last_btns_state, [-1,-1,-1,-1,-1] ) : # used upon the the startup initialization
+        # cmp(list1,list2) returns 0 if they are the same, 1 if list1 > list2, and -1 if list1 < list2	
+        if cmp( self.last_btns_state, [-1,-1,-1,-1,-1] ) == 0 : # used upon the the startup initialization
           
             self.get_btns_state()
       
                      # range(start,stop[,step]) generates all numbers up to but not including stop
-            for i in range(0, len(kb.btns_state)) : # order stack from pinky to thumb (append thumb last)
-                if kb.btns_state[i] :
+            for i in range(0, len(self.btns_state)) : # order stack from pinky to thumb (append thumb last)
+                if self.btns_state[i] :
 	            self.btns_stack.append(i)
            
-            self.last_btns_state = [0,0,0,0,0] # over-write btns_state initialization value ([-1,-1,-1,-1,-1])
-            self.last_num_btns_pressed = len( self.last_btns_stack ) # over-write last_num_btns_pressed initialization value (-1)
+            self.last_btns_state = self.btns_state # over-write btns_state initialization value ([-1,-1,-1,-1,-1])
+            self.last_num_btns_pressed = sum(self.btns_state) # over-write last_num_btns_pressed initialization value (-1)
            
         else : # VR Keyboard is in the while loop now, update self.btns_stack
   
             # compare buttons states between subsequent loops of while loop (polling)
 	
             # cmp(list1,list2) returns 0 if they are the same, 1 if list1 > list2, and -1 if list1 < list2	    
-            if not cmp( kb.last_btns_state, kb.btns_state ) == 0 :
+            if not cmp( self.last_btns_state, self.btns_state ) == 0 :
   
-                # update buttons stack as usual if single button was released or pressed between polls 
-                if not self.last_num_btns_pressed == self.num_btns_pressed :
-        
-                    # only one button pressed or released since last poll
-                    if abs( self.num_btns_pressed - self.last_num_btns_pressed ) == 1 : 
-        
-                        # determine what the pressed or released button is/was
-                        pressed_or_released_btn = -1 # use to error check conditions by yielding out of bounds error
-        
-                        # button was released, use implicit booleaness of empty list
-                        if list(set(self.last_btns_pressed) - set(self.btns_pressed)) :                             
-                            pressed_or_released_btn_single_element_list = list(set(self.last_btns_pressed) - set(self.btns_pressed))
-                        # button was pressed, use implicit booleaness of empty list
-                        elif list(set(self.btns_pressed) - set(self.last_btns_pressed)) : 
-                            pressed_or_released_btn_single_element_list = list(set(self.btns_pressed) - set(self.last_btns_pressed))
-                        
-                        # Get the index of the pressed/released button
-                        pressed_or_released_btn_idx = pressed_or_released_btn_single_element_list[0]
-									       
-                        if self.num_btns_pressed - self.last_btns_pressed == 1 : # new button was pressed
-                            self.btns_stack.append(pressed_or_released_btn) # add pressed button to top (end) of stack
-                            print "new button pressed:" + pressed_or_released_btn +  "\n"
-                        else : # self.num_btns_pressed - self.last_btns_pressed == - 1
-                            self.btns_stack.remove(pressed_or_released_btn) # remove released button from stack
-                            print "old button released:" + pressed_or_released_btn + "\n"
-                    
-                    # more than one button pressed or removed between polls
-                    else : 
-			
-                        print "...Two or more buttons changed in btns_stack...\n"
+                # determine which button(s) were pressed or released and append or remove it from the stack accordingly 
+                for i in range(0,len(self.btns_state)) :
 				
-			# use same priority of thumb to pinky to fill in stack
+                    # sum should equal 2 (if same), 1 (if different), or 0 (if same)
+                    if (self.btns_state[i] + self.last_btns_state[i]) == 1 : # if different
+					
+                        if self.btns_state[i] == 1 : # new btn pressed			       
+                            self.btns_stack.append(i) # add pressed button to top (end) of stack
+                            print "new button(s) pressed : " + str(i) + ", " ,
+				
+                        elif self.btns_state[i] == 0: # old btn released from anywhere in stack
+                            self.btns_stack.remove(pressed_or_released_btn) # remove released button from stack
+                            print "old button(s) released :" + str(i) + ", " ,
+                print "\n"
               
     def debug_btns_state_and_stack(self):
+	
         print "btns_state = [" + str(self.btns_state[0]) + "," + str(self.btns_state[1]) + "," + str(self.btns_state[2]) + "," + str(self.btns_state[3]) + "," + str(self.btns_state[4]) + "]\t" , 
 	
 	if self.btns_stack :
@@ -845,6 +830,7 @@ if __name__ == "__main__":
 
                 kb.last_dir_idx = kb.dir_idx
                 kb.last_btns_state = kb.btns_state
+                
                 kb.last_num_btns_pressed = kb.num_btns_pressed
 
                 #print "\n" ,
