@@ -797,19 +797,15 @@ if __name__ == "__main__":
                 elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
 
                     kb.type_hid_code_from_key_str()
+				  
+		    if kb.cursor_mode_on :
+				  	  
+			  kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key, which prevents white space, bksp/del from repeating 
 
-                elif kb.num_btns_pressed == 1 : # button pressed, find hid code
+                elif kb.num_btns_pressed # >= 1
 
-                    btn_idx = -1; # we need to find the non-zero index of kb.btns_state
-
-                    for i in range(0,len(kb.btns_state)) : # range(start,stop[,step]) generates all numbers up to but not including stop
-        
-                        if kb.btns_state[i] :
-
-                            btn_idx = i
-                            break
-
-                    kb.key_str = get_key_str(kb.last_arr_idx, btn_idx, kb.dir_idx)
+                    # Only type the key_str associated with the button at the top of the btns_stack    				 
+                    kb.key_str = get_key_str(kb.last_arr_idx, kb.btns_stack[len(kb.btns_stack) - 1), kb.dir_idx)
 
                     if kb.cursor_mode_on :
 
@@ -820,26 +816,6 @@ if __name__ == "__main__":
                         if not kb.last_btns_state == kb.btns_state : # don't repeatedly send same hid code (only need it once to "hold" key down, it's only lifted via "blank" key)
 
                             kb.type_hid_code_from_key_str()
-
-                elif kb.num_btns_pressed == 2 :
-      
-                    # only type/flash the key/character associated with the top-most button in the kb.btns_stack
-
-                    continue
-
-                    # Cascaded typing, to be done later 
-
-                    #if kb.cursor_mode_on :
-
-                        # to be coded
-
-                    #else : # cursor mode is off, repeated characters allowed
-
-                        # to be coded
-
-                else : # kb.num_btns_pressed > 2 will run into problems with BT latency (it's impossible to know which of the 2nd and 3rd pressed buttons was pressed first)
-
-                    continue # to be coded
 
                 kb.last_dir_idx = kb.dir_idx
                 kb.last_btns_state = kb.btns_state
