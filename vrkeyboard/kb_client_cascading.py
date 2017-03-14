@@ -664,8 +664,19 @@ class VR_Keyboard():
 			
                         print "...Two or more buttons changed in btns_stack...\n"
 				
-# use same priority of thumb to pinky to fill in stack
+			# use same priority of thumb to pinky to fill in stack
               
+    def debug_btns_state_and_stack(self):
+        print "btns_state = [" + self.btns_state[0] + "," + self.btns_state[1] + "," + self.btns_state[2] + "," + self.btns_state[3] + "," + self.btns_state[4] + "] \t" , 
+	
+	if self.btns_stack :
+	    print "btns_stack = [" ,
+	    for i in range(0,len(self.btns_stack)) :
+                print self.btns_stack[i] + "," ,
+            print "]\n"
+        else :
+	    print "btns_stack = []\n"
+			   
     def get_mod_bit_str(self):
         return ''.join( str(x) for x in self.mod_arr )
 
@@ -774,6 +785,8 @@ if __name__ == "__main__":
             kb.get_btns_state()
       
             kb.update_btns_stack()
+	
+	    kb.debug_btns_state_and_stack()
 
             # range(start,stop[,step]) generates all numbers up to but not including stop
             if kb.btns_state[4] and kb.dir_idx in range(1,5) : # Joy-stick Click + direction = character set swap, no typing here
@@ -810,10 +823,10 @@ if __name__ == "__main__":
 				  	  
                     kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key, which prevents white space, bksp/del from repeating 
 
-            elif kb.num_btns_pressed # >= 1
+            elif kb.num_btns_pressed : # >= 1
 
                 # Only type the key_str associated with the button at the top of the btns_stack    				 
-                kb.key_str = get_key_str(kb.last_arr_idx, kb.btns_stack[len(kb.btns_stack) - 1), kb.dir_idx)
+                kb.key_str = get_key_str(kb.last_arr_idx, kb.btns_stack[len(kb.btns_stack) - 1], kb.dir_idx)
 
                 if kb.cursor_mode_on :
 
@@ -831,7 +844,7 @@ if __name__ == "__main__":
 
                 #print "\n" ,
 									       
-    except RuntimeError :
+    except (RuntimeError, AttributeError) :
 		
         print "Exiting kb_client.py, and cleaning up the GPIO...\n"
 		
