@@ -662,9 +662,7 @@ class VR_Keyboard():
                     # more than one button pressed or removed between polls
                     else : 
 			
-			print "...Two or more buttons changed in btns_stack...\n"
-			
-			continue
+                        print "...Two or more buttons changed in btns_stack...\n"
 				
 # use same priority of thumb to pinky to fill in stack
               
@@ -794,38 +792,38 @@ if __name__ == "__main__":
 
             if kb.num_btns_pressed == 0 and kb.key_str == "" : # Nothing pressed, no Joy-stick cycle, no key_str recorded yet
 
-            if not kb.btns_state == kb.last_btns_state : # we only (type and) send blank key once! (so as not to slow down code with excess BT latency)
-
-                if kb.cursor_mode_on :
-
-                    kb.key_str = kb.current_char_cursor_key_str # since typing function uses self.key_str
-                    kb.current_char_cursor_key_str = "" # reset for next cursor char
-                    kb.type_hid_code_from_key_str() # Having let go of all buttons, we type the last cursor character
-
-                    kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
-
-                elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
-
-                    kb.type_hid_code_from_key_str()
-				  
-		    if kb.cursor_mode_on :
-				  	  
-			  kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key, which prevents white space, bksp/del from repeating 
-
-                elif kb.num_btns_pressed # >= 1
-
-                    # Only type the key_str associated with the button at the top of the btns_stack    				 
-                    kb.key_str = get_key_str(kb.last_arr_idx, kb.btns_stack[len(kb.btns_stack) - 1), kb.dir_idx)
+                if not kb.btns_state == kb.last_btns_state : # we only (type and) send blank key once! (so as not to slow down code with excess BT latency)
 
                     if kb.cursor_mode_on :
 
-                        kb.flash_char_cursor_from_key_str() # if key_str corresponds to a character
+                        kb.key_str = kb.current_char_cursor_key_str # since typing function uses self.key_str
+                        kb.current_char_cursor_key_str = "" # reset for next cursor char
+                        kb.type_hid_code_from_key_str() # Having let go of all buttons, we type the last cursor character
 
-                    else : # cursor mode is off, repeated characters allowed
+                        kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
 
-                        if not kb.last_btns_state == kb.btns_state : # don't repeatedly send same hid code (only need it once to "hold" key down, it's only lifted via "blank" key)
+            elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
 
-                            kb.type_hid_code_from_key_str()
+                kb.type_hid_code_from_key_str()
+				  
+		if kb.cursor_mode_on :
+				  	  
+                    kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key, which prevents white space, bksp/del from repeating 
+
+            elif kb.num_btns_pressed # >= 1
+
+                # Only type the key_str associated with the button at the top of the btns_stack    				 
+                kb.key_str = get_key_str(kb.last_arr_idx, kb.btns_stack[len(kb.btns_stack) - 1), kb.dir_idx)
+
+                if kb.cursor_mode_on :
+
+                    kb.flash_char_cursor_from_key_str() # if key_str corresponds to a character
+
+                else : # cursor mode is off, repeated characters allowed
+
+                    if not kb.last_btns_state == kb.btns_state : # don't repeatedly send same hid code (only need it once to "hold" key down, it's only lifted via "blank" key)
+
+                        kb.type_hid_code_from_key_str()
 
                 kb.last_dir_idx = kb.dir_idx
                 kb.last_btns_state = kb.btns_state
