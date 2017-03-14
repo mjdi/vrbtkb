@@ -643,10 +643,10 @@ class VR_Keyboard():
                         pressed_or_released_btn = -1 # use to error check conditions by yielding out of bounds error
         
                         # button was released, use implicit booleaness of empty list
-                        if list(set(self.last_btns_pressed) - set(self.btns_pressed) :                             
+                        if list(set(self.last_btns_pressed) - set(self.btns_pressed)) :                             
                             pressed_or_released_btn_single_element_list = list(set(self.last_btns_pressed) - set(self.btns_pressed))
                         # button was pressed, use implicit booleaness of empty list
-                        elif list(set(self.btns_pressed) - set(self.last_btns_pressed) : 
+                        elif list(set(self.btns_pressed) - set(self.last_btns_pressed)) : 
                             pressed_or_released_btn_single_element_list = list(set(self.btns_pressed) - set(self.last_btns_pressed))
                         
                         # Get the index of the pressed/released button
