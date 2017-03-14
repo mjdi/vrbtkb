@@ -649,7 +649,7 @@ class VR_Keyboard():
                             print "new button(s) pressed : " + str(i) + ", " ,
 				
                         elif self.btns_state[i] == 0: # old btn released from anywhere in stack
-                            self.btns_stack.remove(pressed_or_released_btn) # remove released button from stack
+                            self.btns_stack.remove(i) # remove released button from stack
                             print "old button(s) released :" + str(i) + ", " ,
                 print "\n"
               
