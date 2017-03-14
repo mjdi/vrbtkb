@@ -420,6 +420,7 @@ class VR_Keyboard():
         self.last_arr_idx = 3 	# default to loweralpha_key_str_2D_array, arr_idx = { 1=>numspecial, 2=>arrowfunc, 3=>loweralpha, 4=>capsalpha }
         self.last_dir_idx = -1
         self.last_mod_bit_str = "00000000"
+	self.btns_state = [-1,-1,-1,-1,-1]
         self.last_btns_state = [-1,-1,-1,-1,-1]
         self.num_btns_pressed = -1
         self.btns_stack = [] # assumed empty at beginning, but determine just proceeding initialization
@@ -754,6 +755,8 @@ if __name__ == "__main__":
         print "Running VR Bluetooth Keyboard"
     
         kb.update_btns_stack() # get initial stack of the GPIO/Joystick btns
+	
+	kb.debug_btns_state_and_stack()
 
         while True: # main while loop
 
