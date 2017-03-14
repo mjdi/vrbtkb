@@ -37,159 +37,159 @@ import numpy as np
 # =================
 
 key_str_2_HID_code_and_shift_mod_required = {
-    "Bk" : { "hid" :  0 , "shift" : 0 },	# Blank key, used to prevent repeating of previously pressed keys
-    "Ee" : { "hid" : 41 , "shift" : 0 }, 	# Escape			
-    "1_" : { "hid" : 30 , "shift" : 0 },
-    "!_" : { "hid" : 30 , "shift" : 1 },		
-    "2_" : { "hid" : 31 , "shift" : 0 },
-    "@_" : { "hid" : 31 , "shift" : 1 },
-    "3_" : { "hid" : 32 , "shift" : 0 },
-    "#_" : { "hid" : 32 , "shift" : 1 },		
-    "4_" : { "hid" : 33 , "shift" : 0 },
-    "$_" : { "hid" : 33 , "shift" : 1 },
-    "5_" : { "hid" : 34 , "shift" : 0 },
-    "%_" : { "hid" : 34 , "shift" : 1 },
-    "6_" : { "hid" : 35 , "shift" : 0 },
-    "^_" : { "hid" : 35 , "shift" : 1 },
-    "7_" : { "hid" : 36 , "shift" : 0 },
-    "&_" : { "hid" : 36 , "shift" : 1 },
-    "8_" : { "hid" : 37 , "shift" : 0 },
-    "*_" : { "hid" : 37 , "shift" : 1 },
-    "9_" : { "hid" : 38 , "shift" : 0 },
-    "(_" : { "hid" : 38 , "shift" : 1 },
-    "0_" : { "hid" : 39 , "shift" : 0 },
-    ")_" : { "hid" : 39 , "shift" : 1 },		
-    "-_" : { "hid" : 45 , "shift" : 0 },
-    "__" : { "hid" : 45 , "shift" : 1 },
-    "=_" : { "hid" : 46 , "shift" : 0 },
-    "+_" : { "hid" : 46 , "shift" : 1 },
-    "Be" : { "hid" : 42 , "shift" : 0 },	# Backspace
-    "Tb" : { "hid" : 43 , "shift" : 0 },	# Tab
-    "UT" : { "hid" : 43 , "shift" : 1 },	# Un-Tab
-    "q_" : { "hid" : 20 , "shift" : 0 },
-    "Q_" : { "hid" : 20 , "shift" : 1 },
-    "w_" : { "hid" : 26 , "shift" : 0 },	
-    "W_" : { "hid" : 26 , "shift" : 1 },
-    "e_" : { "hid" : 8  , "shift" : 0 },
-    "E_" : { "hid" : 8  , "shift" : 1 },
-    "r_" : { "hid" : 21 , "shift" : 0 },
-    "R_" : { "hid" : 21 , "shift" : 1 },
-    "t_" : { "hid" : 23 , "shift" : 0 },
-    "T_" : { "hid" : 23 , "shift" : 1 },
-    "y_" : { "hid" : 28 , "shift" : 0 },
-    "Y_" : { "hid" : 28 , "shift" : 1 },
-    "u_" : { "hid" : 24 , "shift" : 0 },
-    "U_" : { "hid" : 24 , "shift" : 1 },
-    "i_" : { "hid" : 12 , "shift" : 0 },
-    "I_" : { "hid" : 12 , "shift" : 1 },
-    "o_" : { "hid" : 18 , "shift" : 0 },
-    "O_" : { "hid" : 18 , "shift" : 1 },
-    "p_" : { "hid" : 19 , "shift" : 0 },
-    "P_" : { "hid" : 19 , "shift" : 1 },
-    "[_" : { "hid" : 47 , "shift" : 0 },
-    "{_" : { "hid" : 47 , "shift" : 1 },
-    "]_" : { "hid" : 48 , "shift" : 0 },
-    "}_" : { "hid" : 48 , "shift" : 1 },
-    "Er" : { "hid" : 40 , "shift" : 0 },	# Enter/Return
-    "LC" : { "hid" : 224, "shift" : 0 },	# Left Ctrl
-    "a_" : { "hid" : 4  , "shift" : 0 },
-    "A_" : { "hid" : 4  , "shift" : 1 },
-    "s_" : { "hid" : 22 , "shift" : 0 },
-    "S_" : { "hid" : 22 , "shift" : 1 },
-    "d_" : { "hid" : 7  , "shift" : 0 },
-    "D_" : { "hid" : 7  , "shift" : 1 },
-    "f_" : { "hid" : 9  , "shift" : 0 },
-    "F_" : { "hid" : 9  , "shift" : 1 },
-    "g_" : { "hid" : 10 , "shift" : 0 },
-    "G_" : { "hid" : 10 , "shift" : 1 },
-    "h_" : { "hid" : 11 , "shift" : 0 },
-    "H_" : { "hid" : 11 , "shift" : 1 },
-    "j_" : { "hid" : 13 , "shift" : 0 },
-    "J_" : { "hid" : 13 , "shift" : 1 },
-    "k_" : { "hid" : 14 , "shift" : 0 },
-    "K_" : { "hid" : 14 , "shift" : 1 },
-    "l_" : { "hid" : 15 , "shift" : 0 },
-    "L_" : { "hid" : 15 , "shift" : 1 },
-    ";_" : { "hid" : 51 , "shift" : 0 },
-    ":_" : { "hid" : 51 , "shift" : 1 },
-    "'_" : { "hid" : 52 , "shift" : 0 },	# Apostrophe
-    "\"_" :{ "hid" : 52 , "shift" : 1 },
-    "`_" : { "hid" : 53 , "shift" : 0 },	# Grave
-    "~_" : { "hid" : 53 , "shift" : 1 },
-    "LS" : { "hid" : 225, "shift" : 0 },	# Left Shift  
-    "\\_" : { "hid" : 50 , "shift" : 0 },	# Backslash	
-    "|_" : { "hid" : 50 , "shift" : 1 },
-    "z_" : { "hid" : 29 , "shift" : 0 },
-    "Z_" : { "hid" : 29 , "shift" : 1 },
-    "x_" : { "hid" : 27 , "shift" : 0 },
-    "X_" : { "hid" : 27 , "shift" : 1 },
-    "c_" : { "hid" : 6  , "shift" : 0 },
-    "C_" : { "hid" : 6  , "shift" : 1 },
-    "v_" : { "hid" : 25 , "shift" : 0 },
-    "V_" : { "hid" : 25 , "shift" : 1 },
-    "b_" : { "hid" : 5  , "shift" : 0 },
-    "B_" : { "hid" : 5  , "shift" : 1 },
-    "n_" : { "hid" : 17 , "shift" : 0 },
-    "N_" : { "hid" : 17 , "shift" : 1 },
-    "m_" : { "hid" : 16 , "shift" : 0 },
-    "M_" : { "hid" : 16 , "shift" : 1 },
-    ",_" : { "hid" : 54 , "shift" : 0 },
-    "<_" : { "hid" : 54 , "shift" : 1 },
-    "._" : { "hid" : 55 , "shift" : 0 },
-    ">_" : { "hid" : 55 , "shift" : 1 },
-    "/_" : { "hid" : 56 , "shift" : 0 },
-    "?_" : { "hid" : 56 , "shift" : 1 },
-    "RS" : { "hid" : 229, "shift" : 0 },	# Right Shift
-    "LA" : { "hid" : 226, "shift" : 0 },	# Left Alt
-    "Se" : { "hid" : 44 , "shift" : 0 },	# Space
+    "Bk" : { "hid" :  0 , "shift" : 0, "cursor" : 0  },	# Blank key, used to prevent repeating of previously pressed keys
+    "Ee" : { "hid" : 41 , "shift" : 0, "cursor" : 0  }, # Escape			
+    "1_" : { "hid" : 30 , "shift" : 0, "cursor" : 1  },
+    "!_" : { "hid" : 30 , "shift" : 1 , "cursor" : 1 },		
+    "2_" : { "hid" : 31 , "shift" : 0 , "cursor" : 1 },
+    "@_" : { "hid" : 31 , "shift" : 1 , "cursor" : 1 },
+    "3_" : { "hid" : 32 , "shift" : 0 , "cursor" : 1 },
+    "#_" : { "hid" : 32 , "shift" : 1 , "cursor" : 1 },		
+    "4_" : { "hid" : 33 , "shift" : 0 , "cursor" : 1 },
+    "$_" : { "hid" : 33 , "shift" : 1 , "cursor" : 1 },
+    "5_" : { "hid" : 34 , "shift" : 0 , "cursor" : 1 },
+    "%_" : { "hid" : 34 , "shift" : 1 , "cursor" : 1 },
+    "6_" : { "hid" : 35 , "shift" : 0 , "cursor" : 1 },
+    "^_" : { "hid" : 35 , "shift" : 1 , "cursor" : 1 },
+    "7_" : { "hid" : 36 , "shift" : 0 , "cursor" : 1 },
+    "&_" : { "hid" : 36 , "shift" : 1 , "cursor" : 1 },
+    "8_" : { "hid" : 37 , "shift" : 0 , "cursor" : 1 },
+    "*_" : { "hid" : 37 , "shift" : 1 , "cursor" : 1 },
+    "9_" : { "hid" : 38 , "shift" : 0 , "cursor" : 1 },
+    "(_" : { "hid" : 38 , "shift" : 1 , "cursor" : 1 },
+    "0_" : { "hid" : 39 , "shift" : 0 , "cursor" : 1 },
+    ")_" : { "hid" : 39 , "shift" : 1 , "cursor" : 1 },		
+    "-_" : { "hid" : 45 , "shift" : 0 , "cursor" : 1 },
+    "__" : { "hid" : 45 , "shift" : 1 , "cursor" : 1 },
+    "=_" : { "hid" : 46 , "shift" : 0 , "cursor" : 1 },
+    "+_" : { "hid" : 46 , "shift" : 1 , "cursor" : 1 },
+    "Be" : { "hid" : 42 , "shift" : 0 , "cursor" : 0 },	# Backspace
+    "Tb" : { "hid" : 43 , "shift" : 0 , "cursor" : 1 },	# Tab
+    #"UT" : { "hid" : 43 , "shift" : 1 , "cursor" : 0 },	# Un-Tab
+    "q_" : { "hid" : 20 , "shift" : 0 , "cursor" : 1 },
+    "Q_" : { "hid" : 20 , "shift" : 1 , "cursor" : 1 },
+    "w_" : { "hid" : 26 , "shift" : 0 , "cursor" : 1 },	
+    "W_" : { "hid" : 26 , "shift" : 1 , "cursor" : 1 },
+    "e_" : { "hid" : 8  , "shift" : 0 , "cursor" : 1 },
+    "E_" : { "hid" : 8  , "shift" : 1 , "cursor" : 1 },
+    "r_" : { "hid" : 21 , "shift" : 0 , "cursor" : 1 },
+    "R_" : { "hid" : 21 , "shift" : 1 , "cursor" : 1 },
+    "t_" : { "hid" : 23 , "shift" : 0 , "cursor" : 1 },
+    "T_" : { "hid" : 23 , "shift" : 1 , "cursor" : 1 },
+    "y_" : { "hid" : 28 , "shift" : 0 , "cursor" : 1 },
+    "Y_" : { "hid" : 28 , "shift" : 1 , "cursor" : 1 },
+    "u_" : { "hid" : 24 , "shift" : 0 , "cursor" : 1 },
+    "U_" : { "hid" : 24 , "shift" : 1 , "cursor" : 1 },
+    "i_" : { "hid" : 12 , "shift" : 0 , "cursor" : 1 },
+    "I_" : { "hid" : 12 , "shift" : 1 , "cursor" : 1 },
+    "o_" : { "hid" : 18 , "shift" : 0 , "cursor" : 1 },
+    "O_" : { "hid" : 18 , "shift" : 1 , "cursor" : 1 },
+    "p_" : { "hid" : 19 , "shift" : 0 , "cursor" : 1 },
+    "P_" : { "hid" : 19 , "shift" : 1 , "cursor" : 1 },
+    "[_" : { "hid" : 47 , "shift" : 0 , "cursor" : 1 },
+    "{_" : { "hid" : 47 , "shift" : 1 , "cursor" : 1 },
+    "]_" : { "hid" : 48 , "shift" : 0 , "cursor" : 1 },
+    "}_" : { "hid" : 48 , "shift" : 1 , "cursor" : 1 },
+    "Er" : { "hid" : 40 , "shift" : 0 , "cursor" : 1 },	# Enter/Return
+    "LC" : { "hid" : 224, "shift" : 0 , "cursor" : 0 },	# Left Ctrl
+    "a_" : { "hid" : 4  , "shift" : 0 , "cursor" : 1 },
+    "A_" : { "hid" : 4  , "shift" : 1 , "cursor" : 1 },
+    "s_" : { "hid" : 22 , "shift" : 0 , "cursor" : 1 },
+    "S_" : { "hid" : 22 , "shift" : 1 , "cursor" : 1 },
+    "d_" : { "hid" : 7  , "shift" : 0 , "cursor" : 1 },
+    "D_" : { "hid" : 7  , "shift" : 1 , "cursor" : 1 },
+    "f_" : { "hid" : 9  , "shift" : 0 , "cursor" : 1 },
+    "F_" : { "hid" : 9  , "shift" : 1 , "cursor" : 1 },
+    "g_" : { "hid" : 10 , "shift" : 0 , "cursor" : 1 },
+    "G_" : { "hid" : 10 , "shift" : 1 , "cursor" : 1 },
+    "h_" : { "hid" : 11 , "shift" : 0 , "cursor" : 1 },
+    "H_" : { "hid" : 11 , "shift" : 1 , "cursor" : 1 },
+    "j_" : { "hid" : 13 , "shift" : 0 , "cursor" : 1 },
+    "J_" : { "hid" : 13 , "shift" : 1 , "cursor" : 1 },
+    "k_" : { "hid" : 14 , "shift" : 0 , "cursor" : 1 },
+    "K_" : { "hid" : 14 , "shift" : 1 , "cursor" : 1 },
+    "l_" : { "hid" : 15 , "shift" : 0 , "cursor" : 1 },
+    "L_" : { "hid" : 15 , "shift" : 1 , "cursor" : 1 },
+    ";_" : { "hid" : 51 , "shift" : 0 , "cursor" : 1 },
+    ":_" : { "hid" : 51 , "shift" : 1 , "cursor" : 1 },
+    "'_" : { "hid" : 52 , "shift" : 0 , "cursor" : 1 },	# Apostrophe
+    "\"_" :{ "hid" : 52 , "shift" : 1 , "cursor" : 1 },
+    "`_" : { "hid" : 53 , "shift" : 0 , "cursor" : 1 },	# Grave
+    "~_" : { "hid" : 53 , "shift" : 1 , "cursor" : 1 },
+    "LS" : { "hid" : 225, "shift" : 0 , "cursor" : 0 },	# Left Shift  
+    "\\_" : { "hid" : 50 , "shift" : 0 , "cursor" : 1 }, # Backslash	
+    "|_" : { "hid" : 50 , "shift" : 1 , "cursor" : 1 },
+    "z_" : { "hid" : 29 , "shift" : 0 , "cursor" : 1 },
+    "Z_" : { "hid" : 29 , "shift" : 1 , "cursor" : 1 },
+    "x_" : { "hid" : 27 , "shift" : 0 , "cursor" : 1 },
+    "X_" : { "hid" : 27 , "shift" : 1 , "cursor" : 1 },
+    "c_" : { "hid" : 6  , "shift" : 0 , "cursor" : 1 },
+    "C_" : { "hid" : 6  , "shift" : 1 , "cursor" : 1 },
+    "v_" : { "hid" : 25 , "shift" : 0 , "cursor" : 1 },
+    "V_" : { "hid" : 25 , "shift" : 1 , "cursor" : 1 },
+    "b_" : { "hid" : 5  , "shift" : 0 , "cursor" : 1 },
+    "B_" : { "hid" : 5  , "shift" : 1 , "cursor" : 1 },
+    "n_" : { "hid" : 17 , "shift" : 0 , "cursor" : 1 },
+    "N_" : { "hid" : 17 , "shift" : 1 , "cursor" : 1 },
+    "m_" : { "hid" : 16 , "shift" : 0 , "cursor" : 1 },
+    "M_" : { "hid" : 16 , "shift" : 1 , "cursor" : 1 },
+    ",_" : { "hid" : 54 , "shift" : 0 , "cursor" : 1 },
+    "<_" : { "hid" : 54 , "shift" : 1 , "cursor" : 1 },
+    "._" : { "hid" : 55 , "shift" : 0 , "cursor" : 1 },
+    ">_" : { "hid" : 55 , "shift" : 1 , "cursor" : 1 },
+    "/_" : { "hid" : 56 , "shift" : 0 , "cursor" : 1 },
+    "?_" : { "hid" : 56 , "shift" : 1 , "cursor" : 1 },
+    "RS" : { "hid" : 229, "shift" : 0 , "cursor" : 0 },	# Right Shift
+    "LA" : { "hid" : 226, "shift" : 0 , "cursor" : 0 },	# Left Alt
+    "Se" : { "hid" : 44 , "shift" : 0 , "cursor" : 1 },	# Space
     #"KEY_CAPSLOCK" : 57,	# Don't really need if we have a joystick capsalpha set and separate numspecial set
-    "F1" : { "hid" : 58 , "shift" : 0 },
-    "F2" : { "hid" : 59 , "shift" : 0 },
-    "F3" : { "hid" : 60 , "shift" : 0 },
-    "F4" : { "hid" : 61 , "shift" : 0 },
-    "F5" : { "hid" : 62 , "shift" : 0 },
-    "F6" : { "hid" : 63 , "shift" : 0 },
-    "F7" : { "hid" : 64 , "shift" : 0 },
-    "F8" : { "hid" : 65 , "shift" : 0 },
-    "F9" : { "hid" : 66 , "shift" : 0 },
-    "10" : { "hid" : 67 , "shift" : 0 },	# F10
-    "11" : { "hid" : 68 , "shift" : 0 },	# F11
-    "12" : { "hid" : 69 , "shift" : 0 },	# F12
-    "RC" : { "hid" : 228, "shift" : 0 },	# Right Ctrl
-    "RA" : { "hid" : 230, "shift" : 0 },	# Right Alt
-    "He" : { "hid" : 74 , "shift" : 0 },	# Home
-    "Up" : { "hid" : 82 , "shift" : 0 },	# Up
-    "PU" : { "hid" : 75 , "shift" : 0 },	# Page Up
-    "Lt" : { "hid" : 80 , "shift" : 0 },	# Left
-    "Rt" : { "hid" : 79 , "shift" : 0 },	# Right
-    "Ed" : { "hid" : 77 , "shift" : 0 },	# End
-    "Dn" : { "hid" : 81 , "shift" : 0 },	# Down
-    "PD" : { "hid" : 78 , "shift" : 0 },	# Page Down
-    "It" : { "hid" : 73 , "shift" : 0 },	# Insert
-    "De" : { "hid" : 76 , "shift" : 0 },	# Delete
+    "F1" : { "hid" : 58 , "shift" : 0 , "cursor" : 0 },
+    "F2" : { "hid" : 59 , "shift" : 0 , "cursor" : 0 },
+    "F3" : { "hid" : 60 , "shift" : 0 , "cursor" : 0 },
+    "F4" : { "hid" : 61 , "shift" : 0 , "cursor" : 0 },
+    "F5" : { "hid" : 62 , "shift" : 0 , "cursor" : 0 },
+    "F6" : { "hid" : 63 , "shift" : 0 , "cursor" : 0 },
+    "F7" : { "hid" : 64 , "shift" : 0 , "cursor" : 0 },
+    "F8" : { "hid" : 65 , "shift" : 0 , "cursor" : 0 },
+    "F9" : { "hid" : 66 , "shift" : 0 , "cursor" : 0 },
+    "10" : { "hid" : 67 , "shift" : 0 , "cursor" : 0 },	# F10
+    "11" : { "hid" : 68 , "shift" : 0 , "cursor" : 0 },	# F11
+    "12" : { "hid" : 69 , "shift" : 0 , "cursor" : 0 },	# F12
+    "RC" : { "hid" : 228, "shift" : 0 , "cursor" : 0 },	# Right Ctrl
+    "RA" : { "hid" : 230, "shift" : 0 , "cursor" : 0 },	# Right Alt
+    "He" : { "hid" : 74 , "shift" : 0 , "cursor" : 0 },	# Home
+    "Up" : { "hid" : 82 , "shift" : 0 , "cursor" : 0 },	# Up
+    "PU" : { "hid" : 75 , "shift" : 0 , "cursor" : 0 },	# Page Up
+    "Lt" : { "hid" : 80 , "shift" : 0 , "cursor" : 0 },	# Left
+    "Rt" : { "hid" : 79 , "shift" : 0 , "cursor" : 0 },	# Right
+    "Ed" : { "hid" : 77 , "shift" : 0 , "cursor" : 0 },	# End
+    "Dn" : { "hid" : 81 , "shift" : 0 , "cursor" : 0 },	# Down
+    "PD" : { "hid" : 78 , "shift" : 0 , "cursor" : 0 },	# Page Down
+    "It" : { "hid" : 73 , "shift" : 0 , "cursor" : 0 },	# Insert
+    "De" : { "hid" : 76 , "shift" : 0 , "cursor" : 0 },	# Delete
     # 
     # Multi-Functional Keys
     #
-    "Me" : { "hid" : 239, "shift" : 0 },	# Mute
-    "VD" : { "hid" : 238, "shift" : 0 }, 	# Volume Down
-    "VU" : { "hid" : 237, "shift" : 0 },	# Volume Up
+    "Me" : { "hid" : 239, "shift" : 0 , "cursor" : 0 },	# Mute
+    "VD" : { "hid" : 238, "shift" : 0 , "cursor" : 0 }, 	# Volume Down
+    "VU" : { "hid" : 237, "shift" : 0 , "cursor" : 0 },	# Volume Up
     #"KEY_POWER" : 102,
     #"KEY_PAUSE" : 72,
-    "LM" : { "hid" : 227, "shift" : 0 }, 	# Left Meta
-    "RM" : { "hid" : 231, "shift" : 0 }, 	# Right Meta
+    "LM" : { "hid" : 227, "shift" : 0 , "cursor" : 0 }, 	# Left Meta
+    "RM" : { "hid" : 231, "shift" : 0 , "cursor" : 0 }, 	# Right Meta
     #"KEY_STOP" : 243,
     #"KEY_OPEN" : 116,
     #"KEY_BACK" : 241,
     #"KEY_FORWARD" : 242,
     #"KEY_NEXTSONG" : 235,
-    "PP" : { "hid" : 232, "shift" : 0 }, # Play/Pause
+    "PP" : { "hid" : 232, "shift" : 0 , "cursor" : 0 }, # Play/Pause
     #"KEY_PREVIOUSSONG" : 234,
     #"KEY_STOPCD" : 233,
     #"KEY_REFRESH" : 250,
     #"KEY_SCROLLUP" : 245,
     #"KEY_SCROLLDOWN" : 246,
     # created to allow toggling Cursor-Mode
-    "CT" : { "hid" : -1, "shift" : 0 }, # Cursor toggle key, dummy entry
+    "CT" : { "hid" : -1, "shift" : 0 , "cursor" : 0 }, # Cursor toggle key, dummy entry
 }
 
 def get_HID(key_str):
@@ -197,6 +197,9 @@ def get_HID(key_str):
 
 def get_Shift_Required(key_str):
     return key_str_2_HID_code_and_shift_mod_required[key_str]["shift"]
+
+def get_Cursor_Enabled(key_str):
+    return key_str_2_HID_code_and_shift_mod_required[key_str]["cursor"]
 
 # Hardcoded key_str_2D arrays (which are then used to get HID codes + necessary modifiers) 
 # are accessed via a combination of finger and direction, the joystick navigating between str_arrays
@@ -644,13 +647,15 @@ class VR_Keyboard():
                     # sum should equal 2 (if same), 1 (if different), or 0 (if same)
                     if (self.btns_state[i] + self.last_btns_state[i]) == 1 : # if different
 					
-                        if self.btns_state[i] == 1 : # new btn pressed			       
-                            self.btns_stack.append(i) # add pressed button to top (end) of stack
+                        if self.btns_state[i] == 1 : # new btn pressed
                             print "new button(s) pressed : " + str(i) + ", " ,
+                            self.btns_stack.append(i) # add pressed button to top (end) of stack
+
 				
                         elif self.btns_state[i] == 0: # old btn released from anywhere in stack
+                            print "old button(s) released :" + str(i) + ", " ,				
                             self.btns_stack.remove(i) # remove released button from stack
-                            print "old button(s) released :" + str(i) + ", " ,
+                            
                 print "\n"
               
     def debug_btns_state_and_stack(self):
@@ -719,11 +724,10 @@ class VR_Keyboard():
             # this (in it's current state, can be definitely be optimized) ...
             # requires sending blank keypresses in between to avoid character repetition (but slow!)
 
-             
-            self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) 
-				  
-            # don't flash the arrow keys, just use them as you regularly would 
-            if not self.key_str == "Up" and not self.key_str == "Rt" and not self.key_str == "Dn" and not self.key_str == "Lt" :
+            # arrow keys are disabled in character cursor mode
+            if get_Cursor_Enabled(self.key_str) :
+		
+                self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) 
                 self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
                 time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before deleting flashed charact
 
