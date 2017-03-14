@@ -643,7 +643,7 @@ class VR_Keyboard():
                         pressed_or_released_btn = -1 # use to error check conditions by yielding out of bounds error
         
                         # button was released, use implicit booleaness of empty list
-                        if list(set(self.last_btns_pressed) - set(self.btns_pressed) : 
+                        if list(set(self.last_btns_pressed) - set(self.btns_pressed) :                             
                             pressed_or_released_btn_single_element_list = list(set(self.last_btns_pressed) - set(self.btns_pressed))
                         # button was pressed, use implicit booleaness of empty list
                         elif list(set(self.btns_pressed) - set(self.last_btns_pressed) : 
@@ -654,10 +654,11 @@ class VR_Keyboard():
 									       
                         if self.num_btns_pressed - self.last_btns_pressed == 1 : # new button was pressed
                             self.btns_stack.append(pressed_or_released_btn) # add pressed button to top (end) of stack
+                            print "new button pressed:" + pressed_or_released_btn "\n"
                         else : # self.num_btns_pressed - self.last_btns_pressed == - 1
-                            
                             self.btns_stack.remove(pressed_or_released_btn) # remove released button from stack
-                
+                            print "old button released:" + pressed_or_released_btn "\n"
+                    
                     # more than one button pressed or removed between polls
                     else : 
 				
@@ -717,13 +718,17 @@ class VR_Keyboard():
             # this (in it's current state, can be definitely be optimized) ...
             # requires sending blank keypresses in between to avoid character repetition (but slow!)
 
-            self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) # display char_cursor
-            self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
-            time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before deleting flashed character
+             
+            self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) 
+				  
+            # don't flash the arrow keys, just use them as you regularly would 
+            if not self.key_str == "Up" or self.key_str == "Rt" or self.key_str == "Dn" or self.key_str == "Lt" : 
+                self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
+                time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before deleting flashed charact
 
-            self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
-            self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
-            time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before continuing
+                self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
+                self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
+                time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before continuing
 				  
             self.reset_joystick_path_booleans() # reset joystick path to prevent new joystick cycles as it resets to deadzone
 
