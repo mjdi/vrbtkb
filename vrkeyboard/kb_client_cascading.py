@@ -723,7 +723,7 @@ class VR_Keyboard():
             self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) 
 				  
             # don't flash the arrow keys, just use them as you regularly would 
-            if not self.key_str == "Up" or self.key_str == "Rt" or self.key_str == "Dn" or self.key_str == "Lt" : 
+            if not self.key_str == "Up" and not self.key_str == "Rt" and not self.key_str == "Dn" and not self.key_str == "Lt" :
                 self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
                 time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before deleting flashed charact
 
