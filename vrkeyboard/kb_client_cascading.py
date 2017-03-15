@@ -849,9 +849,9 @@ if __name__ == "__main__":
 
                         kb.type_hid_code_from_key_str()
 
-                kb.last_dir_idx = kb.dir_idx
-                kb.last_btns_state = kb.btns_state
-                kb.last_num_btns_pressed = kb.num_btns_pressed
+            kb.last_dir_idx = kb.dir_idx
+            kb.last_btns_state = kb.btns_state
+            kb.last_num_btns_pressed = kb.num_btns_pressed
 
                 #print "\n" ,
 									       
