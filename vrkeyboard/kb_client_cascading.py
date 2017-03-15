@@ -567,27 +567,45 @@ class VR_Keyboard():
         if   num_CW_edges == 4 and num_CCW_edges == 4 : # both full counter-clockwise & full clockwise rotations
             self.key_str = "CT"	# Cursor Toggle
         elif num_CW_edges == 4 and num_CCW_edges <= 2 : # full clockwise rotation only
-            self.key_str = "De"	# Delete
+            if hand == "left" :
+                self.key_str = "LA"	# Left Alt
+            elif hand == "right" :
+                self.key_str = "RA"	# Right Alt
         elif num_CW_edges <= 2 and num_CCW_edges == 4 : # full counter-clockwise rotation only
-            self.key_str = "Be"	# Backspace
+            if hand == "left" :
+                self.key_str = "LM"	# Left Meta/Windows
+            elif hand == "right" :
+                self.key_str = "RM"	# Right Meta/Windows
         elif num_CW_edges == 2 and num_CCW_edges <= 1 : # clockwise half rotation only
             if   self.N2E and self.E2S : # eastern
-                self.key_str = "RC"	# Right Ctrl
+                self.key_str = "Be"	# Backspace
             elif self.E2S and self.S2W : # southern
-                self.key_str = "RM"	# Right Meta
+                if hand == "left" :
+                    self.key_str = "LC"	# Left Ctrl
+                elif hand == "right" :
+                    self.key_str = "RC"	# Right Ctrl
             elif self.S2W and self.W2N : # western
-                self.key_str = "RA"	# Right Alt
+                self.key_str = "De"	# Delete
             elif self.W2N and self.N2E : # northern
-                self.key_str = "RS"	# Right Shift
+                if hand == "left" :
+                    self.key_str = "LS"	# Left Shift
+                elif hand == "right" :
+                    self.key_str = "RS"	# Right Shift
         elif num_CW_edges <= 1 and num_CCW_edges == 2 : # counter-clockwise half rotation only
             if   self.N2W and self.W2S : # eastern
-                self.key_str = "LC"	# Left Control
+                self.key_str = "Be"	# Backspace
             elif self.W2S and self.S2E : # southern
-                self.key_str = "LM"	# Left Meta
+                if hand == "left" :
+                    self.key_str = "LC"	# Left Ctrl
+                elif hand == "right" :
+                    self.key_str = "RC"	# Right Ctrl
             elif self.S2E and self.E2N : # western
-                self.key_str = "LA"	# Left Alt
+                self.key_str = "De"	# Delete
             elif self.E2N and self.N2W : # northern
-                self.key_str = "LS"	# Left Shift
+                if hand == "left" :
+                    self.key_str = "LS"	# Left Shift
+                elif hand == "right" :
+                    self.key_str = "RS"	# Right Shift
         elif num_CW_edges == 0 and num_CCW_edges == 0 : # no joystick rotation at all, but check for joystick "flick"
             if   self.D2N : # Flick (north)
                 self.key_str = "Se" 	# Space
