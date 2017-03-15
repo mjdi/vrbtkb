@@ -644,8 +644,8 @@ class VR_Keyboard():
                 # cmp(list1,list2) returns 0 if they are the same, 1 if list1 > list2, and -1 if list1 < list2	    
                 if not cmp( self.last_btns_state, self.btns_state ) == 0 :
 			
-		   print "BEFORE:\t" ,
-                   kb.debug_btns_state_and_stack()	
+		    print "BEFORE:\t" ,
+                    kb.debug_btns_state_and_stack()	
   
                     # determine which button(s) were pressed or released and append or remove it from the stack accordingly 
                     for i in range(0,len(self.btns_state)) :
