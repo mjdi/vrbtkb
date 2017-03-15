@@ -578,29 +578,29 @@ class VR_Keyboard():
                 self.key_str = "RM"	# Right Meta/Windows
         elif num_CW_edges == 2 and num_CCW_edges <= 1 : # clockwise half rotation only
             if   self.N2E and self.E2S : # eastern
-                self.key_str = "Be"	# Backspace
+                self.key_str = "De"	# Delete
             elif self.E2S and self.S2W : # southern
                 if hand == "left" :
                     self.key_str = "LC"	# Left Ctrl
                 elif hand == "right" :
                     self.key_str = "RC"	# Right Ctrl
             elif self.S2W and self.W2N : # western
-                self.key_str = "De"	# Delete
+                self.key_str = "Be"	# Backspace
             elif self.W2N and self.N2E : # northern
                 if hand == "left" :
                     self.key_str = "LS"	# Left Shift
                 elif hand == "right" :
                     self.key_str = "RS"	# Right Shift
         elif num_CW_edges <= 1 and num_CCW_edges == 2 : # counter-clockwise half rotation only
-            if   self.N2W and self.W2S : # eastern
-                self.key_str = "Be"	# Backspace
+            if   self.S2E and self.E2N : # eastern
+                self.key_str = "De"	# Delete
             elif self.W2S and self.S2E : # southern
                 if hand == "left" :
                     self.key_str = "LC"	# Left Ctrl
                 elif hand == "right" :
                     self.key_str = "RC"	# Right Ctrl
-            elif self.S2E and self.E2N : # western
-                self.key_str = "De"	# Delete
+            elif self.N2W and self.W2S : # western
+                self.key_str = "Be"	# Backspace
             elif self.E2N and self.N2W : # northern
                 if hand == "left" :
                     self.key_str = "LS"	# Left Shift
