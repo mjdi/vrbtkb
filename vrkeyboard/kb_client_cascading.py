@@ -728,13 +728,13 @@ class VR_Keyboard():
 	if not self.mod_arr[self.mod_key_str_2_idx["LC"]] and not self.mod_arr[self.mod_key_str_2_idx["RC"]] : # check Ctrl modifiers
             if not self.mod_arr[self.mod_key_str_2_idx["LA"]] and not self.mod_arr[self.mod_key_str_2_idx["RA"]] :  # check Alt modifiers
                 if not self.mod_arr[self.mod_key_str_2_idx["LM"]] and not self.mod_arr[self.mod_key_str_2_idx["RM"]] : # check Meta modifiers
-                    return false
+                    return False
                 else :
-                    return true
+                    return True
             else :
-                return true		
+                return True		
         else :
-            return true
+            return True
 	
     def flash_char_cursor_from_key_str(self):
 		
