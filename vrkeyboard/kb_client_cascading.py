@@ -166,7 +166,7 @@ key_str_2_HID_code_and_shift_mod_required = {
     "Dn" : { "hid" : 81 , "shift" : 0 , "cursor" : 0 },	# Down
     "PD" : { "hid" : 78 , "shift" : 0 , "cursor" : 0 },	# Page Down
     "It" : { "hid" : 73 , "shift" : 0 , "cursor" : 0 },	# Insert
-    "De" : { "hid" : 76 , "shift" : 0 , "cursor" : 1 },	# Delete
+    "De" : { "hid" : 76 , "shift" : 0 , "cursor" : 0 },	# Delete
     # 
     # Multi-Functional Keys
     #
@@ -644,7 +644,8 @@ class VR_Keyboard():
                 # cmp(list1,list2) returns 0 if they are the same, 1 if list1 > list2, and -1 if list1 < list2	    
                 if not cmp( self.last_btns_state, self.btns_state ) == 0 :
 			
-		    kb.debug_btns_state_and_stack()	
+		   print "BEFORE:\t" ,
+                   kb.debug_btns_state_and_stack()	
   
                     # determine which button(s) were pressed or released and append or remove it from the stack accordingly 
                     for i in range(0,len(self.btns_state)) :
@@ -662,6 +663,9 @@ class VR_Keyboard():
                                 self.btns_stack.remove(i) # remove released button from stack
                             
                     print "\n"
+                    
+                    print "AFTER:\t" , 
+                    kb.debug_btns_state_and_stack()
               
     def debug_btns_state_and_stack(self):
 	
@@ -775,12 +779,20 @@ if __name__ == "__main__":
                 kb.cursor_mode_on = int (not kb.cursor_mode_on) # toggle "Cursor Mode" on or off
                 kb.reset_joystick_path_booleans() # reset joystick path to prevent new joystick cycles as it resets to deadzone
                 kb.reset_non_locked_modifiers() # reset non-locked modifiers when you toggle Cursor Mode
+		
+                kb.last_dir_idx = -1 # reset after a Cursor Toggle swap 
+                kb.last_btns_state = [0,0,0,0,0]
+                kb.last_num_btns_pressed = 0
                 continue
 
             elif kb.key_str in kb.mod_key_str_2_idx :
 
                 kb.toggle_modifer()
                 kb.reset_joystick_path_booleans()
+		
+                kb.last_dir_idx = -1 # reset after a modifier swap  
+                kb.last_btns_state = [0,0,0,0,0]
+                kb.last_num_btns_pressed = 0
                 continue
 
             kb.get_btns_state()
@@ -812,7 +824,7 @@ if __name__ == "__main__":
                         kb.current_char_cursor_key_str = "" # reset for next cursor char
                         kb.type_hid_code_from_key_str() # Having let go of all buttons, we type the last cursor character
 
-                        kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
+                    kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
 
             elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
 
