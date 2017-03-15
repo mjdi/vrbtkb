@@ -723,7 +723,19 @@ class VR_Keyboard():
 
             self.reset_non_locked_modifiers()
             self.reset_joystick_path_booleans() # reset joystick path to prevent new joystick cycles as it resets to deadzone
-
+		
+    def is_Ctrl_Or_Alt_Or_Meta_Modified_Char(self):
+	if not self.mod_arr[self.mod_key_str_2_idx["LC"]] and not self.mod_arr[self.mod_key_str_2_idx["RC"]] : # check Ctrl modifiers
+            if not self.mod_arr[self.mod_key_str_2_idx["LA"]] and not self.mod_arr[self.mod_key_str_2_idx["RA"]] :  # check Alt modifiers
+                if not self.mod_arr[self.mod_key_str_2_idx["LM"]] and not self.mod_arr[self.mod_key_str_2_idx["RM"]] : # check Meta modifiers
+                    return false
+                else :
+                    return true
+            else :
+                return true		
+        else :
+            return true
+	
     def flash_char_cursor_from_key_str(self):
 		
         #self.debug_selected_key()
@@ -740,13 +752,16 @@ class VR_Keyboard():
             # all non-typing keys (arrows, function, modifiers, PgUp, Home, etc.. Esc, Ins, Mute, Vol. Up)  are disabled in character cursor mode
             if get_Cursor_Enabled(self.key_str) :
 		
-                self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) 
-                self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
-                time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before deleting flashed character
+                # don't flash non-typable Modifier + Char. combinations EXCEPT for Shift + Character
+		if not self.is_Ctrl_Or_Alt_Or_Meta_Modified_Char() : 
+		
+                    self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) 
+                    self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
+                    time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before deleting flashed character
 
-                self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
-                self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
-                time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before continuing
+                    self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
+                    self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
+                    time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before continuing
 				  
             self.reset_joystick_path_booleans() # reset joystick path to prevent new joystick cycles as it resets to deadzone
 
