@@ -735,12 +735,12 @@ class VR_Keyboard():
             # this (in it's current state, can be definitely be optimized) ...
             # requires sending blank keypresses in between to avoid character repetition (but slow!)
 
-            # arrow keys are disabled in character cursor mode
+            # all non-typing keys (arrows, function, modifiers, PgUp, Home, etc.. Esc, Ins, Mute, Vol. Up)  are disabled in character cursor mode
             if get_Cursor_Enabled(self.key_str) :
 		
                 self.iface.send_keys( int(self.get_mod_bit_str(),2), [get_HID(self.key_str),0,0,0,0,0] ) 
                 self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
-                time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before deleting flashed charact
+                time.sleep(self.char_cursor_half_delay) # wait for a 1/4 of a second before deleting flashed character
 
                 self.iface.send_keys( 0, [get_HID("Be"),0,0,0,0,0] ) # backspace char_cursor
                 self.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank char_cursor to stop or "lift" previous key
@@ -812,7 +812,7 @@ if __name__ == "__main__":
 
                 continue
 
-            # 7 scenarios: 0, 1, or 2 buttons pressed (with cursor mode either on or off), or the blank character (typed only once to stop repeating characters)
+            # Typing:
 
             if kb.num_btns_pressed == 0 and kb.key_str == "" : # Nothing pressed, no Joy-stick cycle, no key_str recorded yet
 
@@ -826,7 +826,7 @@ if __name__ == "__main__":
 
                     kb.iface.send_keys( 0, [0,0,0,0,0,0] ) # blank key
 
-            elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found (Cursor mode doesn't apply! must be memorized)
+            elif kb.num_btns_pressed == 0 and not kb.key_str == "" : # Joy-stick cycle therefore a key_str was found
 
                 kb.type_hid_code_from_key_str()
 				  
