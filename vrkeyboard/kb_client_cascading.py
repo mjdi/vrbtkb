@@ -656,7 +656,6 @@ class VR_Keyboard():
                             if self.btns_state[i] == 1 : # new btn pressed
                                 print "new button(s) pressed : " + str(i) + ", " ,
                                 self.btns_stack.append(i) # add pressed button to top (end) of stack
-
 				
                             elif self.btns_state[i] == 0: # old btn released from anywhere in stack
                                 print "old button(s) released :" + str(i) + ", " ,				
@@ -666,6 +665,9 @@ class VR_Keyboard():
                     
                     print "AFTER:\t" , 
                     kb.debug_btns_state_and_stack()
+            
+            else :
+                self.btns_stack = []   
               
     def debug_btns_state_and_stack(self):
 	
