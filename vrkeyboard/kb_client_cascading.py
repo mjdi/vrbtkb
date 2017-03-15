@@ -644,8 +644,8 @@ class VR_Keyboard():
                 # cmp(list1,list2) returns 0 if they are the same, 1 if list1 > list2, and -1 if list1 < list2	    
                 if not cmp( self.last_btns_state, self.btns_state ) == 0 :
 			
-		    print "BEFORE:\t" ,
-                    kb.debug_btns_state_and_stack()	
+		    #print "BEFORE:\t" ,
+                    #kb.debug_btns_state_and_stack()	
   
                     # determine which button(s) were pressed or released and append or remove it from the stack accordingly 
                     for i in range(0,len(self.btns_state)) :
@@ -654,17 +654,17 @@ class VR_Keyboard():
                         if (self.btns_state[i] + self.last_btns_state[i]) == 1 : # if different
 					
                             if self.btns_state[i] == 1 : # new btn pressed
-                                print "new button(s) pressed : " + str(i) + ", " ,
+                                #print "new button(s) pressed : " + str(i) + ", " ,
                                 self.btns_stack.append(i) # add pressed button to top (end) of stack
 				
                             elif self.btns_state[i] == 0: # old btn released from anywhere in stack
-                                print "old button(s) released :" + str(i) + ", " ,				
+                                #print "old button(s) released :" + str(i) + ", " ,				
                                 self.btns_stack.remove(i) # remove released button from stack
                             
-                    print "\n"
+                    #print "\n"
                     
-                    print "AFTER:\t" , 
-                    kb.debug_btns_state_and_stack()
+                    #print "AFTER:\t" , 
+                    #kb.debug_btns_state_and_stack()
             
             else :
                 self.btns_stack = []   
