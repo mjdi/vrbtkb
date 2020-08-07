@@ -1,3 +1,5 @@
+FYDP Symposium Presentation: https://www.youtube.com/watch?v=vO8slpZmjig
+
 FYDP NE2017_11: Repurposing http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html in a 4-button + clickable analog joystick Raspberry Pi (RPi) Zero or Next Thing Co. CHIP based bluetooth controller(s) used for emulating a regular QWERTY keyboard's functionality on a VR-enabled Android smartphone while in the VR environment (with no touch-screen access)
 
 #**(Deprecated, used CHIP crontab method) Headless setup for RPi**
