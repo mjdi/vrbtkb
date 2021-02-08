@@ -1,19 +1,30 @@
+
+**FYDP NE2017_11:**
+
+Repurposing http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html in a 4-button + clickable analog joystick Raspberry Pi (RPi) Zero or Next Thing Co. CHIP based bluetooth controller(s) used for emulating a regular QWERTY keyboard's functionality on a VR-enabled Android smartphone while in the VR environment (with no touch-screen access)
+
 FYDP Symposium Presentation: https://www.youtube.com/watch?v=vO8slpZmjig
 
-FYDP NE2017_11: Repurposing http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-bluetooth-keyboard-with.html in a 4-button + clickable analog joystick Raspberry Pi (RPi) Zero or Next Thing Co. CHIP based bluetooth controller(s) used for emulating a regular QWERTY keyboard's functionality on a VR-enabled Android smartphone while in the VR environment (with no touch-screen access)
+**Images**
 
-#**(Deprecated, used CHIP crontab method) Headless setup for RPi**
+![concept](https://github.com/mjdi/vrbtkb/blob/master/Images/concept.jpg)
+![solution](https://github.com/mjdi/vrbtkb/blob/master/Images/Design_And_Solution.png)
+![layout](https://github.com/mjdi/vrbtkb/blob/master/Images/VRBTKB_Layout_1000x1000_9.0.png)
+
+**Setup instructions (now deprecated ever since the C.H.I.P. went out of production), still may apply for Raspberry Pi however**
+
+**Headless setup for RPi**
 
 Add line '@bash /home/pi/vrbtkb/startup.sh' to the end of '/home/pi/.config/lxsession/LXDE/autostart' file for headless operation waiting about ~2 minutes for RPi to boot (and be running bt_server.py which accepts connections to a previously paired device) to then connect the VR-enabled Android smartphone to the RPi via bluetooth
 
-#**RPi Button GPIO pins:**
+**RPi Button GPIO pins:**
 
 		self.btn2_pin = 33
 		self.btn3_pin = 31
 		self.btn4_pin = 35
 		self.btn5_pin = 37
 
-#**INSTRUCTIONS for Next Thing Co. CHIP software setup**
+**INSTRUCTIONS for Next Thing Co. CHIP software setup**
 
 Flash 4.4 server (FEL mode by shorting FEL and GND pins) http://flash.getchip.com/
 
@@ -23,7 +34,7 @@ Flash 4.4 server (FEL mode by shorting FEL and GND pins) http://flash.getchip.co
 
 https://bbs.nextthing.co/t/updated-cdc-composite-gadget-4-4-driver-issue-on-windows/7458
 
-#**CHIP_IO pin names**
+**CHIP_IO pin names**
 
 https://github.com/xtacocorex/CHIP_IO
 
@@ -32,7 +43,7 @@ https://github.com/xtacocorex/CHIP_IO
 		self.btn4_pin = "GPIO4"
 		self.btn5_pin = "GPIO6"
 
-#**setup WiFi and SSH capabilities (Via COM port)** 
+**setup WiFi and SSH capabilities (Via COM port)** 
 
 https://www.reddit.com/r/ChipCommunity/comments/5hndoj/setting_up_the_chip_under_win10_walkthrough/
 
@@ -54,7 +65,7 @@ inet 10.0.0.xxx where the 10.0.0.xxx is the CHIPs IP on your local network. Scri
 	
 	sudo reboot
 	
-#**setup Bluetooth (Via SSH or COM port)** 
+**setup Bluetooth (Via SSH or COM port)** 
 
 	sudo apt-get remove blueman
 	sudo apt-get install git python-gobject bluez bluez-tools bluez-firmware python-bluez python-dev python-pip 
@@ -78,7 +89,7 @@ try to pair to CHIP with android smartphone (register new device)
 	
 Now, the device should be registered, and when you reboot the CHIP and wait ~ 20 sec (after it fully boots), you should be able to connect the Smartphone in order to use the CHIP as a BT keyboard
 
-#**SpiDev setup for CHIP**
+**SpiDev setup for CHIP**
 
 	git clone https://github.com/doceme/py-spidev
 	cd ./py-spidev
@@ -106,7 +117,7 @@ and then confirm that spidev exists with
 	
 	ls /dev/spidev*
 
-#**GPIO setup for CHIP**
+**GPIO setup for CHIP**
 
 ^^ Turns out the latest 4.4 CHIP kernel does set the CONFIG_CONGIFS on https://github.com/xtacocorex/CHIP_IO
 ("OverlayManager requires a 4.4 kernel with the CONFIG_OF_CONFIGFS option enabled in the kernel config.")
@@ -123,7 +134,7 @@ and then confirm that spidev exists with
 	cd ..
 	sudo rm -rf CHIP_IO
 	
-#**Headless setup for CHIP**
+**Headless setup for CHIP**
 
 Use systemwide crontab to allow for headless operation"
 
