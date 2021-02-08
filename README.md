@@ -6,10 +6,11 @@ Repurposing http://yetanotherpointlesstechblog.blogspot.ca/2016/04/emulating-blu
 FYDP Symposium Presentation: https://www.youtube.com/watch?v=vO8slpZmjig
 
 **Images**
-
-![concept](https://github.com/mjdi/vrbtkb/blob/master/Images/concept.jpg)
 ![solution](https://github.com/mjdi/vrbtkb/blob/master/Images/Design_And_Solution.png)
 ![layout](https://github.com/mjdi/vrbtkb/blob/master/Images/VRBTKB_Layout_1000x1000_9.0.png)
+![concept](https://github.com/mjdi/vrbtkb/blob/master/Images/concept.jpg)
+![concept_backside](https://github.com/mjdi/vrbtkb/blob/master/Images/concept_backside.png)
+
 
 **Setup instructions (now deprecated ever since the C.H.I.P. went out of production), still may apply for Raspberry Pi however**
 
